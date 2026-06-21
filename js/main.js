@@ -43,6 +43,8 @@ const state = {
   micError: null,
 };
 
+let prevPhase = 'loading';
+
 /* ===== CANVAS / AUDIO ===== */
 
 let canvas = null;
@@ -91,17 +93,32 @@ function render() {
 
   // Mostrar / ocultar pantallas
   const voiceActive = phase === 'question' || phase === 'transition';
+  const voiceWasHidden = SCREENS.voice.classList.contains('hidden');
+
   SCREENS.intro.classList.toggle('hidden', phase !== 'intro');
   SCREENS.voice.classList.toggle('hidden', !voiceActive);
   SCREENS.final.classList.toggle('hidden', phase !== 'final');
   SCREENS.landing.classList.toggle('hidden', phase !== 'landing');
 
+  // Reiniciar animaciones de entrada al mostrar la pantalla de voz por primera vez
+  if (voiceWasHidden && voiceActive) {
+    const blobWrap  = document.querySelector('.blob-wrap');
+    const voicePanel = document.querySelector('.voice-panel');
+    [blobWrap, voicePanel].forEach(el => {
+      if (!el) return;
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+  }
+
+  prevPhase = phase;
+
   // Barra de progreso
   $('progress-bar').classList.toggle('hidden', !voiceActive);
 
-  // Footer
-  const showFooter = phase === 'intro' || phase === 'final' || phase === 'landing';
-  $('footer').classList.toggle('hidden', !showFooter);
+  // Footer fijo: solo en la pantalla intro
+  $('footer').classList.toggle('hidden', phase !== 'intro');
 
   // Pantalla de voz
   if (voiceActive) {
@@ -429,9 +446,9 @@ document.addEventListener('DOMContentLoaded', () => {
     start();
   });
 
-  // Landing: todos los botones "Iniciar diagnóstico"
+  // Landing: "Iniciar diagnóstico" va directo al cuestionario
   document.querySelectorAll('.btn-goto-intro').forEach(btn => {
-    btn.addEventListener('click', gotoIntro);
+    btn.addEventListener('click', start);
   });
 
   // Voz

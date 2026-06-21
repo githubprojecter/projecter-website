@@ -720,18 +720,24 @@ html, body {
 
 /* ===== FOOTER ===== */
 .footer {
+  display: flex;
+  justify-content: center;
+  padding: 28px 24px 36px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .18em;
+  color: #a9a9a7;
+  pointer-events: none;
+}
+
+/* Footer fijo: solo en pantallas que no tienen scroll (intro / final) */
+.footer-fixed {
   position: fixed;
   bottom: 22px;
   left: 0;
   right: 0;
   z-index: 6;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: .18em;
-  color: #a9a9a7;
+  padding: 0;
 }
 
 /* ===== LANDING ===== */
