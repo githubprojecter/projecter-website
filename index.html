@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projecter · Diagnóstico de procesos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- Ambient background -->
+  <div class="ambient-bg"></div>
+
+  <!-- ============ LOADING ============ -->
+  <div id="screen-loading" class="screen-loading">
+    <div class="loader-inner">
+      <div class="loader-letters">
+        <span style="animation-delay:.05s">P</span>
+        <span style="animation-delay:.20s">R</span>
+        <span style="animation-delay:.35s">O</span>
+        <span style="animation-delay:.50s">J</span>
+        <span style="animation-delay:.65s">E</span>
+        <span style="animation-delay:.80s">C</span>
+        <span style="animation-delay:.95s">T</span>
+        <span style="animation-delay:1.10s">E</span>
+        <span style="animation-delay:1.25s">R</span>
+      </div>
+      <div class="loader-bar-wrap">
+        <div class="loader-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ INTRO ============ -->
+  <div id="screen-intro" class="screen hidden">
+    <div class="intro-inner" id="intro-area">
+      <div class="overline anim-fadein" style="animation-delay:.1s">DIAGNÓSTICO DE PROCESOS</div>
+      <h1 class="pj-h1">
+        <span class="ln" style="animation-delay:.15s">Tu negocio no es el problema,</span>
+        <span class="ln bold" style="animation-delay:.34s">tus procesos sí.</span>
+      </h1>
+      <div class="intro-cta anim-fadein" style="animation-delay:.8s">
+        <span class="ripple"></span>
+        <span class="ripple" style="animation-delay:2.33s"></span>
+        <span class="ripple" style="animation-delay:4.66s"></span>
+        <button id="btn-start" class="btn-start">
+          <span class="pj-pulse">▸</span>
+          <span class="pj-pulse" style="animation-delay:.4s">COMENZAR</span>
+          <span class="pj-pulse" style="animation-delay:.8s">◂</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ VOICE (preguntas + transición) ============ -->
+  <div id="screen-voice" class="screen hidden">
+    <div class="voice-inner">
+
+      <!-- Canvas blob -->
+      <div class="blob-wrap">
+        <canvas id="blob-canvas"></canvas>
+      </div>
+
+      <!-- Panel derecho -->
+      <div class="voice-panel">
+
+        <!-- Pregunta activa -->
+        <div id="panel-question">
+          <div id="question-wrap" class="pj-q">
+            <p id="question-p"></p>
+          </div>
+          <div class="ctrl pj-ctrl">
+            <!-- Idle: listo para grabar -->
+            <div id="state-idle" class="ctrl-idle">
+              <button id="btn-record" class="btn-record">
+                <span class="dot-white"></span>
+                Responder
+              </button>
+              <span class="hint-label">PULSA PARA HABLAR · DETÉN AL TERMINAR</span>
+            </div>
+            <!-- Grabando -->
+            <div id="state-recording" class="ctrl-recording hidden">
+              <div class="eq-bars">
+                <span style="animation-delay:0s"></span>
+                <span style="animation-delay:.15s"></span>
+                <span style="animation-delay:.30s"></span>
+                <span style="animation-delay:.45s"></span>
+                <span style="animation-delay:.60s"></span>
+              </div>
+              <button id="btn-stop" class="btn-stop">
+                <span class="dot-red"></span>
+                Detener
+              </button>
+              <span class="hint-label">GRABANDO TU RESPUESTA…</span>
+              <span id="mic-error" class="mic-error hidden"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Transición entre preguntas -->
+        <div id="panel-transition" class="hidden">
+          <span class="trans-label">PROCESANDO RESPUESTA</span>
+          <div class="trans-line"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FINAL ============ -->
+  <div id="screen-final" class="screen hidden">
+    <div class="final-inner">
+      <div class="final-header">
+        <div class="overline anim-fadein">DIAGNÓSTICO COMPLETO · 10 / 10</div>
+        <h2 class="pj-h1 final-h2">
+          <span class="ln" style="animation-delay:.15s">Tu negocio no es el problema,</span>
+          <span class="ln bold" style="animation-delay:.34s">tus procesos sí.</span>
+        </h2>
+      </div>
+      <p class="final-subtitle anim-fadeup" style="animation-delay:.5s">
+        Te hemos escuchado y comprendemos que hay puntos de mejora. Te mostramos un poco de lo que hemos realizado en Projecter.
+      </p>
+      <div class="section-divider anim-fadein" style="animation-delay:.7s;margin-top:64px;">
+        <span class="section-label">SISTEMAS REALIZADOS</span>
+        <span class="divider-line"></span>
+        <span class="section-count" id="final-project-count"></span>
+      </div>
+      <div class="pj-bento" id="final-projects"></div>
+    </div>
+  </div>
+
+  <!-- ============ LANDING (visitante recurrente) ============ -->
+  <div id="screen-landing" class="screen hidden">
+
+    <header class="landing-header anim-fadein">
+      <span class="logo-text">P R O J E C T E R</span>
+      <button class="btn-goto-intro btn-outline">INICIAR DIAGNÓSTICO</button>
+    </header>
+
+    <section class="hero-section">
+      <div class="overline anim-fadein" style="animation-delay:.1s">AUTOMATIZACIÓN · SISTEMAS WEB · PROCESOS</div>
+      <h1 class="pj-h1 hero-h1">
+        <span class="ln" style="animation-delay:.15s">Tu negocio no es el problema,</span>
+        <span class="ln bold" style="animation-delay:.34s">tus procesos sí.</span>
+      </h1>
+      <p class="hero-p anim-fadeup" style="animation-delay:.55s">
+        Diseñamos y construimos los sistemas web que ordenan tu operación, automatizan lo repetitivo y dejan de depender de que tú estés encima.
+      </p>
+      <div class="hero-btns anim-fadeup" style="animation-delay:.7s">
+        <button class="btn-goto-intro btn-primary">Iniciar diagnóstico</button>
+        <a href="#pj-proyectos" class="btn-secondary">Ver proyectos</a>
+      </div>
+    </section>
+
+    <section class="services-section">
+      <div class="section-divider">
+        <span class="section-label">QUÉ HACEMOS</span>
+        <span class="divider-line"></span>
+      </div>
+      <div class="pj-grid grid-2" id="landing-services"></div>
+    </section>
+
+    <section class="projects-section" id="pj-proyectos">
+      <div class="section-divider">
+        <span class="section-label">PROYECTOS REALIZADOS</span>
+        <span class="divider-line"></span>
+        <span class="section-count" id="landing-project-count"></span>
+      </div>
+      <div class="pj-grid" id="landing-projects"></div>
+    </section>
+
+    <section class="cta-section">
+      <h2 class="cta-h2">¿Listo para ordenar tus procesos?</h2>
+      <button class="btn-goto-intro btn-primary">Iniciar diagnóstico</button>
+    </section>
+
+  </div>
+
+  <!-- ============ BARRA DE PROGRESO (fixed bottom) ============ -->
+  <div id="progress-bar" class="progress-bar hidden">
+    <div class="progress-meta">
+      <span id="progress-label" class="progress-label">PREGUNTA 01 / 10</span>
+    </div>
+    <div class="progress-track">
+      <div id="progress-fill" class="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- ============ FOOTER ============ -->
+  <div id="footer" class="footer hidden">© 2026 P R O J E C T E R. Marca 100% Mexicana.</div>
+
+</div>
+<script src="js/main.js"></script>
+</body>
+</html>
