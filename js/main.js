@@ -7,12 +7,12 @@
 
 const QUESTIONS = [
   '¿Qué parte de tu negocio sientes que todavía depende demasiado de estar "persiguiendo" a la gente?',
-  'Si pudieras quitarte una tarea repetitiva de encima esta semana, ¿cuál sería?',
-  '¿Dónde se te escapa más tiempo: vendiendo, atendiendo clientes, organizando pedidos o dando seguimiento?',
-  '¿Qué proceso de tu negocio funciona… pero solo porque tú estás encima todo el tiempo?',
-  '¿Qué actividad haces todos los días que piensas: "esto ya debería estar automatizado"?',
-  'Si tu negocio pudiera hablar, ¿qué te diría que le urge ordenar primero?',
-  '¿En qué momento sientes que tu negocio empieza a depender demasiado de WhatsApp, Excel o notas sueltas?',
+  'Si hoy tuvieras un asistente, ¿qué tarea repetitiva le delegarías?',
+  '¿Has pensado que algunos colaboradores hacen cosas que no debieran hacer y que serían más útiles haciendo otra cosa? Platica un ejemplo.',
+  '¿Cuál es la actividad que cada vez que la haces, te dices "esto no lo tendría que hacer yo"?',
+  'Si pudieras escuchar a tu negocio, ¿qué proceso le duele en este momento?',
+  '¿Tienes identificado dónde se rompe el proceso? Has intentado mil acciones, pero no mejora — menciona en qué tarea o proceso pensaste.',
+  'Si hoy tuvieras un asistente que monitorea todos los flujos de tu negocio y lo consultaras para tomar decisiones, ¿cuánto pagarías por él?',
   'Si mañana duplicaras tus clientes, ¿qué parte de tu operación se rompería primero?',
   '¿Qué proceso te da más miedo delegar porque "si no lo haces tú, sale mal"?',
   '¿Dónde sientes que se te pueden estar escapando oportunidades sin darte cuenta?',
@@ -33,6 +33,10 @@ const SERVICES = [
   { n: '03', title: 'CRM y seguimiento',            desc: 'Deja de perseguir clientes: tu flujo de ventas ordenado y automático.' },
   { n: '04', title: 'Dashboards y reportes',        desc: 'Mira cómo va tu negocio en tiempo real, sin armar Excel a mano.' },
 ];
+
+/* ===== VERCEL BLOB ===== */
+
+const BLOB_TOKEN = 'vercel_blob_rw_CD2NLvi9AEhzHB71_lvQgxsz4EQPeVJPf6RTXX7vCrMYqNU';
 
 /* ===== ESTADO ===== */
 
@@ -58,11 +62,16 @@ let level         = 0.12;
 let transStart    = 0;
 let transP        = 0;
 
-let micStream  = null;
-let audioCtx   = null;
-let analyser   = null;
-let timeData   = null;
-let freqData   = null;
+let micStream     = null;
+let audioCtx      = null;
+let analyser      = null;
+let timeData      = null;
+let freqData      = null;
+let mediaRecorder = null;
+let audioChunks   = [];
+
+let sessionId    = null;
+let savedUrls    = [];
 
 let advanceTimer = null;
 
@@ -77,6 +86,64 @@ function hexToRgba(hex, a) {
   if (c.length === 3) c = c.split('').map(x => x + x).join('');
   const n = parseInt(c, 16);
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+function getSupportedMimeType() {
+  if (typeof MediaRecorder === 'undefined') return '';
+  const types = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/mp4'];
+  for (const t of types) {
+    if (MediaRecorder.isTypeSupported(t)) return t;
+  }
+  return '';
+}
+
+function blobExt(mimeType) {
+  if (mimeType.includes('ogg'))  return 'ogg';
+  if (mimeType.includes('mp4'))  return 'mp4';
+  return 'webm';
+}
+
+async function uploadResponse(qIdx, audioBlob) {
+  if (!audioBlob || audioBlob.size === 0 || !sessionId) return null;
+  try {
+    const ext  = blobExt(audioBlob.type || 'audio/webm');
+    const path = `diagnostico/${sessionId}/q${pad(qIdx + 1)}.${ext}`;
+    const res  = await fetch(`https://blob.vercel-storage.com/${path}?access=public`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${BLOB_TOKEN}`,
+        'content-type': audioBlob.type || 'audio/webm',
+      },
+      body: audioBlob,
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.url || null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveSessionMetadata() {
+  if (!sessionId) return;
+  try {
+    const meta = {
+      sessionId,
+      timestamp: new Date().toISOString(),
+      responses: savedUrls.map((url, i) => ({ question: i + 1, url: url || null })),
+    };
+    const path = `diagnostico/${sessionId}/metadata.json`;
+    await fetch(`https://blob.vercel-storage.com/${path}?access=public`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${BLOB_TOKEN}`,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(meta, null, 2),
+    });
+  } catch {
+    // silent — no bloquear la UX
+  }
 }
 
 /* ===== DOM ===== */
@@ -172,6 +239,10 @@ function render() {
 /* ===== ACCIONES ===== */
 
 function start() {
+  sessionId       = (typeof crypto.randomUUID === 'function')
+    ? crypto.randomUUID()
+    : Date.now().toString(36) + Math.random().toString(36).substring(2);
+  savedUrls       = new Array(QUESTIONS.length).fill(null);
   state.phase     = 'question';
   state.qIndex    = 0;
   state.recording = false;
@@ -180,6 +251,11 @@ function start() {
 }
 
 function gotoIntro() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    mediaRecorder.stop();
+  }
+  mediaRecorder = null;
+  audioChunks   = [];
   stopMic();
   if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
   state.phase     = 'intro';
@@ -191,6 +267,8 @@ async function startRecording() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     micStream = stream;
+
+    // Visualización
     const Ctx = window.AudioContext || window.webkitAudioContext;
     if (!audioCtx) audioCtx = new Ctx();
     if (audioCtx.state === 'suspended') await audioCtx.resume();
@@ -201,6 +279,16 @@ async function startRecording() {
     timeData  = new Uint8Array(analyser.fftSize);
     freqData  = new Uint8Array(analyser.frequencyBinCount);
     src.connect(analyser);
+
+    // Grabación real
+    audioChunks   = [];
+    const mimeType = getSupportedMimeType();
+    mediaRecorder  = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+    mediaRecorder.addEventListener('dataavailable', e => {
+      if (e.data && e.data.size > 0) audioChunks.push(e.data);
+    });
+    mediaRecorder.start();
+
     state.recording = true;
     state.micError  = null;
   } catch (_) {
@@ -221,8 +309,29 @@ function stopMic() {
 
 function stopAndAdvance() {
   if (state.phase !== 'question') return;
+
+  const qIdx   = state.qIndex;
+  const isLast = qIdx >= QUESTIONS.length - 1;
+
+  // Finalizar MediaRecorder y subir audio de forma asíncrona
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+    const mr     = mediaRecorder;
+    mediaRecorder = null;
+    mr.addEventListener('stop', () => {
+      const mimeType = mr.mimeType || 'audio/webm';
+      const blob = new Blob(audioChunks, { type: mimeType });
+      audioChunks = [];
+      if (blob.size > 0) {
+        uploadResponse(qIdx, blob).then(url => {
+          if (url) savedUrls[qIdx] = url;
+        });
+      }
+    }, { once: true });
+    mr.stop();
+  }
+
   stopMic();
-  const isLast = state.qIndex >= QUESTIONS.length - 1;
+
   transStart      = performance.now();
   transP          = 0;
   state.recording = false;
@@ -236,7 +345,7 @@ function stopAndAdvance() {
       renderFinal();
     } else {
       state.phase  = 'question';
-      state.qIndex = state.qIndex + 1;
+      state.qIndex = qIdx + 1;
     }
     render();
     advanceTimer = null;
@@ -426,6 +535,9 @@ function renderFinal() {
   container.innerHTML = '';
   $('final-project-count').textContent = `[ ${PROJECTS.length} ]`;
   PROJECTS.forEach(p => container.appendChild(createProjectCard(p, '16/9')));
+
+  // Esperar a que el último upload termine (~2 s) y luego guardar metadata
+  setTimeout(saveSessionMetadata, 2000);
 }
 
 function renderLanding() {
