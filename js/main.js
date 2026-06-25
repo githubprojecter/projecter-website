@@ -47,10 +47,12 @@ let prevPhase = 'loading';
 
 /* ===== CANVAS / AUDIO ===== */
 
-let canvas = null;
-let ctx2d  = null;
-let t0     = performance.now();
-let level  = 0.12;
+let canvas     = null;
+let ctx2d      = null;
+let canvasHero = null;
+let ctx2dHero  = null;
+let t0         = performance.now();
+let level      = 0.12;
 let transStart = 0;
 let transP     = 0;
 
@@ -229,6 +231,116 @@ function stopAndAdvance() {
   }, 3000);
 }
 
+/* ===== ANIMACIONES TEMÁTICAS DE CARDS ===== */
+
+function drawFlow(ctx, w, h, t, dpr) {
+  const nodes = [
+    { x: .18, y: .5 }, { x: .38, y: .3 }, { x: .38, y: .7 },
+    { x: .62, y: .3 }, { x: .62, y: .7 }, { x: .82, y: .5 },
+  ];
+  const edges = [[0,1],[0,2],[1,3],[2,4],[3,5],[4,5]];
+  ctx.strokeStyle = 'rgba(17,17,17,0.18)';
+  ctx.lineWidth   = 1 * dpr;
+  edges.forEach(([a, b]) => {
+    const ax = nodes[a].x * w, ay = nodes[a].y * h;
+    const bx = nodes[b].x * w, by = nodes[b].y * h;
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+    const p = (t * 0.6 + a * 0.17) % 1;
+    const px = ax + (bx - ax) * p, py = ay + (by - ay) * p;
+    ctx.beginPath(); ctx.arc(px, py, 2.5 * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = '#111'; ctx.fill();
+  });
+  nodes.forEach((n, i) => {
+    const pulse = 0.5 + 0.5 * Math.sin(t * 2 + i * 1.1);
+    ctx.beginPath(); ctx.arc(n.x * w, n.y * h, (4 + pulse * 2) * dpr, 0, Math.PI * 2);
+    ctx.fillStyle = i === 0 || i === 5 ? '#111' : 'rgba(17,17,17,0.25)';
+    ctx.fill();
+  });
+}
+
+function drawCRM(ctx, w, h, t, dpr) {
+  const bars = [0.4, 0.7, 0.55, 0.85, 0.5, 0.65];
+  const bw   = w / (bars.length * 2 + 1);
+  bars.forEach((v, i) => {
+    const animated = v * (0.5 + 0.5 * Math.min(1, t * 1.2));
+    const bh = h * 0.6 * animated;
+    const x  = bw + i * bw * 2;
+    const y  = h * 0.8 - bh;
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(17,17,17,0.7)' : 'rgba(17,17,17,0.2)';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, bw * 1.2, bh, 2 * dpr);
+    else ctx.rect(x, y, bw * 1.2, bh);
+    ctx.fill();
+  });
+  ctx.beginPath();
+  bars.forEach((v, i) => {
+    const x = bw + i * bw * 2 + bw * 0.6;
+    const y = h * 0.8 - h * 0.6 * v * (0.5 + 0.5 * Math.min(1, t * 1.2));
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.strokeStyle = '#111'; ctx.lineWidth = 1.5 * dpr; ctx.stroke();
+}
+
+function drawVentas(ctx, w, h, t, dpr) {
+  const cx = w / 2, cy = h / 2, r = Math.min(w, h) * 0.32;
+  const progress = Math.min(1, t * 0.5) * 0.78;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(17,17,17,0.1)'; ctx.lineWidth = 8 * dpr; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, r, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
+  ctx.strokeStyle = '#111'; ctx.lineWidth = 8 * dpr; ctx.lineCap = 'round'; ctx.stroke(); ctx.lineCap = 'butt';
+  ctx.fillStyle = '#111';
+  ctx.font = `${Math.round(14 * dpr)}px JetBrains Mono, monospace`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(Math.round(progress / 0.78 * 100) + '%', cx, cy);
+}
+
+function drawDatos(ctx, w, h, t, dpr) {
+  const cols = 8, rows = 5;
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      const x  = (c + 1) * w / (cols + 1);
+      const y  = (r + 1) * h / (rows + 1);
+      const v  = 0.3 + 0.7 * Math.abs(Math.sin(t * 1.5 + c * 0.7 + r * 1.1));
+      const sz = (1.5 + v * 3) * dpr;
+      ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(17,17,17,${0.1 + v * 0.55})`; ctx.fill();
+    }
+  }
+}
+
+function drawAtencion(ctx, w, h, t, dpr) {
+  const events = [.15, .35, .55, .75, .9];
+  const y0 = h * 0.5;
+  ctx.strokeStyle = 'rgba(17,17,17,0.15)'; ctx.lineWidth = 1.5 * dpr;
+  ctx.beginPath(); ctx.moveTo(w * 0.08, y0); ctx.lineTo(w * 0.92, y0); ctx.stroke();
+  events.forEach((ex, i) => {
+    const revealed = Math.min(1, t * 1.2 - i * 0.2);
+    if (revealed <= 0) return;
+    const x   = w * ex;
+    const sz  = (5 + 2 * Math.sin(t * 2 + i)) * dpr * revealed;
+    const alt = i % 2 === 0 ? -1 : 1;
+    ctx.beginPath(); ctx.moveTo(x, y0 - sz * alt * 0.4); ctx.lineTo(x, y0 + sz * alt * 0.4);
+    ctx.strokeStyle = '#111'; ctx.lineWidth = 1.5 * dpr; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y0, sz * 0.5, 0, Math.PI * 2);
+    ctx.fillStyle = i === events.length - 1 ? '#111' : 'rgba(17,17,17,0.3)'; ctx.fill();
+  });
+}
+
+function drawInventario(ctx, w, h, t, dpr) {
+  const items = [0.9, 0.4, 0.75, 0.2, 0.6, 0.85, 0.35];
+  const iw    = w / (items.length + 1);
+  items.forEach((v, i) => {
+    const fill    = v * Math.min(1, t * 0.8 + i * 0.1);
+    const totalH  = h * 0.55;
+    const filledH = totalH * fill;
+    const x = iw * (i + 0.75);
+    ctx.strokeStyle = 'rgba(17,17,17,0.15)'; ctx.lineWidth = 1 * dpr;
+    ctx.strokeRect(x, h * 0.22, iw * 0.5, totalH);
+    ctx.fillStyle = v < 0.35 ? 'rgba(17,17,17,0.6)' : 'rgba(17,17,17,0.25)';
+    ctx.fillRect(x, h * 0.22 + totalH - filledH, iw * 0.5, filledH);
+  });
+}
+
 /* ===== RENDER DE TARJETAS ===== */
 
 function createProjectCard(p, ratio) {
@@ -241,7 +353,8 @@ function createProjectCard(p, ratio) {
       <span class="card-dot"></span>
       <span class="card-url">${p.url}</span>
     </div>
-    <div class="card-preview" style="aspect-ratio:${ratio}">
+    <div class="card-preview card-preview-canvas" style="aspect-ratio:${ratio}">
+      <canvas class="card-canvas" aria-hidden="true"></canvas>
       <span class="card-kind">${p.kind}</span>
     </div>
     <div class="card-body">
@@ -252,6 +365,47 @@ function createProjectCard(p, ratio) {
       <h3 class="card-name">${p.name}</h3>
     </div>
   `;
+
+  const preview = div.querySelector('.card-preview-canvas');
+  const cvs     = div.querySelector('.card-canvas');
+  let   rafId   = null;
+  let   cctx    = null;
+  let   tStart  = null;
+
+  const animMap = {
+    'Operaciones': drawFlow,
+    'CRM':         drawCRM,
+    'Ventas':      drawVentas,
+    'Datos':       drawDatos,
+    'Atención':    drawAtencion,
+    'Inventario':  drawInventario,
+  };
+  const drawFn = animMap[p.tag] || drawFlow;
+
+  div.addEventListener('mouseenter', () => {
+    if (!cctx) cctx = cvs.getContext('2d');
+    tStart = performance.now();
+    const loop = (now) => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const w = preview.clientWidth;
+      const h = preview.clientHeight;
+      if (cvs.width !== Math.round(w * dpr) || cvs.height !== Math.round(h * dpr)) {
+        cvs.width  = Math.round(w * dpr);
+        cvs.height = Math.round(h * dpr);
+      }
+      cctx.setTransform(1, 0, 0, 1, 0, 0);
+      cctx.clearRect(0, 0, cvs.width, cvs.height);
+      drawFn(cctx, cvs.width, cvs.height, (now - tStart) / 1000, dpr);
+      rafId = requestAnimationFrame(loop);
+    };
+    rafId = requestAnimationFrame(loop);
+  });
+
+  div.addEventListener('mouseleave', () => {
+    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    if (cctx)  cctx.clearRect(0, 0, cvs.width, cvs.height);
+  });
+
   return div;
 }
 
@@ -263,21 +417,91 @@ function renderFinal() {
 }
 
 function renderLanding() {
-  // Servicios
-  const svc = $('landing-services');
-  svc.innerHTML = '';
-  SERVICES.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'service-card';
-    div.innerHTML = `
-      <span class="service-n">${s.n}</span>
-      <h3 class="service-title">${s.title}</h3>
-      <p class="service-desc">${s.desc}</p>
+
+  // ── QUÉ HACEMOS ──────────────────────────────────────────────────
+  const que = $('landing-que');
+  que.innerHTML = '';
+  const queBlock = document.createElement('div');
+  queBlock.className = 'prose-block';
+  queBlock.innerHTML = `
+    <span class="prose-n">01</span>
+    <h3 class="prose-title">Automatización de procesos</h3>
+    <p class="prose-text">
+      Toda tarea realizada dentro de un negocio se considera parte de un proceso. El problema empieza cuando se realizan tareas fuera del proceso: lo que hoy parece una tarea inofensiva, mañana se convertirá en sobrecosto, errores y pérdida de control empresarial.
+    </p>
+    <p class="prose-text">
+      PROJECTER es un taller de automatización de procesos de negocio. Si actualmente trabajas de forma manual, semi automática o usas tecnología obsoleta, mejora la forma de trabajar de tu empresa en tan solo 30 días, sin inversiones excesivas y sin software genérico.
+    </p>
+  `;
+  que.appendChild(queBlock);
+
+  // ── POR QUÉ LO HACEMOS ───────────────────────────────────────────
+  const porque = $('landing-porque');
+  porque.innerHTML = '';
+
+  const porqueData = [
+    {
+      figure: '70% · 22%',
+      label:  null,
+      text:   '70% de las empresas fracasan antes de cumplir 5 años. 22% de las empresas en México no utilizan tecnología.',
+      source: 'INEGI · CCE',
+    },
+    {
+      figure: null,
+      label:  'NUESTRA RAZÓN',
+      text:   'Todo negocio trabaja sobre procesos propios. En PROJECTER automatizamos esos procesos para que las empresas crezcan: sin software genérico, precio justo, tiempos de entrega en solo 30 días, soporte continuo y sin plazos forzosos.',
+      source: null,
+    },
+  ];
+
+  porqueData.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.style.animationDelay = (0.08 + i * 0.12) + 's';
+    card.innerHTML = `
+      ${d.figure ? `<span class="stat-figure">${d.figure}</span>` : ''}
+      ${d.label  ? `<span class="stat-label">${d.label}</span>`   : ''}
+      <p class="stat-text">${d.text}</p>
+      ${d.source ? `<span class="stat-source">${d.source}</span>` : ''}
     `;
-    svc.appendChild(div);
+    porque.appendChild(card);
   });
 
-  // Proyectos
+  // ── CÓMO LO HACEMOS ──────────────────────────────────────────────
+  const como = $('landing-como');
+  como.innerHTML = '';
+
+  const comoData = [
+    {
+      label: 'EXPERIENCIA',
+      text:  'Tenemos 20 años de experiencia que nos permiten dominar desde tecnología sólida hasta lo último en inteligencia artificial, lo que nos permite acelerar tiempos de entrega y mantenimiento en nuestros sistemas.',
+    },
+    {
+      label: 'SIMPLICIDAD',
+      text:  'Olvídate de todo. Solo necesitas conexión a internet. Sin costos ocultos, soporte y actualizaciones constantes sin costo extra, sin plazos forzosos — tecnología diseñada para crecer tu negocio.',
+    },
+  ];
+
+  comoData.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.style.animationDelay = (0.08 + i * 0.12) + 's';
+    card.innerHTML = `
+      <span class="stat-label">${d.label}</span>
+      <p class="stat-text">${d.text}</p>
+    `;
+    como.appendChild(card);
+  });
+
+  // ── PROYECTOS ─────────────────────────────────────────────────────
+  const projectsSection = $('pj-proyectos');
+  if (!projectsSection.querySelector('.projects-intro')) {
+    const introP = document.createElement('p');
+    introP.className = 'projects-intro';
+    introP.textContent = 'Internamente utilizamos lo último en tecnología, lo que nos permite hacer casi cualquier cosa: administración de campañas de prospectos, sistemas de localización para entrega de última milla, control de tiempos en manufactura, control de pendientes internos, asistentes de dirección, entre muchos otros temas. Inicia el proceso de diagnóstico para conocer más.';
+    projectsSection.insertBefore(introP, projectsSection.querySelector('.section-divider'));
+  }
+
   const proj = $('landing-projects');
   proj.innerHTML = '';
   $('landing-project-count').textContent = `[ ${PROJECTS.length} ]`;
@@ -349,6 +573,34 @@ function rafLoop() {
     ctx2d.lineWidth   = 2 * dpr;
     ctx2d.stroke();
   }
+
+  // ── Blob decorativo en hero de landing ───────────────────────────
+  if (canvasHero) {
+    if (!ctx2dHero) ctx2dHero = canvasHero.getContext('2d');
+    const dprH = Math.min(window.devicePixelRatio || 1, 2);
+    const cwH  = canvasHero.clientWidth;
+    const chH  = canvasHero.clientHeight;
+    if (cwH && chH) {
+      if (canvasHero.width  !== Math.round(cwH * dprH) ||
+          canvasHero.height !== Math.round(chH * dprH)) {
+        canvasHero.width  = Math.round(cwH * dprH);
+        canvasHero.height = Math.round(chH * dprH);
+      }
+      ctx2dHero.setTransform(1, 0, 0, 1, 0, 0);
+      ctx2dHero.clearRect(0, 0, canvasHero.width, canvasHero.height);
+      if (state.phase === 'landing') {
+        const wH      = canvasHero.width;
+        const hH      = canvasHero.height;
+        const lvHero  = 0.07 + 0.03 * Math.sin(elapsed * 0.0009);
+        // Swap temporal de ctx2d para reutilizar drawRing / drawOrganic
+        const savedCtx = ctx2d;
+        ctx2d = ctx2dHero;
+        drawRing(wH / 2, hH / 2, Math.min(wH, hH) * 0.44, elapsed, '#111111', dprH);
+        drawOrganic(wH / 2, hH / 2, Math.min(wH, hH) * 0.3, lvHero, elapsed, '#111111');
+        ctx2d = savedCtx;
+      }
+    }
+  }
 }
 
 function drawRing(cx, cy, r, t, accent, dpr) {
@@ -407,15 +659,11 @@ function drawOrganic(cx, cy, R, lv, t, accent) {
 /* ===== INICIALIZACIÓN ===== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  canvas = $('blob-canvas');
+  canvas     = $('blob-canvas');
+  canvasHero = $('blob-hero');
 
-  // Detectar primera visita
-  let isFirstVisit = true;
-  try { isFirstVisit = !localStorage.getItem('pj_visited'); } catch (_) {}
-  const target = isFirstVisit ? 'intro' : 'landing';
-  if (isFirstVisit) {
-    try { localStorage.setItem('pj_visited', '1'); } catch (_) {}
-  }
+  // Siempre ir a landing en la primera carga
+  const target = 'landing';
 
   // Pre-renderizar contenido estático
   renderLanding();
@@ -425,9 +673,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render inicial (la pantalla de carga cubre todo)
   state.phase = 'loading';
-  // Mostrar la pantalla destino debajo del overlay de carga
-  SCREENS.intro.classList.toggle('hidden', target !== 'intro');
-  SCREENS.landing.classList.toggle('hidden', target !== 'landing');
+  // Mostrar landing debajo del overlay de carga
+  SCREENS.intro.classList.add('hidden');
+  SCREENS.landing.classList.remove('hidden');
   $('footer').classList.add('hidden');
   $('progress-bar').classList.add('hidden');
 
@@ -450,6 +698,50 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.btn-goto-intro').forEach(btn => {
     btn.addEventListener('click', start);
   });
+
+  // Logo: vuelve a landing desde cualquier pantalla
+  $('logo-home').addEventListener('click', e => {
+    e.preventDefault();
+    stopMic();
+    if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+    state.phase     = 'landing';
+    state.recording = false;
+    render();
+  });
+
+  // Efecto mercurio en hero-p
+  (function initMercury() {
+    const heroP   = document.querySelector('.hero-p');
+    const inner   = document.querySelector('.hero-p-inner');
+    if (!heroP || !inner) return;
+
+    let mercuryActive = false;
+    let riseTimer     = null;
+
+    function drip() {
+      if (mercuryActive) return;
+      mercuryActive = true;
+      inner.classList.remove('mercury-in');
+      void inner.offsetWidth; // reflow forzado
+      inner.classList.add('mercury-out');
+    }
+
+    function rise() {
+      if (riseTimer) clearTimeout(riseTimer);
+      riseTimer = setTimeout(() => {
+        inner.classList.remove('mercury-out');
+        void inner.offsetWidth;
+        inner.classList.add('mercury-in');
+        inner.addEventListener('animationend', () => {
+          inner.classList.remove('mercury-in');
+          mercuryActive = false;
+        }, { once: true });
+      }, 80);
+    }
+
+    heroP.addEventListener('mouseenter', drip);
+    heroP.addEventListener('mouseleave', rise);
+  })();
 
   // Voz
   $('btn-record').addEventListener('click', startRecording);

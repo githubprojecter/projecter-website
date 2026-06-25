@@ -138,18 +138,19 @@
   <div id="screen-landing" class="screen hidden">
 
     <header class="landing-header anim-fadein">
-      <span class="logo-text">P R O J E C T E R</span>
+      <a href="#" class="logo-text logo-link" id="logo-home">P R O J E C T E R</a>
       <button class="btn-goto-intro btn-outline">INICIAR DIAGNÓSTICO</button>
     </header>
 
     <section class="hero-section">
+      <canvas id="blob-hero" aria-hidden="true"></canvas>
       <!-- <div class="overline anim-fadein" style="animation-delay:.1s">AUTOMATIZACIÓN · SISTEMAS WEB · PROCESOS</div> -->
       <h1 class="pj-h1 hero-h1">
         <span class="ln" style="animation-delay:.15s">Tu negocio no es el problema,</span>
         <span class="ln bold" style="animation-delay:.34s">tus procesos sí.</span>
       </h1>
       <p class="hero-p anim-fadeup" style="animation-delay:.55s">
-        Diseñamos y construimos los sistemas web que ordenan tu operación, automatizan lo repetitivo y dejan de depender de que tú estés encima.
+        <span class="hero-p-inner">Taller de automatización de procesos de negocio.</span>
       </p>
     </section>
 
@@ -158,7 +159,7 @@
         <span class="section-label">QUÉ HACEMOS</span>
         <span class="divider-line"></span>
       </div>
-      <div class="pj-grid grid-2" id="landing-services"></div>
+      <div id="landing-que"></div>
     </section>
 
     <section class="services-section">
@@ -166,7 +167,7 @@
         <span class="section-label">POR QUÉ LO HACEMOS</span>
         <span class="divider-line"></span>
       </div>
-      <div class="pj-grid grid-2" id="landing-services"></div>
+      <div class="pj-grid grid-2" id="landing-porque"></div>
     </section>
 
     <section class="services-section">
@@ -174,10 +175,11 @@
         <span class="section-label">CÓMO LO HACEMOS</span>
         <span class="divider-line"></span>
       </div>
-      <div class="pj-grid grid-2" id="landing-services"></div>
+      <div class="pj-grid grid-2" id="landing-como"></div>
     </section>
 
     <section class="projects-section" id="pj-proyectos">
+      <p class="projects-intro">Internamente utilizamos lo último en tecnología, lo que nos permite hacer casi cualquier cosa: administración de campañas de prospectos, sistemas de localización para entrega de última milla, control de tiempos en manufactura, control de pendientes internos, asistentes de dirección, entre muchos otros temas. Inicia el proceso de diagnóstico para conocer más.</p>
       <div class="section-divider">
         <span class="section-label">PROYECTOS REALIZADOS</span>
         <span class="divider-line"></span>
@@ -187,8 +189,8 @@
     </section>
 
     <section class="cta-section">
-      <h2 class="cta-h2">¿Listo para ordenar tus procesos?</h2>
-      <button class="btn-goto-intro btn-primary">Iniciar diagnóstico</button>
+      <h2 class="cta-h2">¿Listo para automatizar tu negocio?</h2>
+      <button class="btn-goto-intro btn-primary">Iniciar el proceso para automatizar mi negocio</button>
     </section>
 
     <div class="footer">© 2026 P R O J E C T E R. Marca 100% Mexicana.</div>
