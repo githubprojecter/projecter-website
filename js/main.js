@@ -47,14 +47,16 @@ let prevPhase = 'loading';
 
 /* ===== CANVAS / AUDIO ===== */
 
-let canvas     = null;
-let ctx2d      = null;
-let canvasHero = null;
-let ctx2dHero  = null;
-let t0         = performance.now();
-let level      = 0.12;
-let transStart = 0;
-let transP     = 0;
+let canvas        = null;
+let ctx2d         = null;
+let canvasHero    = null;
+let ctx2dHero     = null;
+let canvasLanding = null;
+let ctx2dLanding  = null;
+let t0            = performance.now();
+let level         = 0.12;
+let transStart    = 0;
+let transP        = 0;
 
 let micStream  = null;
 let audioCtx   = null;
@@ -115,6 +117,16 @@ function render() {
   }
 
   prevPhase = phase;
+
+  // Blob decorativo landing: ocultar cuando no estamos en landing
+  if (canvasLanding) {
+    if (phase !== 'landing') {
+      canvasLanding.classList.remove('blob-br', 'blob-tl', 'blob-r', 'blob-hidden');
+    } else {
+      // Forzar actualización al volver a landing
+      updateLandingBlobClass();
+    }
+  }
 
   // Barra de progreso
   $('progress-bar').classList.toggle('hidden', !voiceActive);
@@ -505,7 +517,7 @@ function renderLanding() {
   const proj = $('landing-projects');
   proj.innerHTML = '';
   $('landing-project-count').textContent = `[ ${PROJECTS.length} ]`;
-  PROJECTS.forEach(p => proj.appendChild(createProjectCard(p, '16/10')));
+  PROJECTS.forEach(p => proj.appendChild(createProjectCard(p, '16/7')));
 }
 
 /* ===== CANVAS · LOOP PRINCIPAL ===== */
@@ -513,65 +525,63 @@ function renderLanding() {
 function rafLoop() {
   requestAnimationFrame(rafLoop);
 
-  if (!canvas) return;
-  if (!ctx2d) ctx2d = canvas.getContext('2d');
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const cw  = canvas.clientWidth;
-  const ch  = canvas.clientHeight;
-  if (!cw || !ch) return;
-
-  if (canvas.width  !== Math.round(cw * dpr) ||
-      canvas.height !== Math.round(ch * dpr)) {
-    canvas.width  = Math.round(cw * dpr);
-    canvas.height = Math.round(ch * dpr);
-  }
-
-  const w = canvas.width;
-  const h = canvas.height;
-  ctx2d.setTransform(1, 0, 0, 1, 0, 0);
-  ctx2d.clearRect(0, 0, w, h);
-
   const now     = performance.now();
   const elapsed = now - t0;
   const phase   = state.phase;
+  const dpr     = Math.min(window.devicePixelRatio || 1, 2);
 
-  // Nivel de energía para el blob
-  let target;
-  if (phase === 'transition') {
-    transP = Math.min(1, (now - transStart) / 3000);
-    target = 0.18 + 0.7 * Math.sin(transP * Math.PI);
-  } else if (state.recording && analyser) {
-    analyser.getByteTimeDomainData(timeData);
-    analyser.getByteFrequencyData(freqData);
-    let sum = 0;
-    for (let i = 0; i < timeData.length; i++) {
-      const x = (timeData[i] - 128) / 128;
-      sum += x * x;
+  // ── Voice blob (solo cuando la pantalla de voz está activa) ──────
+  if (canvas) {
+    if (!ctx2d) ctx2d = canvas.getContext('2d');
+    const cw = canvas.clientWidth;
+    const ch = canvas.clientHeight;
+    if (cw && ch) {
+      if (canvas.width  !== Math.round(cw * dpr) ||
+          canvas.height !== Math.round(ch * dpr)) {
+        canvas.width  = Math.round(cw * dpr);
+        canvas.height = Math.round(ch * dpr);
+      }
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx2d.setTransform(1, 0, 0, 1, 0, 0);
+      ctx2d.clearRect(0, 0, w, h);
+
+      let target;
+      if (phase === 'transition') {
+        transP = Math.min(1, (now - transStart) / 3000);
+        target = 0.18 + 0.7 * Math.sin(transP * Math.PI);
+      } else if (state.recording && analyser) {
+        analyser.getByteTimeDomainData(timeData);
+        analyser.getByteFrequencyData(freqData);
+        let sum = 0;
+        for (let i = 0; i < timeData.length; i++) {
+          const x = (timeData[i] - 128) / 128;
+          sum += x * x;
+        }
+        target = Math.min(1, Math.sqrt(sum / timeData.length) * 3.4);
+      } else if (state.recording) {
+        target = 0.2 + 0.18 * Math.sin(elapsed * 0.006);
+      } else {
+        target = 0.12 + 0.05 * Math.sin(elapsed * 0.0018);
+      }
+      level += (target - level) * 0.18;
+
+      const accent = '#111111';
+      const cx = w / 2;
+      const cy = h / 2;
+      const R  = Math.min(w, h) * 0.3;
+
+      drawRing(cx, cy, R * 1.45, elapsed, accent, dpr);
+      drawOrganic(cx, cy, R, level, elapsed, accent);
+
+      if (phase === 'transition') {
+        ctx2d.beginPath();
+        ctx2d.arc(cx, cy, R * 0.6 + transP * Math.min(w, h) * 0.95, 0, Math.PI * 2);
+        ctx2d.strokeStyle = hexToRgba(accent, 0.28 * (1 - transP));
+        ctx2d.lineWidth   = 2 * dpr;
+        ctx2d.stroke();
+      }
     }
-    target = Math.min(1, Math.sqrt(sum / timeData.length) * 3.4);
-  } else if (state.recording) {
-    target = 0.2 + 0.18 * Math.sin(elapsed * 0.006);
-  } else {
-    target = 0.12 + 0.05 * Math.sin(elapsed * 0.0018);
-  }
-  level += (target - level) * 0.18;
-
-  const accent = '#111111';
-  const cx = w / 2;
-  const cy = h / 2;
-  const R  = Math.min(w, h) * 0.3;
-
-  drawRing(cx, cy, R * 1.45, elapsed, accent, dpr);
-  drawOrganic(cx, cy, R, level, elapsed, accent);
-
-  // Círculo de transición
-  if (phase === 'transition') {
-    ctx2d.beginPath();
-    ctx2d.arc(cx, cy, R * 0.6 + transP * Math.min(w, h) * 0.95, 0, Math.PI * 2);
-    ctx2d.strokeStyle = hexToRgba(accent, 0.28 * (1 - transP));
-    ctx2d.lineWidth   = 2 * dpr;
-    ctx2d.stroke();
   }
 
   // ── Blob decorativo en hero de landing ───────────────────────────
@@ -592,13 +602,37 @@ function rafLoop() {
         const wH      = canvasHero.width;
         const hH      = canvasHero.height;
         const lvHero  = 0.07 + 0.03 * Math.sin(elapsed * 0.0009);
-        // Swap temporal de ctx2d para reutilizar drawRing / drawOrganic
         const savedCtx = ctx2d;
         ctx2d = ctx2dHero;
         drawRing(wH / 2, hH / 2, Math.min(wH, hH) * 0.44, elapsed, '#111111', dprH);
         drawOrganic(wH / 2, hH / 2, Math.min(wH, hH) * 0.3, lvHero, elapsed, '#111111');
         ctx2d = savedCtx;
       }
+    }
+  }
+
+  // ── Blob decorativo fijo (cambia posición por sección) ───────────
+  if (canvasLanding && state.phase === 'landing') {
+    if (!ctx2dLanding) ctx2dLanding = canvasLanding.getContext('2d');
+    const dprL = Math.min(window.devicePixelRatio || 1, 2);
+    const cwL  = canvasLanding.clientWidth;
+    const chL  = canvasLanding.clientHeight;
+    if (cwL && chL) {
+      if (canvasLanding.width  !== Math.round(cwL * dprL) ||
+          canvasLanding.height !== Math.round(chL * dprL)) {
+        canvasLanding.width  = Math.round(cwL * dprL);
+        canvasLanding.height = Math.round(chL * dprL);
+      }
+      ctx2dLanding.setTransform(1, 0, 0, 1, 0, 0);
+      ctx2dLanding.clearRect(0, 0, canvasLanding.width, canvasLanding.height);
+      const wL  = canvasLanding.width;
+      const hL  = canvasLanding.height;
+      const lvL = 0.1 + 0.04 * Math.sin(elapsed * 0.0014);
+      const savedCtx = ctx2d;
+      ctx2d = ctx2dLanding;
+      drawRing(wL / 2, hL / 2, Math.min(wL, hL) * 0.44, elapsed, '#111111', dprL);
+      drawOrganic(wL / 2, hL / 2, Math.min(wL, hL) * 0.32, lvL, elapsed, '#111111');
+      ctx2d = savedCtx;
     }
   }
 }
@@ -656,11 +690,50 @@ function drawOrganic(cx, cy, R, lv, t, accent) {
   ctx2d.fill();
 }
 
+/* ===== BLOB LANDING: POSICIÓN POR SECCIÓN ===== */
+
+const SECTION_BLOB_MAP = [
+  { id: 'section-hero',    cls: 'blob-br' },
+  { id: 'section-que',     cls: 'blob-br' },
+  { id: 'section-porque',  cls: 'blob-tl' },
+  { id: 'section-como',    cls: 'blob-tl' },
+  { id: 'pj-proyectos',    cls: 'blob-hidden' },
+  { id: 'section-cta',     cls: 'blob-r' },
+];
+
+const BLOB_CLASSES = ['blob-br', 'blob-tl', 'blob-r', 'blob-hidden'];
+
+function setBlobClass(cls) {
+  if (!canvasLanding) return;
+  BLOB_CLASSES.forEach(c => canvasLanding.classList.remove(c));
+  if (cls) canvasLanding.classList.add(cls);
+}
+
+function updateLandingBlobClass() {
+  if (state.phase !== 'landing') return;
+  const container = $('screen-landing');
+  if (!container) return;
+  const scrollY  = container.scrollTop;
+  const viewMid  = scrollY + container.clientHeight * 0.5;
+
+  for (const { id, cls } of SECTION_BLOB_MAP) {
+    const el = $(id);
+    if (!el) continue;
+    const elTop = el.offsetTop;
+    const elBot = elTop + el.offsetHeight;
+    if (viewMid >= elTop && viewMid < elBot) {
+      setBlobClass(cls);
+      return;
+    }
+  }
+}
+
 /* ===== INICIALIZACIÓN ===== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  canvas     = $('blob-canvas');
-  canvasHero = $('blob-hero');
+  canvas        = $('blob-canvas');
+  canvasHero    = $('blob-hero');
+  canvasLanding = $('blob-landing');
 
   // Siempre ir a landing en la primera carga
   const target = 'landing';
@@ -678,6 +751,12 @@ document.addEventListener('DOMContentLoaded', () => {
   SCREENS.landing.classList.remove('hidden');
   $('footer').classList.add('hidden');
   $('progress-bar').classList.add('hidden');
+
+  // Scroll listener: actualiza posición del blob decorativo
+  const landingContainer = $('screen-landing');
+  if (landingContainer) {
+    landingContainer.addEventListener('scroll', updateLandingBlobClass, { passive: true });
+  }
 
   // Transición tras la carga (2.8s = duración de pjLoaderOut)
   setTimeout(() => {

@@ -741,13 +741,32 @@ html, body {
 }
 
 /* ===== LANDING ===== */
-#screen-landing { width: 100%; }
+#screen-landing {
+  width: 100%;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  position: relative;
+  scroll-padding-top: 68px; /* header height */
+}
+
+/* Sticky header bar: full-width glass effect */
+.landing-header-bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
 
 .landing-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px clamp(20px, 5vw, 56px);
+  padding: 20px clamp(20px, 5vw, 56px);
   max-width: 1180px;
   margin: 0 auto;
 }
@@ -774,8 +793,15 @@ html, body {
   overflow: hidden;
   max-width: 1100px;
   margin: 0 auto;
-  padding: clamp(56px, 10vw, 130px) clamp(20px, 5vw, 56px) clamp(48px, 7vw, 90px);
+  padding: clamp(20px, 4vw, 48px) clamp(20px, 5vw, 56px);
+  padding-top: calc(68px + clamp(20px, 4vw, 48px));
   text-align: center;
+  scroll-snap-align: start;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 #blob-hero {
@@ -820,29 +846,57 @@ html, body {
 .services-section {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 56px) clamp(48px, 7vw, 90px);
+  padding: 68px clamp(20px, 5vw, 56px) 0;
+  scroll-snap-align: start;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .projects-section {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 0 clamp(20px, 5vw, 56px) clamp(40px, 6vw, 70px);
+  padding: 68px clamp(20px, 5vw, 56px) 0;
+  scroll-snap-align: start;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
 .cta-section {
   max-width: 1100px;
   margin: 0 auto;
-  padding: clamp(40px, 6vw, 80px) clamp(20px, 5vw, 56px) clamp(90px, 12vw, 150px);
-  text-align: center;
+  padding: 68px clamp(20px, 5vw, 56px) 0;
+  scroll-snap-align: start;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+}
+
+.cta-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .cta-h2 {
-  margin: 0 auto;
+  margin: 0;
   font-weight: 600;
   letter-spacing: -0.02em;
   line-height: 1.08;
   font-size: clamp(28px, 4.4vw, 52px);
-  max-width: 18ch;
+  max-width: 16ch;
+  text-align: left;
 }
 
 /* ===== BUTTONS ===== */
@@ -908,7 +962,12 @@ html, body {
 }
 
 .cta-section .btn-primary {
-  margin-top: 30px;
+  margin-top: 32px;
+}
+
+.cta-section .footer {
+  padding: 48px 0 0;
+  justify-content: flex-start;
 }
 
 /* ===== RESPONSIVE ===== */
@@ -1013,15 +1072,53 @@ html, body {
   animation: pjMercuryRise .65s cubic-bezier(.2, .8, .3, 1) forwards;
 }
 
+/* ===== BLOB DECORATIVO LANDING (fixed, cambia posición por sección) ===== */
+.landing-blob-canvas {
+  position: fixed;
+  pointer-events: none;
+  z-index: 5;
+  width: clamp(280px, 42vw, 540px);
+  aspect-ratio: 1;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: transform 1s cubic-bezier(0.2, 0.75, 0.2, 1), opacity 0.7s ease;
+  will-change: transform, opacity;
+}
+
+/* Esquina inferior derecha (CTA hero + Qué hacemos) */
+.landing-blob-canvas.blob-br {
+  opacity: 0.92;
+  transform: translate(calc(100vw - 78%), calc(100vh - 74%));
+}
+
+/* Esquina superior izquierda (Por qué + Cómo) */
+.landing-blob-canvas.blob-tl {
+  opacity: 0.92;
+  transform: translate(-32%, -32%);
+}
+
+/* Centro-derecha (CTA final) */
+.landing-blob-canvas.blob-r {
+  opacity: 0.92;
+  transform: translate(calc(100vw - 64%), calc(50vh - 50%));
+}
+
+/* Oculto (Proyectos) */
+.landing-blob-canvas.blob-hidden {
+  opacity: 0;
+}
+
 /* ===== PROYECTOS: INTRO NARRATIVO ===== */
 .projects-intro {
   max-width: 68ch;
-  margin: 0 0 48px;
-  font-size: clamp(16px, 1.6vw, 19px);
+  margin: 0 0 32px;
+  font-size: clamp(15px, 1.4vw, 17px);
   line-height: 1.65;
   color: #555;
   opacity: 0;
   animation: pjFadeUp .9s cubic-bezier(.2,.75,.2,1) .1s forwards;
+  display: none; /* hidden in full-page mode */
 }
 
 /* ===== PROYECTOS: CARD PREVIEW CANVAS ===== */
