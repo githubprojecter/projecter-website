@@ -744,23 +744,13 @@ html, body {
 #screen-landing {
   width: 100%;
   height: 100vh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
+  overflow: hidden;
   position: relative;
-  scroll-padding-top: 68px; /* header height */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
 }
 
-#screen-landing::-webkit-scrollbar {
-  display: none;
-}
-
-/* Sticky header bar: full-width glass effect */
+/* Header bar: siempre en la cima, en flujo normal */
 .landing-header-bar {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 10;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(12px);
@@ -795,17 +785,18 @@ html, body {
 }
 
 .hero-section {
-  position: relative;
+  position: absolute;
   overflow: hidden;
+  top: 68px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   max-width: 1100px;
   margin: 0 auto;
   padding: clamp(20px, 4vw, 48px) clamp(20px, 5vw, 56px);
-  padding-top: calc(68px + clamp(20px, 4vw, 48px));
   text-align: center;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: 100vh;
-  display: flex;
+  height: calc(100vh - 68px);
+  display: none;
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
@@ -851,42 +842,51 @@ html, body {
 }
 
 .services-section {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 68px clamp(20px, 5vw, 56px) 0;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: 100vh;
+  padding: clamp(20px, 4vw, 48px) clamp(20px, 5vw, 56px);
+  height: calc(100vh - 68px);
   overflow: hidden;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
 }
 
 .projects-section {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   max-width: 1180px;
   margin: 0 auto;
-  padding: 68px clamp(20px, 5vw, 56px) 0;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: 100vh;
+  padding: clamp(20px, 4vw, 48px) clamp(20px, 5vw, 56px);
+  height: calc(100vh - 68px);
   overflow: hidden;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
 }
 
 .cta-section {
+  position: absolute;
+  top: 68px;
+  left: 0;
+  right: 0;
+  bottom: 0;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 68px clamp(20px, 5vw, 56px) 0;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
-  height: 100vh;
+  padding: clamp(20px, 4vw, 48px) clamp(20px, 5vw, 56px);
+  height: calc(100vh - 68px);
   overflow: hidden;
-  display: flex;
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
@@ -1242,3 +1242,26 @@ html, body {
   color: #c0c0be;
   margin-top: 4px;
 }
+
+/* ===== SECTION FULLPAGE TRANSITIONS ===== */
+@keyframes pjSectionOutUp {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-36px); }
+}
+@keyframes pjSectionInUp {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pjSectionOutDown {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(36px); }
+}
+@keyframes pjSectionInDown {
+  from { opacity: 0; transform: translateY(-36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-exit-up   { animation: pjSectionOutUp   0.52s cubic-bezier(.4,0,.2,1) forwards; }
+.section-enter-up  { animation: pjSectionInUp    0.52s cubic-bezier(.2,.8,.2,1) forwards; }
+.section-exit-down { animation: pjSectionOutDown 0.52s cubic-bezier(.4,0,.2,1) forwards; }
+.section-enter-down{ animation: pjSectionInDown  0.52s cubic-bezier(.2,.8,.2,1) forwards; }

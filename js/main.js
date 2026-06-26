@@ -190,8 +190,12 @@ function render() {
     if (phase !== 'landing') {
       canvasLanding.classList.remove('blob-br', 'blob-tl', 'blob-r', 'blob-hidden');
     } else {
-      // Forzar actualización al volver a landing
-      updateLandingBlobClass();
+      // Al entrar a landing desde otra fase, reiniciar a la primera sección
+      if (prevPhase !== 'landing') {
+        currentSectionIdx = 0;
+        initSectionDisplay();
+      }
+      setBlobForSection(currentSectionIdx);
     }
   }
 
@@ -822,22 +826,81 @@ function setBlobClass(cls) {
 }
 
 function updateLandingBlobClass() {
-  if (state.phase !== 'landing') return;
-  const container = $('screen-landing');
-  if (!container) return;
-  const scrollY  = container.scrollTop;
-  const viewMid  = scrollY + container.clientHeight * 0.5;
+  setBlobForSection(currentSectionIdx);
+}
 
-  for (const { id, cls } of SECTION_BLOB_MAP) {
+/* ===== FULLPAGE SECTION NAV ===== */
+
+const LANDING_SECTION_IDS = [
+  'section-hero',
+  'section-que',
+  'section-porque',
+  'section-como',
+  'pj-proyectos',
+  'section-cta',
+];
+
+let currentSectionIdx   = 0;
+let sectionTransitioning = false;
+const SECTION_ANIM_MS   = 520;
+
+function setBlobForSection(idx) {
+  const id    = LANDING_SECTION_IDS[idx];
+  const entry = SECTION_BLOB_MAP.find(s => s.id === id);
+  if (entry) setBlobClass(entry.cls);
+}
+
+function initSectionDisplay() {
+  LANDING_SECTION_IDS.forEach((id, i) => {
     const el = $(id);
-    if (!el) continue;
-    const elTop = el.offsetTop;
-    const elBot = elTop + el.offsetHeight;
-    if (viewMid >= elTop && viewMid < elBot) {
-      setBlobClass(cls);
-      return;
-    }
+    if (!el) return;
+    el.style.display = i === 0 ? 'flex' : 'none';
+    const allCls = ['section-exit-up', 'section-exit-down', 'section-enter-up', 'section-enter-down'];
+    allCls.forEach(c => el.classList.remove(c));
+  });
+  setBlobForSection(0);
+}
+
+function navigateSection(direction) {
+  if (sectionTransitioning) return;
+  if (state.phase !== 'landing') return;
+
+  const nextIdx = currentSectionIdx + direction;
+  if (nextIdx < 0 || nextIdx >= LANDING_SECTION_IDS.length) return;
+
+  sectionTransitioning = true;
+
+  const currentEl = $(LANDING_SECTION_IDS[currentSectionIdx]);
+  const nextEl    = $(LANDING_SECTION_IDS[nextIdx]);
+  if (!currentEl || !nextEl) { sectionTransitioning = false; return; }
+
+  const allCls = ['section-exit-up', 'section-exit-down', 'section-enter-up', 'section-enter-down'];
+
+  // Mostrar la siguiente (empieza invisible vía animación)
+  nextEl.style.display = 'flex';
+
+  // Limpiar clases anteriores y forzar reflow
+  [currentEl, nextEl].forEach(el => allCls.forEach(c => el.classList.remove(c)));
+  void currentEl.offsetWidth;
+  void nextEl.offsetWidth;
+
+  // Aplicar animaciones
+  if (direction > 0) {
+    currentEl.classList.add('section-exit-up');
+    nextEl.classList.add('section-enter-up');
+  } else {
+    currentEl.classList.add('section-exit-down');
+    nextEl.classList.add('section-enter-down');
   }
+
+  setBlobForSection(nextIdx);
+  currentSectionIdx = nextIdx;
+
+  setTimeout(() => {
+    currentEl.style.display = 'none';
+    allCls.forEach(c => { currentEl.classList.remove(c); nextEl.classList.remove(c); });
+    sectionTransitioning = false;
+  }, SECTION_ANIM_MS);
 }
 
 /* ===== INICIALIZACIÓN ===== */
@@ -864,11 +927,41 @@ document.addEventListener('DOMContentLoaded', () => {
   $('footer').classList.add('hidden');
   $('progress-bar').classList.add('hidden');
 
-  // Scroll listener: actualiza posición del blob decorativo
+  // Inicializar secciones: solo la primera visible
+  initSectionDisplay();
+
+  // Navegación fullpage: wheel
   const landingContainer = $('screen-landing');
   if (landingContainer) {
-    landingContainer.addEventListener('scroll', updateLandingBlobClass, { passive: true });
+    landingContainer.addEventListener('wheel', e => {
+      if (state.phase !== 'landing') return;
+      e.preventDefault();
+      navigateSection(e.deltaY > 0 ? 1 : -1);
+    }, { passive: false });
+
+    // Touch
+    let touchStartY = 0;
+    landingContainer.addEventListener('touchstart', e => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+    landingContainer.addEventListener('touchend', e => {
+      if (state.phase !== 'landing') return;
+      const dy = touchStartY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) > 50) navigateSection(dy > 0 ? 1 : -1);
+    }, { passive: true });
   }
+
+  // Teclado
+  document.addEventListener('keydown', e => {
+    if (state.phase !== 'landing') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      e.preventDefault();
+      navigateSection(1);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      navigateSection(-1);
+    }
+  });
 
   // Transición tras la carga (2.8s = duración de pjLoaderOut)
   setTimeout(() => {
