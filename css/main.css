@@ -749,6 +749,12 @@ html, body {
   scroll-behavior: smooth;
   position: relative;
   scroll-padding-top: 68px; /* header height */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#screen-landing::-webkit-scrollbar {
+  display: none;
 }
 
 /* Sticky header bar: full-width glass effect */
@@ -797,6 +803,7 @@ html, body {
   padding-top: calc(68px + clamp(20px, 4vw, 48px));
   text-align: center;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -848,6 +855,7 @@ html, body {
   margin: 0 auto;
   padding: 68px clamp(20px, 5vw, 56px) 0;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -861,6 +869,7 @@ html, body {
   margin: 0 auto;
   padding: 68px clamp(20px, 5vw, 56px) 0;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -874,6 +883,7 @@ html, body {
   margin: 0 auto;
   padding: 68px clamp(20px, 5vw, 56px) 0;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
   height: 100vh;
   overflow: hidden;
   display: flex;
@@ -1077,7 +1087,7 @@ html, body {
   position: fixed;
   pointer-events: none;
   z-index: 5;
-  width: clamp(280px, 42vw, 540px);
+  width: clamp(140px, 21vw, 270px);
   aspect-ratio: 1;
   top: 0;
   left: 0;
