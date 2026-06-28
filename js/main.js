@@ -20,9 +20,9 @@ const QUESTIONS = [
 
 const PROJECTS = [
   {
-    id: '01', name: 'Flujo de pedidos automatizado', tag: 'Operaciones', kind: 'SISTEMA WEB', url: 'pedidos.projecter.mx',
-    desc: 'Sistema que centraliza la captura, asignación y seguimiento de pedidos en tiempo real. Elimina el rastreo manual por WhatsApp o Excel y notifica automáticamente a cada área.',
-    features: ['Captura de pedidos en segundos', 'Seguimiento de estatus en tiempo real', 'Notificaciones automáticas al equipo', 'Historial completo por cliente'],
+    id: '01', name: 'Centauro — ERP para industria del acero', tag: 'Manufactura', kind: 'PLATAFORMA WEB', url: 'cotiza.projecter.mx',
+    desc: 'Sistema de gestión integral para una empresa de lámina y teja metálica. Centraliza cotizaciones, pedidos, inventario por rollo/kg, maquila externa y operación multi-usuario en una sola plataforma.',
+    features: ['Cotizador de lámina y teja en tiempo real', 'Pipeline de producción y maquila', 'Inventario por rollo con alertas de stock', 'Panel ejecutivo multi-usuario'],
   },
   {
     id: '02', name: 'Seguimiento de clientes', tag: 'CRM', kind: 'PLATAFORMA', url: 'crm.projecter.mx',
@@ -934,45 +934,49 @@ function navigateSection(direction) {
 const PROJECT_GALLERY = {
   '01': [
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">pedidos.projecter.mx</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / cotizaciones</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">PEDIDOS RECIENTES</p>
-        <table class="mock-table">
-          <thead><tr><th>#</th><th>Cliente</th><th>Producto</th><th>Estatus</th></tr></thead>
+        <p class="mock-section-title">COTIZADOR — CENTAURO ERP</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">COT-0447</span><span class="mock-kpi-lbl">Folio</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:11px">Aceros del Norte</span><span class="mock-kpi-lbl">Cliente</span></div>
+        </div>
+        <table class="mock-table" style="margin-top:8px">
+          <thead><tr><th>Producto</th><th>Kg</th><th>$/kg</th><th>Total</th></tr></thead>
           <tbody>
-            <tr><td class="mock-mono">#0041</td><td>García Muebles</td><td class="mock-mono" style="color:#bbb">Mesa centro x4</td><td><span class="mock-badge mock-badge-done">Completado</span></td></tr>
-            <tr><td class="mock-mono">#0040</td><td>Torres & Asoc.</td><td class="mock-mono" style="color:#bbb">Silla x10</td><td><span class="mock-badge mock-badge-proc">En proceso</span></td></tr>
-            <tr><td class="mock-mono">#0039</td><td>Distribuidora P</td><td class="mock-mono" style="color:#bbb">Repisa x2</td><td><span class="mock-badge mock-badge-pend">Pendiente</span></td></tr>
-            <tr><td class="mock-mono">#0038</td><td>Rivas Interiores</td><td class="mock-mono" style="color:#bbb">Cajonera x6</td><td><span class="mock-badge mock-badge-done">Completado</span></td></tr>
+            <tr><td style="font-size:10px">Galv. cal.26 1.22m</td><td class="mock-mono">500</td><td class="mock-mono">$95.50</td><td class="mock-mono" style="color:#111;font-weight:600">$47,750</td></tr>
+            <tr><td style="font-size:10px">Teja R101 cal.26</td><td class="mock-mono">280</td><td class="mock-mono">$88.00</td><td class="mock-mono" style="color:#111;font-weight:600">$24,640</td></tr>
+          </tbody>
+        </table>
+        <div style="display:flex;justify-content:flex-end;margin-top:8px;padding-top:6px;border-top:1px solid #e8e8e6">
+          <div style="text-align:right"><div style="font-size:10px;color:#aaa;font-family:'JetBrains Mono',monospace">TOTAL + IVA</div><div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace">$83,688.80</div></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / pedidos</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">PIPELINE DE PEDIDOS</p>
+        <table class="mock-table">
+          <thead><tr><th>Folio</th><th>Cliente</th><th>Estatus</th><th>Total</th></tr></thead>
+          <tbody>
+            <tr><td class="mock-mono">#VTA-0314</td><td style="font-size:10px">Aceros del Norte</td><td><span class="mock-badge mock-badge-proc">Producción</span></td><td class="mock-mono" style="font-size:10px">$47,800</td></tr>
+            <tr><td class="mock-mono">#VTA-0315</td><td style="font-size:10px">Ferretera Mty</td><td><span class="mock-badge mock-badge-pend">Nuevo</span></td><td class="mock-mono" style="font-size:10px">$23,400</td></tr>
+            <tr><td class="mock-mono">#VTA-0316</td><td style="font-size:10px">Construcciones Río</td><td><span class="mock-badge" style="background:#e0f2fe;color:#0369a1">Listo</span></td><td class="mock-mono" style="font-size:10px">$12,960</td></tr>
+            <tr><td class="mock-mono">#VTA-0317</td><td style="font-size:10px">Materiales Oax.</td><td><span class="mock-badge mock-badge-done">Entregado</span></td><td class="mock-mono" style="font-size:10px">$38,720</td></tr>
           </tbody>
         </table>
       </div>
     </div>`,
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">pedidos.projecter.mx / #0040</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / inventario</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">DETALLE · PEDIDO #0040</p>
-        <div class="mock-kpi-row">
-          <div class="mock-kpi"><span class="mock-kpi-val">Torres</span><span class="mock-kpi-lbl">Cliente</span></div>
-          <div class="mock-kpi"><span class="mock-kpi-val mock-badge-proc" style="font-size:11px;padding:3px 0">En proceso</span><span class="mock-kpi-lbl">Estatus</span></div>
+        <p class="mock-section-title">INVENTARIO POR ROLLO</p>
+        <div class="mock-kpi-row" style="margin-bottom:8px">
+          <div class="mock-kpi"><span class="mock-kpi-val">2,910</span><span class="mock-kpi-lbl">kg en planta</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="color:#dc2626">2</span><span class="mock-kpi-lbl">Alertas críticas</span></div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
-          ${['Captura recibida','Asignado a producción','En proceso ←','Calidad','Entrega'].map((s,i)=>`<div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${i<3?'#111':'#e0e0de'}"></div><span style="font-size:11px;color:${i<3?'#111':'#bbb'}">${s}</span></div>`).join('')}
-        </div>
-      </div>
-    </div>`,
-    `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">pedidos.projecter.mx / resumen</span></div>
-      <div class="mock-body">
-        <p class="mock-section-title">RESUMEN DEL MES</p>
-        <div class="mock-kpi-row">
-          <div class="mock-kpi"><span class="mock-kpi-val">142</span><span class="mock-kpi-lbl">Total pedidos</span></div>
-          <div class="mock-kpi"><span class="mock-kpi-val">38</span><span class="mock-kpi-lbl">En proceso</span></div>
-          <div class="mock-kpi"><span class="mock-kpi-val">96%</span><span class="mock-kpi-lbl">A tiempo</span></div>
-        </div>
-        <div class="mock-bar-chart" style="margin-top:6px">
-          ${[55,70,48,82,65,91].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${v}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
-        </div>
+        ${[['R00045','Galv. cal.26','2,450 kg','ok'],['R00046','Galv. cal.24','180 kg','low'],['R00047','Acero Pintro','0 kg','crit']].map(([c,p,s,b])=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #f2f2f0"><span class="mock-mono" style="font-size:9px;color:#888;min-width:44px">${c}</span><span style="flex:1;font-size:10px">${p}</span><span class="mock-mono" style="font-size:10px">${s}</span><span class="mock-badge ${b==='ok'?'mock-badge-done':b==='low'?'mock-badge-proc':'mock-badge-crit'}" style="${b==='crit'?'background:#fee2e2;color:#991b1b':''}">${b==='ok'?'OK':b==='low'?'Bajo':'Crítico'}</span></div>`).join('')}
       </div>
     </div>`,
   ],
@@ -1166,7 +1170,7 @@ const PROJECT_GALLERY = {
 /* ===== DEMO SIMULADO ===== */
 
 function buildDemo(id) {
-  if (id === '01') return buildDemoPedidos();
+  if (id === '01') return buildDemoCentauro();
   if (id === '02') return buildDemoCRM();
   if (id === '03') return buildDemoCotizador();
   if (id === '04') return buildDemoDashboard();
@@ -1175,128 +1179,429 @@ function buildDemo(id) {
   return '<p style="color:#aaa;font-size:13px">Demo no disponible.</p>';
 }
 
-function buildDemoPedidos() {
-  const STAGES = ['Pendiente','Producción','Control calidad','Listo','Entregado'];
-  const SC     = ['pend','proc','proc','proc','done'];
+function buildDemoCentauro() {
+  /* ---- estado compartido del demo ---- */
+  var activeTab = 'cotizador';
 
-  let orders = [
-    { id:'#0041', client:'García Muebles',   product:'Mesa centro x4',       stage:4, date:'20 Jun' },
-    { id:'#0042', client:'Torres & Asoc.',    product:'Silla ergonómica x10', stage:2, date:'22 Jun' },
-    { id:'#0043', client:'Distribuidora P',   product:'Repisa modular x2',    stage:0, date:'24 Jun' },
-    { id:'#0044', client:'Rivas Interiores',  product:'Cajonera x6',          stage:1, date:'25 Jun' },
-    { id:'#0045', client:'Constructora PE',   product:'Locker doble x5',      stage:3, date:'26 Jun' },
+  /* -------- COTIZADOR -------- */
+  var cot_partidas = [
+    { tipo: 'Lamina', material: 'Galvanizada', calibre: '26', ancho: '1.22m', kg: 500, pxkg: 95.50 }
   ];
+  var cot_tipo = 'Lamina';
+  var cot_pdf  = false;
 
-  let view      = 'list';
-  let detailIdx = -1;
-
-  function badge(s) {
-    return `<span class="demo-badge ${SC[s]}">${STAGES[s]}</span>`;
+  function precioKg(calibre) {
+    if (calibre === '22') return 102.00;
+    if (calibre === '24') return 98.50;
+    return 95.50;
   }
 
-  function renderList() {
-    return `<div class="demo-wrap">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-        <p class="demo-title" style="margin:0">PEDIDOS ACTIVOS</p>
-        <button class="demo-btn-sm" onclick="demoPedidosNew()">+ Nuevo pedido</button>
-      </div>
-      <table class="demo-table">
-        <thead><tr><th>#</th><th>Cliente</th><th>Estatus</th><th>Fecha</th><th></th></tr></thead>
-        <tbody>
-          ${orders.map((o,i) => `<tr>
-            <td class="mock-mono">${o.id}</td>
-            <td style="font-weight:600;font-size:11px">${o.client}</td>
-            <td>${badge(o.stage)}</td>
-            <td class="mock-mono" style="font-size:10px;color:#aaa">${o.date}</td>
-            <td><button class="demo-btn-sm" onclick="demoPedidosDetail(${i})">Ver →</button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    </div>`;
+  function fmtMXN(n) {
+    var s = n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return '$' + s;
   }
 
-  function renderDetail(i) {
-    const o = orders[i];
-    return `<div class="demo-wrap">
-      <button class="demo-back-btn" onclick="demoPedidosBack()">← Pedidos</button>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa">PEDIDO</div>
-          <div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">${o.id}</div>
-        </div>
-        ${badge(o.stage)}
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
-        <div class="demo-kpi"><div class="demo-kpi-val" style="font-size:12px">${o.client}</div><div class="demo-kpi-lbl">Cliente</div></div>
-        <div class="demo-kpi"><div class="demo-kpi-val" style="font-size:11px;line-height:1.3">${o.product}</div><div class="demo-kpi-lbl">Producto</div></div>
-      </div>
-      <div class="demo-timeline">
-        ${STAGES.map((s, si) => `<div class="demo-timeline-step">
-          <div class="demo-timeline-dot" style="background:${si<=o.stage?'#111':'#e0e0de'}"></div>
-          <div class="demo-timeline-label" style="color:${si<=o.stage?'#111':'#bbb'};font-weight:${si===o.stage?'600':'400'}">${s}</div>
-        </div>`).join('')}
-      </div>
-      ${o.stage < STAGES.length - 1
-        ? `<button class="demo-btn-sm" style="margin-top:12px" onclick="demoPedidosAdvance(${i})">Avanzar etapa →</button>`
-        : `<div style="margin-top:12px;padding:10px 14px;background:#d1fae5;border-radius:7px;font-size:12px;color:#065f46;font-weight:600">✓ Pedido entregado</div>`}
-    </div>`;
+  function renderCotizadorTab() {
+    var subtotal = 0;
+    cot_partidas.forEach(function(p) { subtotal += p.kg * p.pxkg; });
+    var iva   = subtotal * 0.16;
+    var total = subtotal + iva;
+
+    if (cot_pdf) {
+      return '<div class="demo-wrap">' +
+        '<button class="demo-back-btn" onclick="dcCotBack()">← Cotización</button>' +
+        '<div style="border:1px solid #e8e8e6;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start">' +
+            '<div><div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;letter-spacing:.15em">CENTAURO ERP</div><div style="font-size:16px;font-weight:700;margin-top:2px">COT-0447</div></div>' +
+            '<div style="text-align:right"><div style="font-size:10px;color:#888">Aceros del Norte</div><div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">28 Jun 2026</div></div>' +
+          '</div>' +
+          '<table class="demo-table" style="margin-top:4px">' +
+            '<thead><tr><th>Producto</th><th>Kg</th><th>$/kg</th><th>Importe</th></tr></thead>' +
+            '<tbody>' +
+              cot_partidas.map(function(p) {
+                return '<tr>' +
+                  '<td style="font-size:11px">' + p.material + ' cal.' + p.calibre + ' ' + p.ancho + '</td>' +
+                  '<td class="mock-mono">' + p.kg + '</td>' +
+                  '<td class="mock-mono">' + fmtMXN(p.pxkg) + '</td>' +
+                  '<td class="mock-mono" style="font-weight:600">' + fmtMXN(p.kg * p.pxkg) + '</td>' +
+                '</tr>';
+              }).join('') +
+            '</tbody>' +
+          '</table>' +
+          '<div style="display:flex;flex-direction:column;gap:4px;padding-top:8px;border-top:1px solid #e8e8e6">' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:#888">Subtotal</span><span class="mock-mono">' + fmtMXN(subtotal) + '</span></div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px"><span style="color:#888">IVA 16%</span><span class="mock-mono">' + fmtMXN(iva) + '</span></div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-top:4px"><span>TOTAL</span><span class="mock-mono">' + fmtMXN(total) + '</span></div>' +
+          '</div>' +
+          '<div style="margin-top:4px;padding:8px 12px;background:#d1fae5;border-radius:7px;font-size:11px;color:#065f46;font-weight:600">Cotizacion generada correctamente</div>' +
+        '</div>' +
+      '</div>';
+    }
+
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px">' +
+        '<div><div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">COT-0447 · Aceros del Norte</div></div>' +
+        '<button class="demo-btn-sm" onclick="dcCotPDF()">Generar PDF</button>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px;margin-bottom:10px">' +
+        '<select class="demo-input" id="dc-cot-tipo" style="flex:1;padding:5px 8px;font-size:11px" onchange="dcCotTipo(this.value)">' +
+          '<option value="Lamina"' + (cot_tipo === 'Lamina' ? ' selected' : '') + '>Lamina</option>' +
+          '<option value="Teja"' + (cot_tipo === 'Teja' ? ' selected' : '') + '>Teja</option>' +
+          '<option value="Servicio"' + (cot_tipo === 'Servicio' ? ' selected' : '') + '>Servicio</option>' +
+        '</select>' +
+      '</div>' +
+      (cot_tipo !== 'Servicio' ? (
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">' +
+          '<div class="demo-field">' +
+            '<div class="demo-label">MATERIAL</div>' +
+            '<select class="demo-input" id="dc-cot-mat" style="padding:5px 8px;font-size:11px">' +
+              '<option>Galvanizada</option><option>Pintro</option><option>Acero Negro</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="demo-field">' +
+            '<div class="demo-label">CALIBRE</div>' +
+            '<select class="demo-input" id="dc-cot-cal" style="padding:5px 8px;font-size:11px" onchange="dcCotPrecio(this.value)">' +
+              '<option value="26">Cal. 26</option><option value="24">Cal. 24</option><option value="22">Cal. 22</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="demo-field">' +
+            '<div class="demo-label">ANCHO</div>' +
+            '<select class="demo-input" id="dc-cot-ancho" style="padding:5px 8px;font-size:11px">' +
+              '<option>1.00m</option><option selected>1.22m</option>' +
+            '</select>' +
+          '</div>' +
+          '<div class="demo-field">' +
+            '<div class="demo-label">KILOS</div>' +
+            '<input class="demo-input" id="dc-cot-kg" type="number" min="1" placeholder="kg" style="padding:5px 8px;font-size:11px">' +
+          '</div>' +
+        '</div>' +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#888">$/kg: <span id="dc-cot-precio">$95.50</span></div>' +
+          '<button class="demo-btn-sm" style="margin-left:auto" onclick="dcCotAgregar()">+ Agregar partida</button>' +
+        '</div>'
+      ) : (
+        '<div class="demo-field" style="margin-bottom:10px"><div class="demo-label">DESCRIPCION DEL SERVICIO</div><input class="demo-input" id="dc-cot-serv" placeholder="Ej: Maquila de corte cal.26"></div>' +
+        '<div class="demo-field" style="margin-bottom:10px"><div class="demo-label">IMPORTE</div><input class="demo-input" id="dc-cot-imp" type="number" placeholder="0.00"></div>' +
+        '<button class="demo-btn-sm" style="align-self:flex-start;margin-bottom:10px" onclick="dcCotAgregarServ()">+ Agregar</button>'
+      )) +
+      '<table class="demo-table">' +
+        '<thead><tr><th>Producto</th><th>Kg</th><th>$/kg</th><th>Importe</th><th></th></tr></thead>' +
+        '<tbody>' +
+          cot_partidas.map(function(p, i) {
+            return '<tr>' +
+              '<td style="font-size:10px">' + p.material + ' cal.' + p.calibre + ' ' + p.ancho + '</td>' +
+              '<td class="mock-mono">' + p.kg + '</td>' +
+              '<td class="mock-mono">' + fmtMXN(p.pxkg) + '</td>' +
+              '<td class="mock-mono" style="font-weight:600">' + fmtMXN(p.kg * p.pxkg) + '</td>' +
+              '<td><button class="demo-btn-sm" onclick="dcCotEliminar(' + i + ')" style="padding:2px 7px;font-size:9px">x</button></td>' +
+            '</tr>';
+          }).join('') +
+        '</tbody>' +
+      '</table>' +
+      '<div style="display:flex;flex-direction:column;gap:3px;padding-top:6px;border-top:1px solid #e8e8e6;margin-top:4px">' +
+        '<div class="demo-total-row" style="padding:4px 0"><span class="demo-total-lbl">SUBTOTAL</span><span class="demo-total-val" style="font-size:14px">' + fmtMXN(subtotal) + '</span></div>' +
+        '<div class="demo-total-row" style="padding:4px 0;border-top:none"><span class="demo-total-lbl">IVA 16%</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:12px;color:#888">' + fmtMXN(iva) + '</span></div>' +
+        '<div class="demo-total-row" style="padding:6px 0;border-top:2px solid #111"><span class="demo-total-lbl" style="font-weight:700;color:#111;font-size:11px">TOTAL</span><span class="demo-total-val">' + fmtMXN(total) + '</span></div>' +
+      '</div>' +
+    '</div>';
   }
 
-  function renderNew() {
-    return `<div class="demo-wrap">
-      <button class="demo-back-btn" onclick="demoPedidosBack()">← Pedidos</button>
-      <p class="demo-title">NUEVO PEDIDO</p>
-      <div class="demo-form">
-        <div class="demo-field">
-          <div class="demo-label">CLIENTE</div>
-          <input class="demo-input" id="demo-p-client" placeholder="Nombre del cliente">
-        </div>
-        <div class="demo-field">
-          <div class="demo-label">PRODUCTO / DESCRIPCIÓN</div>
-          <input class="demo-input" id="demo-p-product" placeholder="Ej: Mesa ejecutiva x4">
-        </div>
-        <button class="btn-primary" style="font-size:12px;padding:10px 16px" onclick="demoPedidosCreate()">Crear pedido</button>
-      </div>
-    </div>`;
+  /* -------- PEDIDOS -------- */
+  var PED_STAGES  = ['Nuevo','Confirmado','Produccion','Maquila','Listo','Entregado'];
+  var PED_SC      = ['pend','pend','proc','proc','proc','done'];
+  var ped_orders  = [
+    { folio:'#VTA-0314', client:'Aceros del Norte',   total:47800, stage:2 },
+    { folio:'#VTA-0315', client:'Ferretera Monterrey', total:23400, stage:0 },
+    { folio:'#VTA-0316', client:'Construcciones Rio',  total:12960, stage:4 },
+    { folio:'#VTA-0317', client:'Materiales Oaxaca',   total:38720, stage:5 },
+  ];
+  var ped_view    = 'list';
+  var ped_active  = -1;
+
+  function pedBadge(s) {
+    return '<span class="demo-badge ' + PED_SC[s] + '">' + PED_STAGES[s] + '</span>';
   }
 
-  window.demoPedidosDetail = function(i) {
-    detailIdx = i; view = 'detail';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderDetail(i);
+  function renderPedidosTab() {
+    if (ped_view === 'detail') {
+      var o = ped_orders[ped_active];
+      return '<div class="demo-wrap">' +
+        '<button class="demo-back-btn" onclick="dcPedBack()">← Pedidos</button>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
+          '<div>' +
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">PEDIDO</div>' +
+            '<div style="font-size:18px;font-weight:700;font-family:\'JetBrains Mono\',monospace">' + o.folio + '</div>' +
+          '</div>' +
+          pedBadge(o.stage) +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">' +
+          '<div class="demo-kpi"><div class="demo-kpi-val" style="font-size:11px;line-height:1.3">' + o.client + '</div><div class="demo-kpi-lbl">Cliente</div></div>' +
+          '<div class="demo-kpi"><div class="demo-kpi-val" style="font-size:15px">' + fmtMXN(o.total) + '</div><div class="demo-kpi-lbl">Total</div></div>' +
+        '</div>' +
+        '<div class="dc-pipeline-h">' +
+          PED_STAGES.map(function(s, si) {
+            var active  = si === o.stage;
+            var past    = si < o.stage;
+            var dotBg   = (past || active) ? '#111' : '#e0e0de';
+            var lblColor= past ? '#aaa' : (active ? '#111' : '#ccc');
+            var lblW    = active ? '600' : '400';
+            return '<div class="dc-pipeline-step">' +
+              (si > 0 ? '<div class="dc-pipeline-line" style="background:' + (past ? '#111' : '#e0e0de') + '"></div>' : '') +
+              '<div class="dc-pipeline-dot" style="background:' + dotBg + ';border:2px solid ' + dotBg + '"></div>' +
+              '<div class="dc-pipeline-lbl" style="color:' + lblColor + ';font-weight:' + lblW + '">' + s + '</div>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        (o.stage < PED_STAGES.length - 1
+          ? '<button class="demo-btn-sm" style="margin-top:14px" onclick="dcPedAvanzar(' + ped_active + ')">Avanzar a ' + PED_STAGES[o.stage + 1] + ' →</button>'
+          : '<div style="margin-top:14px;padding:10px 14px;background:#d1fae5;border-radius:7px;font-size:12px;color:#065f46;font-weight:600">Pedido entregado</div>') +
+      '</div>';
+    }
+
+    return '<div class="demo-wrap">' +
+      '<p class="demo-title" style="margin:0 0 8px">PEDIDOS</p>' +
+      '<table class="demo-table">' +
+        '<thead><tr><th>Folio</th><th>Cliente</th><th>Estatus</th><th>Total</th><th></th></tr></thead>' +
+        '<tbody>' +
+          ped_orders.map(function(o, i) {
+            return '<tr>' +
+              '<td class="mock-mono" style="font-size:10px">' + o.folio + '</td>' +
+              '<td style="font-size:11px;font-weight:600">' + o.client + '</td>' +
+              '<td>' + pedBadge(o.stage) + '</td>' +
+              '<td class="mock-mono" style="font-size:10px">' + fmtMXN(o.total) + '</td>' +
+              '<td><button class="demo-btn-sm" onclick="dcPedDetalle(' + i + ')">Ver →</button></td>' +
+            '</tr>';
+          }).join('') +
+        '</tbody>' +
+      '</table>' +
+    '</div>';
+  }
+
+  /* -------- INVENTARIO -------- */
+  var inv_items = [
+    { cod:'R00045', prod:'Galvanizada cal.26', alm:'Planta 1',  kg:2450, status:'ok'   },
+    { cod:'R00046', prod:'Galvanizada cal.24', alm:'Planta 2',  kg:180,  status:'bajo' },
+    { cod:'T00012', prod:'Teja R101',          alm:'Externo',   kg:280,  status:'ok'   },
+    { cod:'R00047', prod:'Acero Pintro',       alm:'Planta 1',  kg:0,    status:'crit' },
+  ];
+  var inv_open = -1;
+
+  function invBadge(s) {
+    if (s === 'ok')   return '<span class="demo-badge done">OK</span>';
+    if (s === 'bajo') return '<span class="demo-badge proc">Bajo</span>';
+    return '<span class="demo-badge" style="background:#fee2e2;color:#991b1b">Critico</span>';
+  }
+
+  function renderInvTab() {
+    var totalKg = 0;
+    var alertas = 0;
+    inv_items.forEach(function(p) { totalKg += p.kg; if (p.status !== 'ok') alertas++; });
+    var valor = totalKg * 96.5;
+
+    return '<div class="demo-wrap">' +
+      '<div class="demo-kpis" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:10px">' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" style="font-size:14px">' + totalKg.toLocaleString() + ' kg</div><div class="demo-kpi-lbl">Stock total</div></div>' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" style="font-size:14px">' + fmtMXN(valor) + '</div><div class="demo-kpi-lbl">Valor est.</div></div>' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" style="font-size:18px;color:' + (alertas > 0 ? '#dc2626' : '#111') + '">' + alertas + '</div><div class="demo-kpi-lbl">Alertas</div></div>' +
+      '</div>' +
+      '<table class="demo-stock-table">' +
+        '<thead><tr><th>Codigo</th><th>Producto</th><th>Almacen</th><th>Stock</th><th>Estado</th></tr></thead>' +
+        '<tbody>' +
+          inv_items.map(function(p, i) {
+            var panelRow = inv_open === i
+              ? ('<tr><td colspan="5">' +
+                  '<div class="demo-entry-panel">' +
+                    '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">REGISTRAR MOVIMIENTO · ' + p.cod + '</div>' +
+                    '<div class="demo-row">' +
+                      '<select class="demo-input" id="dc-inv-tipo" style="flex:.8;padding:5px 8px;font-size:11px"><option>Entrada</option><option>Salida</option></select>' +
+                      '<div class="demo-field"><input class="demo-input" id="dc-inv-qty" type="number" min="1" placeholder="kg" style="padding:5px 8px;font-size:11px"></div>' +
+                      '<div class="demo-field"><input class="demo-input" id="dc-inv-nota" placeholder="Nota opcional" style="padding:5px 8px;font-size:11px"></div>' +
+                      '<button class="demo-btn-sm" onclick="dcInvGuardar(' + i + ')">Guardar</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</td></tr>')
+              : '';
+            return '<tr style="cursor:pointer" onclick="dcInvToggle(' + i + ')">' +
+              '<td class="mock-mono" style="font-size:9px;color:#888">' + p.cod + '</td>' +
+              '<td style="font-size:11px;font-weight:600">' + p.prod + '</td>' +
+              '<td style="font-size:10px;color:#888">' + p.alm + '</td>' +
+              '<td class="mock-mono" style="font-size:11px">' + p.kg.toLocaleString() + ' kg</td>' +
+              '<td>' + invBadge(p.status) + '</td>' +
+            '</tr>' + panelRow;
+          }).join('') +
+        '</tbody>' +
+      '</table>' +
+    '</div>';
+  }
+
+  /* -------- PANEL -------- */
+  var panel_base = { ventas: 284600, activos: 12, ocs: 3, alertas: 2 };
+  var panel_vals = { ventas: 284600, activos: 12, ocs: 3, alertas: 2 };
+  var panel_meses = [198000, 223000, 245000, 267000, 258000, 284600];
+
+  function renderPanelTab() {
+    var maxV = Math.max.apply(null, panel_meses);
+    var labels = ['Ene','Feb','Mar','Abr','May','Jun'];
+    var moves = [
+      { tipo:'Cotizacion', desc:'COT-0447 Aceros del Norte',   val:'$47,750', fecha:'28 Jun' },
+      { tipo:'Pedido',     desc:'VTA-0314 confirmado',         val:'12 un',   fecha:'27 Jun' },
+      { tipo:'Inventario', desc:'Entrada R00045 +300 kg',      val:'+300 kg',  fecha:'26 Jun' },
+      { tipo:'Pedido',     desc:'VTA-0316 listo para entrega', val:'$12,960', fecha:'25 Jun' },
+      { tipo:'Alerta',     desc:'R00047 Acero Pintro en cero', val:'0 kg',    fecha:'24 Jun' },
+    ];
+
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+        '<p class="demo-title" style="margin:0">PANEL EJECUTIVO</p>' +
+        '<button class="demo-btn-sm" onclick="dcPanelRefresh()">Actualizar</button>' +
+      '</div>' +
+      '<div class="demo-kpis" style="margin-bottom:12px">' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" id="dc-kpi-ventas" style="font-size:14px">' + fmtMXN(panel_vals.ventas) + '</div><div class="demo-kpi-lbl">Ventas del mes</div></div>' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" id="dc-kpi-activos">' + panel_vals.activos + '</div><div class="demo-kpi-lbl">Pedidos activos</div></div>' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" id="dc-kpi-ocs">' + panel_vals.ocs + '</div><div class="demo-kpi-lbl">OCs pendientes</div></div>' +
+        '<div class="demo-kpi"><div class="demo-kpi-val" id="dc-kpi-alertas" style="color:' + (panel_vals.alertas > 0 ? '#dc2626' : '#111') + '">' + panel_vals.alertas + '</div><div class="demo-kpi-lbl">Alertas inv.</div></div>' +
+      '</div>' +
+      '<div style="margin-bottom:12px">' +
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">VENTAS MENSUALES 2026</div>' +
+        '<div class="mock-bar-chart" style="height:60px">' +
+          panel_meses.map(function(v, i) {
+            var pct = Math.round((v / maxV) * 100);
+            return '<div class="mock-bar-col"><div class="mock-bar-fill" style="height:' + pct + '%"></div><span class="mock-bar-lbl">' + labels[i] + '</span></div>';
+          }).join('') +
+        '</div>' +
+      '</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">ULTIMOS MOVIMIENTOS</div>' +
+      '<div class="demo-activity">' +
+        moves.map(function(m) {
+          var bg = m.tipo === 'Alerta' ? '#fee2e2' : (m.tipo === 'Inventario' ? '#f0fdf4' : '#f7f7f6');
+          var col= m.tipo === 'Alerta' ? '#991b1b' : (m.tipo === 'Inventario' ? '#166534' : '#555');
+          return '<div class="demo-activity-item">' +
+            '<span style="font-family:\'JetBrains Mono\',monospace;font-size:8px;padding:2px 7px;border-radius:99px;background:' + bg + ';color:' + col + ';flex-shrink:0">' + m.tipo.toUpperCase() + '</span>' +
+            '<span class="demo-activity-msg">' + m.desc + '</span>' +
+            '<span class="demo-activity-time">' + m.fecha + '</span>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  /* -------- RENDER PRINCIPAL (tabs) -------- */
+  function renderTabs() {
+    var tabs = ['cotizador','pedidos','inventario','panel'];
+    var labels = ['Cotizador','Pedidos','Inventario','Panel'];
+    var tabBar = '<div class="demo-tabs">' +
+      tabs.map(function(t, i) {
+        return '<button class="demo-tab' + (activeTab === t ? ' active' : '') + '" onclick="dcTab(\'' + t + '\')">' + labels[i] + '</button>';
+      }).join('') +
+    '</div>';
+
+    var body = '';
+    if (activeTab === 'cotizador')  body = renderCotizadorTab();
+    if (activeTab === 'pedidos')    body = renderPedidosTab();
+    if (activeTab === 'inventario') body = renderInvTab();
+    if (activeTab === 'panel')      body = renderPanelTab();
+
+    return tabBar + body;
+  }
+
+  function rerender() {
+    var area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderTabs();
+  }
+
+  /* -------- HANDLERS GLOBALES -------- */
+  window.dcTab = function(t) {
+    activeTab = t;
+    if (t === 'pedidos') ped_view = 'list';
+    rerender();
   };
 
-  window.demoPedidosBack = function() {
-    view = 'list';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderList();
+  /* cotizador */
+  window.dcCotTipo = function(v) { cot_tipo = v; rerender(); };
+
+  window.dcCotPrecio = function(cal) {
+    var el = document.getElementById('dc-cot-precio');
+    if (el) el.textContent = fmtMXN(precioKg(cal));
   };
 
-  window.demoPedidosNew = function() {
-    view = 'new';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderNew();
-    document.getElementById('demo-p-client')?.focus();
+  window.dcCotAgregar = function() {
+    var matEl  = document.getElementById('dc-cot-mat');
+    var calEl  = document.getElementById('dc-cot-cal');
+    var anchoEl= document.getElementById('dc-cot-ancho');
+    var kgEl   = document.getElementById('dc-cot-kg');
+    var mat    = matEl ? matEl.value : 'Galvanizada';
+    var cal    = calEl ? calEl.value : '26';
+    var ancho  = anchoEl ? anchoEl.value : '1.22m';
+    var kg     = parseInt(kgEl ? kgEl.value : '0') || 0;
+    if (kg <= 0) return;
+    cot_partidas.push({ tipo: cot_tipo, material: mat, calibre: cal, ancho: ancho, kg: kg, pxkg: precioKg(cal) });
+    rerender();
   };
 
-  window.demoPedidosAdvance = function(i) {
-    if (orders[i].stage < STAGES.length - 1) orders[i].stage++;
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderDetail(i);
+  window.dcCotAgregarServ = function() {
+    var servEl = document.getElementById('dc-cot-serv');
+    var impEl  = document.getElementById('dc-cot-imp');
+    var desc   = servEl ? servEl.value.trim() : '';
+    var imp    = parseFloat(impEl ? impEl.value : '0') || 0;
+    if (!desc || imp <= 0) return;
+    cot_partidas.push({ tipo: 'Servicio', material: desc, calibre: '-', ancho: '-', kg: 1, pxkg: imp });
+    rerender();
   };
 
-  window.demoPedidosCreate = function() {
-    const client  = document.getElementById('demo-p-client')?.value.trim();
-    const product = document.getElementById('demo-p-product')?.value.trim();
-    if (!client || !product) return;
-    const newId = '#' + String(orders.length + 46).padStart(4, '0');
-    orders.unshift({ id: newId, client, product, stage: 0, date: 'Hoy' });
-    view = 'list';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderList();
+  window.dcCotEliminar = function(i) {
+    cot_partidas.splice(i, 1);
+    rerender();
   };
 
-  return renderList();
+  window.dcCotPDF = function() { cot_pdf = true; rerender(); };
+  window.dcCotBack = function() { cot_pdf = false; rerender(); };
+
+  /* pedidos */
+  window.dcPedDetalle = function(i) {
+    ped_active = i; ped_view = 'detail'; rerender();
+  };
+
+  window.dcPedBack = function() { ped_view = 'list'; rerender(); };
+
+  window.dcPedAvanzar = function(i) {
+    if (ped_orders[i].stage < PED_STAGES.length - 1) ped_orders[i].stage++;
+    rerender();
+  };
+
+  /* inventario */
+  window.dcInvToggle = function(i) {
+    inv_open = inv_open === i ? -1 : i;
+    rerender();
+  };
+
+  window.dcInvGuardar = function(i) {
+    var tipoEl = document.getElementById('dc-inv-tipo');
+    var qtyEl  = document.getElementById('dc-inv-qty');
+    var tipo   = tipoEl ? tipoEl.value : 'Entrada';
+    var qty    = parseInt(qtyEl ? qtyEl.value : '0') || 0;
+    if (qty <= 0) return;
+    if (tipo === 'Entrada') {
+      inv_items[i].kg += qty;
+    } else {
+      inv_items[i].kg = Math.max(0, inv_items[i].kg - qty);
+    }
+    var kg = inv_items[i].kg;
+    inv_items[i].status = kg === 0 ? 'crit' : (kg < 200 ? 'bajo' : 'ok');
+    inv_open = -1;
+    rerender();
+  };
+
+  /* panel */
+  window.dcPanelRefresh = function() {
+    function rnd(v) { return Math.round(v * (0.90 + Math.random() * 0.20)); }
+    panel_vals.ventas   = rnd(panel_base.ventas);
+    panel_vals.activos  = rnd(panel_base.activos);
+    panel_vals.ocs      = rnd(panel_base.ocs);
+    panel_vals.alertas  = rnd(panel_base.alertas);
+    rerender();
+  };
+
+  return renderTabs();
 }
 
 function buildDemoCRM() {
