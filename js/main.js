@@ -1176,240 +1176,668 @@ function buildDemo(id) {
 }
 
 function buildDemoPedidos() {
-  const orders = [
-    { id: '#0042', client: 'Almacenes Durán', product: 'Estante industrial x3', status: 0 },
-    { id: '#0043', client: 'Torres & Asoc.',  product: 'Mesa de trabajo x2',    status: 0 },
-    { id: '#0044', client: 'Rivas Interiores',product: 'Silla ergonómica x8',   status: 1 },
-    { id: '#0045', client: 'Constructora PE', product: 'Locker doble x5',       status: 0 },
-  ];
-  const labels = ['Pendiente','En proceso','Completado'];
-  const cls    = ['pend','proc','done'];
+  const STAGES = ['Pendiente','Producción','Control calidad','Listo','Entregado'];
+  const SC     = ['pend','proc','proc','proc','done'];
 
-  function render() {
+  let orders = [
+    { id:'#0041', client:'García Muebles',   product:'Mesa centro x4',       stage:4, date:'20 Jun' },
+    { id:'#0042', client:'Torres & Asoc.',    product:'Silla ergonómica x10', stage:2, date:'22 Jun' },
+    { id:'#0043', client:'Distribuidora P',   product:'Repisa modular x2',    stage:0, date:'24 Jun' },
+    { id:'#0044', client:'Rivas Interiores',  product:'Cajonera x6',          stage:1, date:'25 Jun' },
+    { id:'#0045', client:'Constructora PE',   product:'Locker doble x5',      stage:3, date:'26 Jun' },
+  ];
+
+  let view      = 'list';
+  let detailIdx = -1;
+
+  function badge(s) {
+    return `<span class="demo-badge ${SC[s]}">${STAGES[s]}</span>`;
+  }
+
+  function renderList() {
     return `<div class="demo-wrap">
-      <p class="demo-title">DEMO · AVANZA EL ESTADO DE CADA PEDIDO</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <p class="demo-title" style="margin:0">PEDIDOS ACTIVOS</p>
+        <button class="demo-btn-sm" onclick="demoPedidosNew()">+ Nuevo pedido</button>
+      </div>
       <table class="demo-table">
-        <thead><tr><th>#</th><th>Cliente</th><th>Producto</th><th>Estatus</th><th></th></tr></thead>
+        <thead><tr><th>#</th><th>Cliente</th><th>Estatus</th><th>Fecha</th><th></th></tr></thead>
         <tbody>
           ${orders.map((o,i) => `<tr>
             <td class="mock-mono">${o.id}</td>
-            <td>${o.client}</td>
-            <td style="color:#999;font-size:11px">${o.product}</td>
-            <td><span class="demo-badge ${cls[o.status]}" id="dbadge-${i}">${labels[o.status]}</span></td>
-            <td><button class="demo-btn-sm" id="dadv-${i}" ${o.status>=2?'disabled':''} onclick="demoAdvance(${i})">${o.status>=2?'✓':'Avanzar →'}</button></td>
+            <td style="font-weight:600;font-size:11px">${o.client}</td>
+            <td>${badge(o.stage)}</td>
+            <td class="mock-mono" style="font-size:10px;color:#aaa">${o.date}</td>
+            <td><button class="demo-btn-sm" onclick="demoPedidosDetail(${i})">Ver →</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
     </div>`;
   }
 
-  window.demoAdvance = function(i) {
-    if (orders[i].status < 2) {
-      orders[i].status++;
-      const area = document.getElementById('pj-modal-demo');
-      if (area) area.innerHTML = render();
-    }
+  function renderDetail(i) {
+    const o = orders[i];
+    return `<div class="demo-wrap">
+      <button class="demo-back-btn" onclick="demoPedidosBack()">← Pedidos</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa">PEDIDO</div>
+          <div style="font-size:18px;font-weight:700;font-family:'JetBrains Mono',monospace">${o.id}</div>
+        </div>
+        ${badge(o.stage)}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div class="demo-kpi"><div class="demo-kpi-val" style="font-size:12px">${o.client}</div><div class="demo-kpi-lbl">Cliente</div></div>
+        <div class="demo-kpi"><div class="demo-kpi-val" style="font-size:11px;line-height:1.3">${o.product}</div><div class="demo-kpi-lbl">Producto</div></div>
+      </div>
+      <div class="demo-timeline">
+        ${STAGES.map((s, si) => `<div class="demo-timeline-step">
+          <div class="demo-timeline-dot" style="background:${si<=o.stage?'#111':'#e0e0de'}"></div>
+          <div class="demo-timeline-label" style="color:${si<=o.stage?'#111':'#bbb'};font-weight:${si===o.stage?'600':'400'}">${s}</div>
+        </div>`).join('')}
+      </div>
+      ${o.stage < STAGES.length - 1
+        ? `<button class="demo-btn-sm" style="margin-top:12px" onclick="demoPedidosAdvance(${i})">Avanzar etapa →</button>`
+        : `<div style="margin-top:12px;padding:10px 14px;background:#d1fae5;border-radius:7px;font-size:12px;color:#065f46;font-weight:600">✓ Pedido entregado</div>`}
+    </div>`;
+  }
+
+  function renderNew() {
+    return `<div class="demo-wrap">
+      <button class="demo-back-btn" onclick="demoPedidosBack()">← Pedidos</button>
+      <p class="demo-title">NUEVO PEDIDO</p>
+      <div class="demo-form">
+        <div class="demo-field">
+          <div class="demo-label">CLIENTE</div>
+          <input class="demo-input" id="demo-p-client" placeholder="Nombre del cliente">
+        </div>
+        <div class="demo-field">
+          <div class="demo-label">PRODUCTO / DESCRIPCIÓN</div>
+          <input class="demo-input" id="demo-p-product" placeholder="Ej: Mesa ejecutiva x4">
+        </div>
+        <button class="btn-primary" style="font-size:12px;padding:10px 16px" onclick="demoPedidosCreate()">Crear pedido</button>
+      </div>
+    </div>`;
+  }
+
+  window.demoPedidosDetail = function(i) {
+    detailIdx = i; view = 'detail';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderDetail(i);
   };
 
-  return render();
+  window.demoPedidosBack = function() {
+    view = 'list';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderList();
+  };
+
+  window.demoPedidosNew = function() {
+    view = 'new';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderNew();
+    document.getElementById('demo-p-client')?.focus();
+  };
+
+  window.demoPedidosAdvance = function(i) {
+    if (orders[i].stage < STAGES.length - 1) orders[i].stage++;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderDetail(i);
+  };
+
+  window.demoPedidosCreate = function() {
+    const client  = document.getElementById('demo-p-client')?.value.trim();
+    const product = document.getElementById('demo-p-product')?.value.trim();
+    if (!client || !product) return;
+    const newId = '#' + String(orders.length + 46).padStart(4, '0');
+    orders.unshift({ id: newId, client, product, stage: 0, date: 'Hoy' });
+    view = 'list';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderList();
+  };
+
+  return renderList();
 }
 
 function buildDemoCRM() {
-  const contacts = [
-    { name: 'Carlos Durán',   company: 'Almacenes Durán',  stage: 'Prospecto' },
-    { name: 'Laura Torres',   company: 'Torres & Asoc.',   stage: 'Negociación' },
-    { name: 'Marco Rivas',    company: 'Rivas Interiores', stage: 'Cerrado' },
-  ];
-  let activeIdx = 0;
-  const notes   = [['Primer contacto por teléfono.','10:15 AM'], ['Envío de propuesta comercial.','11:42 AM']];
+  const STAGES = ['Prospecto','Negociación','Propuesta','Cerrado'];
 
-  function render() {
+  let contacts = [
+    { id:1, name:'Carlos Durán',    company:'Almacenes Durán',    stage:0, interactions:[{type:'llamada',text:'Contacto inicial por referido.',date:'10 Jun'}] },
+    { id:2, name:'Laura Torres',    company:'Torres & Asociados', stage:1, interactions:[{type:'visita',text:'Visita a sus instalaciones.',date:'12 Jun'},{type:'llamada',text:'Propuesta comercial enviada.',date:'14 Jun'}] },
+    { id:3, name:'Marco Vidal',     company:'Grupo Vidal SA',     stage:2, interactions:[{type:'llamada',text:'Demo del sistema presentada.',date:'16 Jun'},{type:'llamada',text:'Cotización enviada por correo.',date:'18 Jun'}] },
+    { id:4, name:'Ana Constructora',company:'Constructora PE',    stage:3, interactions:[{type:'visita',text:'Firma de contrato.',date:'20 Jun'}] },
+  ];
+  let nextId = 5;
+  let view = 'pipeline';
+  let activeId = -1;
+
+  function typePill(t) {
+    const bg  = t==='visita'?'#f0fdf4':t==='tarea'?'#fef3c7':'#eff6ff';
+    const col = t==='visita'?'#166534':t==='tarea'?'#92400e':'#1e40af';
+    return `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:99px;background:${bg};color:${col};flex-shrink:0">${t}</span>`;
+  }
+
+  function renderPipeline() {
+    const cols = STAGES.map((_,si) => contacts.filter(c => c.stage === si));
     return `<div class="demo-wrap">
-      <p class="demo-title">DEMO · SELECCIONA UN CLIENTE Y REGISTRA UNA NOTA</p>
-      <div class="demo-contacts">
-        ${contacts.map((c,i) => `<div class="demo-contact${i===activeIdx?' active':''}" onclick="demoSelectContact(${i})">
-          <div class="demo-contact-av">${c.name[0]}</div>
-          <div class="demo-contact-info">
-            <div class="demo-contact-name">${c.name}</div>
-            <div class="demo-contact-sub">${c.company} · ${c.stage}</div>
-          </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <p class="demo-title" style="margin:0">PIPELINE CRM</p>
+        <button class="demo-btn-sm" onclick="demoCRMNew()">+ Prospecto</button>
+      </div>
+      <div class="demo-pipeline">
+        ${STAGES.map((s, si) => `<div class="demo-pipeline-col">
+          <div class="demo-pipeline-head">${s} <strong style="color:#111">${cols[si].length}</strong></div>
+          ${cols[si].map(c => `<div class="demo-pipeline-card" onclick="demoCRMContact(${c.id})">
+            <div class="demo-pipeline-card-name">${c.name}</div>
+            <div class="demo-pipeline-card-sub">${c.company}</div>
+            <div style="margin-top:5px;font-size:9px;font-family:'JetBrains Mono',monospace;color:#aaa">${c.interactions.length} interacción${c.interactions.length!==1?'es':''}</div>
+          </div>`).join('')}
         </div>`).join('')}
       </div>
-      <div class="demo-form" style="margin-top:4px">
-        <div class="demo-note-log" id="demo-note-log">
-          ${notes.map(([t,h])=>`<div class="demo-note-item">${t}<div class="demo-note-time">${h}</div></div>`).join('')}
+    </div>`;
+  }
+
+  function renderContact(id) {
+    const c = contacts.find(x => x.id === id);
+    if (!c) return renderPipeline();
+    return `<div class="demo-wrap">
+      <button class="demo-back-btn" onclick="demoCRMBack()">← Pipeline</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-size:16px;font-weight:700">${c.name}</div>
+          <div style="font-size:11px;color:#888">${c.company}</div>
         </div>
+        <select class="demo-input" style="width:auto;padding:5px 8px;font-size:11px" onchange="demoCRMStage(${c.id},this.value)">
+          ${STAGES.map((s, si) => `<option value="${si}"${si===c.stage?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div class="demo-note-log" style="max-height:120px">
+        ${c.interactions.slice().reverse().map(it => `<div class="demo-note-item" style="display:flex;align-items:flex-start;gap:8px">
+          ${typePill(it.type)}
+          <div style="flex:1">${it.text}<div class="demo-note-time">${it.date}</div></div>
+        </div>`).join('')}
+      </div>
+      <div class="demo-form" style="margin-top:8px">
         <div class="demo-row">
-          <div class="demo-field"><input class="demo-input" id="demo-note-input" placeholder="Escribe una nota de seguimiento…"></div>
-          <button class="demo-btn-sm" onclick="demoAddNote()" style="flex-shrink:0">Guardar</button>
+          <select class="demo-input" id="demo-crm-itype" style="flex:.9;padding:6px 8px;font-size:11px">
+            <option value="llamada">llamada</option>
+            <option value="visita">visita</option>
+            <option value="tarea">tarea</option>
+          </select>
+          <div class="demo-field" style="flex:2"><input class="demo-input" id="demo-crm-inote" placeholder="Registro de interacción…"></div>
+          <button class="demo-btn-sm" style="flex-shrink:0" onclick="demoCRMLog(${c.id})">Guardar</button>
         </div>
       </div>
     </div>`;
   }
 
-  window.demoSelectContact = function(i) {
-    activeIdx = i;
+  function renderNew() {
+    return `<div class="demo-wrap">
+      <button class="demo-back-btn" onclick="demoCRMBack()">← Pipeline</button>
+      <p class="demo-title">NUEVO PROSPECTO</p>
+      <div class="demo-form">
+        <div class="demo-row">
+          <div class="demo-field"><div class="demo-label">NOMBRE</div><input class="demo-input" id="demo-crm-name" placeholder="Nombre completo"></div>
+          <div class="demo-field"><div class="demo-label">EMPRESA</div><input class="demo-input" id="demo-crm-company" placeholder="Empresa"></div>
+        </div>
+        <div class="demo-field"><div class="demo-label">PRIMERA INTERACCIÓN</div><input class="demo-input" id="demo-crm-note" placeholder="Ej: Referido por García Muebles"></div>
+        <button class="btn-primary" style="font-size:12px;padding:10px 16px" onclick="demoCRMCreate()">Agregar prospecto</button>
+      </div>
+    </div>`;
+  }
+
+  window.demoCRMBack = function() {
+    view = 'pipeline';
     const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = render();
+    if (area) area.innerHTML = renderPipeline();
   };
 
-  window.demoAddNote = function() {
-    const inp = document.getElementById('demo-note-input');
-    if (!inp || !inp.value.trim()) return;
+  window.demoCRMContact = function(id) {
+    activeId = id; view = 'contact';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderContact(id);
+  };
+
+  window.demoCRMNew = function() {
+    view = 'new';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderNew();
+    document.getElementById('demo-crm-name')?.focus();
+  };
+
+  window.demoCRMStage = function(id, stage) {
+    const c = contacts.find(x => x.id === id);
+    if (c) c.stage = parseInt(stage);
+  };
+
+  window.demoCRMLog = function(id) {
+    const c    = contacts.find(x => x.id === id);
+    const note = document.getElementById('demo-crm-inote')?.value.trim();
+    const type = document.getElementById('demo-crm-itype')?.value || 'llamada';
+    if (!c || !note) return;
     const now = new Date();
-    notes.unshift([inp.value.trim(), now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')]);
+    c.interactions.push({ type, text: note, date: 'Hoy ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') });
     const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = render();
+    if (area) area.innerHTML = renderContact(id);
   };
 
-  return render();
+  window.demoCRMCreate = function() {
+    const name    = document.getElementById('demo-crm-name')?.value.trim();
+    const company = document.getElementById('demo-crm-company')?.value.trim();
+    const note    = document.getElementById('demo-crm-note')?.value.trim();
+    if (!name || !company) return;
+    const now = new Date();
+    contacts.push({
+      id: nextId++, name, company, stage: 0,
+      interactions: note ? [{ type:'llamada', text: note, date: 'Hoy ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') }] : [],
+    });
+    view = 'pipeline';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderPipeline();
+  };
+
+  return renderPipeline();
 }
 
 function buildDemoCotizador() {
-  const items = [
-    { name: 'Mesa ejecutiva', qty: 2, price: 4500 },
+  const CATALOG = [
+    { name:'Mesa ejecutiva',      price:4500, unit:'PZA' },
+    { name:'Silla ergonómica',    price:2800, unit:'PZA' },
+    { name:'Librero modular',     price:6200, unit:'PZA' },
+    { name:'Archivero 4 cajones', price:3100, unit:'PZA' },
+    { name:'Panel divisorio',     price:1800, unit:'M2'  },
+    { name:'Servicio instalación',price:1200, unit:'HRS' },
   ];
 
-  function total() {
-    const sub = items.reduce((s,it)=>s+it.qty*it.price,0);
-    return { sub, iva: sub*0.16, total: sub*1.16 };
-  }
+  let client   = '';
+  let discount = 0;
+  let items    = [{ ...CATALOG[0], qty: 2 }];
+  let view     = 'form';
 
-  function fmt(n) { return '$'+n.toLocaleString('es-MX',{minimumFractionDigits:2}); }
+  function sub()   { return items.reduce((s,it) => s + it.qty * it.price, 0); }
+  function disc()  { return sub() * (discount / 100); }
+  function iva()   { return (sub() - disc()) * 0.16; }
+  function total() { return sub() - disc() + iva(); }
+  function fmt(n)  { return '$' + n.toLocaleString('es-MX', { minimumFractionDigits:2, maximumFractionDigits:2 }); }
 
-  function render() {
-    const t = total();
+  function renderForm() {
     return `<div class="demo-wrap">
-      <p class="demo-title">DEMO · CONSTRUYE UNA COTIZACIÓN EN TIEMPO REAL</p>
+      <p class="demo-title" style="margin-bottom:8px">COTIZADOR EN LÍNEA</p>
       <div class="demo-form">
         <div class="demo-row">
-          <div class="demo-field" style="flex:2"><div class="demo-label">PRODUCTO</div><input class="demo-input" id="demo-pname" placeholder="Nombre del producto"></div>
-          <div class="demo-field" style="flex:.7"><div class="demo-label">CANT.</div><input class="demo-input" id="demo-pqty" type="number" min="1" value="1" placeholder="1"></div>
-          <div class="demo-field" style="flex:1"><div class="demo-label">PRECIO UNIT.</div><input class="demo-input" id="demo-pprice" type="number" min="0" placeholder="0.00"></div>
+          <div class="demo-field" style="flex:2">
+            <div class="demo-label">CLIENTE</div>
+            <input class="demo-input" id="demo-cot-client" placeholder="Nombre del cliente" value="${client}">
+          </div>
+          <div class="demo-field" style="flex:.9">
+            <div class="demo-label">DESCUENTO %</div>
+            <input class="demo-input" id="demo-cot-disc" type="number" min="0" max="100" value="${discount}" placeholder="0">
+          </div>
         </div>
-        <button class="demo-btn-sm" onclick="demoAddItem()" style="align-self:flex-start">+ Agregar partida</button>
+        <div class="demo-row">
+          <div class="demo-field" style="flex:2">
+            <div class="demo-label">PRODUCTO DEL CATÁLOGO</div>
+            <select class="demo-input" id="demo-cot-sel">
+              <option value="">— Seleccionar —</option>
+              ${CATALOG.map((p,i) => `<option value="${i}">${p.name} · ${p.unit} · ${fmt(p.price)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="demo-field" style="flex:.6">
+            <div class="demo-label">CANT.</div>
+            <input class="demo-input" id="demo-cot-qty" type="number" min="1" value="1">
+          </div>
+          <button class="demo-btn-sm" onclick="demoCotAdd()" style="flex-shrink:0;align-self:flex-end">+ Agregar</button>
+        </div>
       </div>
-      <table class="demo-table" style="margin-top:6px">
-        <thead><tr><th>Producto</th><th>Cant.</th><th>P. Unit.</th><th>Subtotal</th></tr></thead>
+      <table class="demo-table" style="margin-top:8px">
+        <thead><tr><th>Producto</th><th>U.</th><th>Cant.</th><th>P.Unit.</th><th>Total</th><th></th></tr></thead>
         <tbody>
-          ${items.map((it,i)=>`<tr>
+          ${items.map((it, i) => `<tr>
             <td>${it.name}</td>
+            <td class="mock-mono" style="font-size:10px;color:#aaa">${it.unit||'PZA'}</td>
             <td class="mock-mono">${it.qty}</td>
             <td class="mock-mono">${fmt(it.price)}</td>
-            <td class="mock-mono">${fmt(it.qty*it.price)}</td>
+            <td class="mock-mono">${fmt(it.qty * it.price)}</td>
+            <td><button class="demo-btn-sm" onclick="demoCotRemove(${i})" style="padding:3px 8px;font-size:10px">✕</button></td>
           </tr>`).join('')}
         </tbody>
       </table>
-      <div class="demo-total-row"><span class="demo-total-lbl">SUBTOTAL</span><span class="demo-total-val">${fmt(t.sub)}</span></div>
-      <div class="demo-total-row" style="padding-top:4px;border-top:none"><span class="demo-total-lbl">IVA 16%</span><span class="demo-total-val" style="font-size:13px">${fmt(t.iva)}</span></div>
-      <div class="demo-total-row" style="border-top:2px solid #111"><span class="demo-total-lbl" style="color:#111;font-weight:600">TOTAL</span><span class="demo-total-val" style="font-size:20px">${fmt(t.total)}</span></div>
-      <button class="btn-primary" style="margin-top:8px;font-size:13px;padding:11px 20px" onclick="demoGenPDF(this)">Generar PDF</button>
+      <div class="demo-total-row" style="margin-top:6px">
+        <span class="demo-total-lbl">SUBTOTAL</span>
+        <span class="demo-total-val" style="font-size:14px">${fmt(sub())}</span>
+      </div>
+      ${discount > 0 ? `<div class="demo-total-row" style="border-top:none;padding-top:2px">
+        <span class="demo-total-lbl" style="color:#dc2626">DESCUENTO ${discount}%</span>
+        <span class="demo-total-val" style="font-size:13px;color:#dc2626">-${fmt(disc())}</span>
+      </div>` : ''}
+      <div class="demo-total-row" style="border-top:none;padding-top:2px">
+        <span class="demo-total-lbl">IVA 16%</span>
+        <span class="demo-total-val" style="font-size:13px;color:#888">${fmt(iva())}</span>
+      </div>
+      <div class="demo-total-row">
+        <span class="demo-total-lbl" style="color:#111;font-weight:600">TOTAL</span>
+        <span class="demo-total-val" style="font-size:20px">${fmt(total())}</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn-primary" style="font-size:12px;padding:10px 20px" onclick="demoCotPreview()">Vista previa PDF</button>
+        <button class="demo-btn-sm" onclick="demoCotClear()">Limpiar</button>
+      </div>
     </div>`;
   }
 
-  window.demoAddItem = function() {
-    const n = document.getElementById('demo-pname').value.trim();
-    const q = parseInt(document.getElementById('demo-pqty').value)||1;
-    const p = parseFloat(document.getElementById('demo-pprice').value)||0;
-    if (!n || p<=0) return;
-    items.push({name:n,qty:q,price:p});
+  function renderPreview() {
+    const today   = new Date();
+    const expires = new Date(today.getTime() + 15 * 24 * 60 * 60 * 1000);
+    const fmtD    = d => d.toLocaleDateString('es-MX', { day:'2-digit', month:'short', year:'numeric' });
+    const cotNum  = 'COT-2026-' + String(130 + items.length + (discount > 0 ? 5 : 0)).padStart(4, '0');
+    return `<div class="demo-wrap">
+      <button class="demo-back-btn" onclick="demoCotBack()">← Editar cotización</button>
+      <div style="border:1px solid #e8e8e6;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;letter-spacing:.08em">PROJECTER</div>
+          <div style="text-align:right">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa">${cotNum}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa">${fmtD(today)}</div>
+          </div>
+        </div>
+        <div style="height:1px;background:#f0f0ee"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-bottom:2px">CLIENTE</div>
+            <div style="font-weight:600">${client || 'Sin especificar'}</div>
+          </div>
+          <div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-bottom:2px">VÁLIDA HASTA</div>
+            <div style="font-family:'JetBrains Mono',monospace">${fmtD(expires)}</div>
+          </div>
+        </div>
+        <table style="width:100%;border-collapse:collapse;font-size:10px">
+          <thead><tr style="border-bottom:1px solid #f0f0ee">
+            ${['Descripción','U.','Cant.','P.Unit.','Importe'].map(h => `<th style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;padding:4px 0;text-align:left">${h}</th>`).join('')}
+          </tr></thead>
+          <tbody>
+            ${items.map(it => `<tr style="border-bottom:1px solid #f7f7f6">
+              ${[it.name, it.unit||'PZA', it.qty, fmt(it.price), fmt(it.qty*it.price)].map(v => `<td style="padding:5px 0;font-family:'JetBrains Mono',monospace">${v}</td>`).join('')}
+            </tr>`).join('')}
+          </tbody>
+        </table>
+        <div style="text-align:right;display:flex;flex-direction:column;gap:3px">
+          ${discount > 0 ? `<div style="font-size:10px;color:#dc2626;font-family:'JetBrains Mono',monospace">Descuento ${discount}%: -${fmt(disc())}</div>` : ''}
+          <div style="font-size:10px;color:#888;font-family:'JetBrains Mono',monospace">IVA 16%: ${fmt(iva())}</div>
+          <div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace">TOTAL: ${fmt(total())}</div>
+        </div>
+      </div>
+      <button class="btn-primary" style="margin-top:10px;font-size:12px;padding:10px 16px" onclick="demoCotDownload(this)">↓ Descargar PDF</button>
+    </div>`;
+  }
+
+  window.demoCotAdd = function() {
+    const sel = document.getElementById('demo-cot-sel');
+    const qty = parseInt(document.getElementById('demo-cot-qty')?.value) || 1;
+    client   = document.getElementById('demo-cot-client')?.value || '';
+    discount = parseInt(document.getElementById('demo-cot-disc')?.value) || 0;
+    if (!sel || sel.value === '') return;
+    items.push({ ...CATALOG[parseInt(sel.value)], qty });
     const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = render();
+    if (area) area.innerHTML = renderForm();
   };
 
-  window.demoGenPDF = function(btn) {
-    btn.textContent = '✓ PDF generado';
+  window.demoCotRemove = function(i) {
+    client   = document.getElementById('demo-cot-client')?.value || '';
+    discount = parseInt(document.getElementById('demo-cot-disc')?.value) || 0;
+    items.splice(i, 1);
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderForm();
+  };
+
+  window.demoCotPreview = function() {
+    client   = document.getElementById('demo-cot-client')?.value || '';
+    discount = parseInt(document.getElementById('demo-cot-disc')?.value) || 0;
+    if (items.length === 0) return;
+    view = 'preview';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderPreview();
+  };
+
+  window.demoCotBack = function() {
+    view = 'form';
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderForm();
+  };
+
+  window.demoCotClear = function() {
+    items = []; client = ''; discount = 0;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderForm();
+  };
+
+  window.demoCotDownload = function(btn) {
+    btn.textContent = '✓ PDF descargado (simulado)';
     btn.disabled = true;
-    setTimeout(()=>{ btn.textContent='Generar PDF'; btn.disabled=false; }, 2000);
+    setTimeout(() => { btn.textContent = '↓ Descargar PDF'; btn.disabled = false; }, 2200);
   };
 
-  return render();
+  return renderForm();
 }
 
 function buildDemoDashboard() {
-  const baseKPIs = [
-    { val: 347200, label: 'Ventas del mes', fmt: n=>'$'+Math.round(n/1000)+'k', id:'kv' },
-    { val: 23,     label: 'Pedidos activos', fmt: n=>n, id:'kp' },
-    { val: 14,     label: 'Clientes nuevos', fmt: n=>n, id:'kc' },
-    { val: 68,     label: 'Conversión (%)',  fmt: n=>n+'%', id:'kt' },
+  const BASE = [
+    { val:347200, label:'Ventas del mes',  fmt:n=>'$'+Math.round(n/1000)+'k', id:'kv', trend:+8.4 },
+    { val:23,     label:'Pedidos activos', fmt:n=>String(n),                  id:'kp', trend:+2   },
+    { val:14,     label:'Clientes nuevos', fmt:n=>String(n),                  id:'kc', trend:+5   },
+    { val:68,     label:'Conversión %',    fmt:n=>n+'%',                      id:'kt', trend:-1.2 },
   ];
-  let kpis = baseKPIs.map(k=>({...k}));
+  const MONTHS = ['Ene','Feb','Mar','Abr','May','Jun'];
+  let kpis      = BASE.map(k => ({ ...k }));
+  let monthData = [210, 285, 190, 310, 250, 347];
+
+  const ACTIVITY = [
+    { msg:'Pedido #0045 avanzó a "Listo para entrega"',      time:'hace 8 min'    },
+    { msg:'Cliente Constructora PE — cotización aceptada',    time:'hace 22 min'   },
+    { msg:'Stock crítico: Tornillo M8 — 12 uds restantes',   time:'hace 35 min'   },
+    { msg:'Nueva cotización COT-2026-0135 generada',          time:'hace 1h'       },
+    { msg:'Marco Vidal avanzó a etapa "Propuesta"',           time:'hace 1h 40min' },
+    { msg:'Pedido #0043 asignado a producción',               time:'hace 2h'       },
+  ];
 
   function animCount(id, target, fmtFn) {
     const el = document.getElementById(id);
     if (!el) return;
-    let start = 0;
-    const step = target/20;
-    const iv = setInterval(()=>{
-      start = Math.min(start+step, target);
-      el.textContent = fmtFn(Math.round(start));
-      if (start >= target) clearInterval(iv);
+    let s = 0; const step = target / 20;
+    const iv = setInterval(() => {
+      s = Math.min(s + step, target);
+      el.textContent = fmtFn(Math.round(s));
+      if (s >= target) clearInterval(iv);
     }, 40);
   }
 
+  function trendBadge(t) {
+    const up = t >= 0;
+    return `<span style="font-size:10px;font-family:'JetBrains Mono',monospace;color:${up?'#065f46':'#dc2626'};margin-top:2px">${up?'↑':'↓'} ${Math.abs(t).toFixed(1)}%</span>`;
+  }
+
   function render() {
+    const maxM = Math.max(...monthData);
     return `<div class="demo-wrap">
-      <p class="demo-title">DEMO · PANEL EN TIEMPO REAL</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <p class="demo-title" style="margin:0">PANEL EJECUTIVO</p>
+        <button class="demo-btn-sm" onclick="demoDashRefresh()">↻ Actualizar</button>
+      </div>
       <div class="demo-kpis">
-        ${kpis.map(k=>`<div class="demo-kpi">
+        ${kpis.map(k => `<div class="demo-kpi">
           <div class="demo-kpi-val" id="${k.id}">${k.fmt(k.val)}</div>
           <div class="demo-kpi-lbl">${k.label}</div>
+          ${trendBadge(k.trend)}
         </div>`).join('')}
       </div>
-      <div class="mock-bar-chart" style="margin-top:12px;height:60px;background:#fff;border-radius:8px;border:1px solid #ececeb;padding:10px 12px;box-sizing:border-box">
-        ${[210,285,190,310,250,347].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${Math.round(v/347*100)}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
+      <div style="margin-top:10px;border:1px solid #ececeb;border-radius:8px;padding:10px 12px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-bottom:8px">VENTAS ÚLTIMOS 6 MESES (miles MXN)</div>
+        <div class="mock-bar-chart" style="height:60px">
+          ${monthData.map((v, i) => `<div class="mock-bar-col">
+            <div class="mock-bar-fill" style="height:${Math.round(v/maxM*100)}%"></div>
+            <span class="mock-bar-lbl">${MONTHS[i]}</span>
+          </div>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-top:4px">
+          <span>vs mes anterior</span>
+          <span style="color:${kpis[0].trend>=0?'#065f46':'#dc2626'}">${kpis[0].trend>=0?'↑':'↓'} ${Math.abs(kpis[0].trend).toFixed(1)}%</span>
+        </div>
       </div>
-      <button class="demo-btn-sm" style="margin-top:10px" onclick="demoRefreshKPIs()">↻ Actualizar datos</button>
+      <div style="margin-top:8px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-bottom:4px">ACTIVIDAD RECIENTE</div>
+        <div class="demo-activity">
+          ${ACTIVITY.slice(0,4).map(a => `<div class="demo-activity-item">
+            <div class="demo-activity-msg">${a.msg}</div>
+            <div class="demo-activity-time">${a.time}</div>
+          </div>`).join('')}
+        </div>
+      </div>
     </div>`;
   }
 
-  window.demoRefreshKPIs = function() {
-    kpis.forEach(k=>{
-      const variance = 0.8 + Math.random()*0.4;
-      k.val = Math.round(baseKPIs.find(b=>b.id===k.id).val * variance);
+  window.demoDashRefresh = function() {
+    kpis.forEach((k, i) => {
+      k.val   = Math.round(BASE[i].val * (0.82 + Math.random() * 0.36));
+      k.trend = parseFloat((-5 + Math.random() * 15).toFixed(1));
     });
+    monthData = monthData.map(v => Math.max(80, Math.round(v * (0.85 + Math.random() * 0.32))));
     const area = document.getElementById('pj-modal-demo');
     if (area) {
       area.innerHTML = render();
-      kpis.forEach(k=>animCount(k.id, k.val, k.fmt));
+      kpis.forEach(k => animCount(k.id, k.val, k.fmt));
     }
   };
 
   const html = render();
-  setTimeout(()=>kpis.forEach(k=>animCount(k.id, k.val, k.fmt)), 100);
+  setTimeout(() => kpis.forEach(k => animCount(k.id, k.val, k.fmt)), 80);
   return html;
 }
 
 function buildDemoAgenda() {
-  const days  = ['Lun','Mar','Mié','Jue','Vie'];
-  const hours = ['09:00','10:00','11:00','12:00','15:00'];
-  const slots = {};
-  slots['1-2'] = 'García';
-  slots['3-1'] = 'Rivas';
-  slots['0-3'] = 'Torres';
+  const DAYS = ['Lun','Mar','Mié','Jue','Vie'];
+  const HOY  = 2; // Miércoles como "hoy" en la demo
 
-  function key(d,h){ return d+'-'+h; }
+  let events = [
+    { day:0, hour:'10:00', name:'García Muebles',   type:'visita',   desc:'Presentación de propuesta'  },
+    { day:1, hour:'11:00', name:'Torres & Asoc.',    type:'llamada',  desc:'Seguimiento cotización'      },
+    { day:2, hour:'09:00', name:'Equipo interno',    type:'tarea',    desc:'Revisión de inventario'      },
+    { day:2, hour:'12:00', name:'Constructora PE',   type:'visita',   desc:'Firma de contrato'           },
+    { day:3, hour:'10:00', name:'Grupo Vidal',       type:'llamada',  desc:'Demo del sistema'            },
+    { day:4, hour:'15:00', name:'Almacenes Durán',   type:'visita',   desc:'Diagnóstico inicial'         },
+  ];
 
-  function render() {
-    return `<div class="demo-wrap">
-      <p class="demo-title">DEMO · HAZ CLIC EN UN ESPACIO LIBRE PARA RESERVAR</p>
-      <div class="demo-cal-grid">
-        ${days.map(d=>`<div class="demo-cal-head">${d}</div>`).join('')}
-        ${hours.flatMap((h,hi)=>days.map((_,di)=>{
-          const k=key(di,hi);
-          const bk=slots[k];
-          return bk
-            ? `<div class="demo-cal-slot booked">${bk}<br>${h}</div>`
-            : `<div class="demo-cal-slot free" onclick="demoBookSlot(${di},${hi})">${h}</div>`;
-        })).join('')}
+  let activeTab = HOY;
+  let showForm  = false;
+
+  function typePill(t) {
+    const bg  = t==='visita'?'#f0fdf4':t==='tarea'?'#fef3c7':'#eff6ff';
+    const col = t==='visita'?'#166534':t==='tarea'?'#92400e':'#1e40af';
+    return `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:99px;background:${bg};color:${col};flex-shrink:0">${t}</span>`;
+  }
+
+  function renderDay(dayIdx) {
+    const evs = events
+      .filter(e => dayIdx < 0 ? true : e.day === dayIdx)
+      .sort((a, b) => a.hour.localeCompare(b.hour));
+    if (evs.length === 0) {
+      return `<div style="text-align:center;padding:24px 0;color:#bbb;font-size:12px">Sin citas agendadas</div>`;
+    }
+    return evs.map(ev => `<div class="demo-event-item">
+      <div class="demo-event-time">${ev.hour}</div>
+      <div class="demo-event-body">
+        <div class="demo-event-name">${ev.name}</div>
+        <div class="demo-event-sub">${ev.desc}</div>
+      </div>
+      ${typePill(ev.type)}
+    </div>`).join('');
+  }
+
+  function renderForm() {
+    return `<div class="demo-entry-panel">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#888;margin-bottom:6px">NUEVA CITA</div>
+      <div class="demo-row">
+        <div class="demo-field" style="flex:2">
+          <div class="demo-label">NOMBRE / EMPRESA</div>
+          <input class="demo-input" id="demo-ag-name" placeholder="Cliente o tema">
+        </div>
+        <div class="demo-field" style="flex:.8">
+          <div class="demo-label">HORA</div>
+          <select class="demo-input" id="demo-ag-hour">
+            ${['08:00','09:00','10:00','11:00','12:00','13:00','15:00','16:00','17:00'].map(h => `<option value="${h}"${h==='10:00'?' selected':''}>${h}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="demo-row">
+        <div class="demo-field">
+          <div class="demo-label">DÍA</div>
+          <select class="demo-input" id="demo-ag-day">
+            ${DAYS.map((d, i) => `<option value="${i}"${i===activeTab?' selected':''}>${d}${i===HOY?' (hoy)':''}</option>`).join('')}
+          </select>
+        </div>
+        <div class="demo-field">
+          <div class="demo-label">TIPO</div>
+          <select class="demo-input" id="demo-ag-type">
+            <option value="llamada">Llamada</option>
+            <option value="visita">Visita</option>
+            <option value="tarea">Tarea</option>
+          </select>
+        </div>
+      </div>
+      <div class="demo-field">
+        <div class="demo-label">DESCRIPCIÓN (OPCIONAL)</div>
+        <input class="demo-input" id="demo-ag-desc" placeholder="Ej: Presentar propuesta comercial">
+      </div>
+      <div class="demo-row" style="gap:8px">
+        <button class="btn-primary" style="font-size:12px;padding:8px 16px" onclick="demoAgendaSave()">Guardar cita</button>
+        <button class="demo-btn-sm" onclick="demoAgendaCancelForm()">Cancelar</button>
       </div>
     </div>`;
   }
 
-  window.demoBookSlot = function(di, hi) {
-    const name = prompt('Nombre del cliente:');
-    if (!name || !name.trim()) return;
-    slots[key(di,hi)] = name.trim();
+  function render() {
+    return `<div class="demo-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <p class="demo-title" style="margin:0">AGENDA SEMANAL</p>
+        <button class="demo-btn-sm" onclick="demoAgendaShowForm()">+ Nueva cita</button>
+      </div>
+      <div class="demo-tabs">
+        ${DAYS.map((d, i) => `<button class="demo-tab${i===activeTab?' active':''}" onclick="demoAgendaTab(${i})">${d}${i===HOY?'·':''}</button>`).join('')}
+        <button class="demo-tab${activeTab===-1?' active':''}" onclick="demoAgendaTab(-1)" style="margin-left:auto">Todos</button>
+      </div>
+      <div class="demo-events">${renderDay(activeTab)}</div>
+      ${showForm ? renderForm() : ''}
+    </div>`;
+  }
+
+  window.demoAgendaTab = function(i) {
+    activeTab = i; showForm = false;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+  };
+
+  window.demoAgendaShowForm = function() {
+    showForm = true;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+    document.getElementById('demo-ag-name')?.focus();
+  };
+
+  window.demoAgendaCancelForm = function() {
+    showForm = false;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+  };
+
+  window.demoAgendaSave = function() {
+    const name = document.getElementById('demo-ag-name')?.value.trim();
+    const hour = document.getElementById('demo-ag-hour')?.value || '10:00';
+    const day  = parseInt(document.getElementById('demo-ag-day')?.value || String(HOY));
+    const type = document.getElementById('demo-ag-type')?.value || 'llamada';
+    const desc = document.getElementById('demo-ag-desc')?.value.trim() || '';
+    if (!name) return;
+    events.push({ day, hour, name, type, desc });
+    showForm = false; activeTab = day;
     const area = document.getElementById('pj-modal-demo');
     if (area) area.innerHTML = render();
   };
@@ -1418,51 +1846,167 @@ function buildDemoAgenda() {
 }
 
 function buildDemoInventario() {
-  const products = [
-    { name: 'Tornillo M8',    cat: 'Fijación',    stock: 12,  min: 50  },
-    { name: 'Plancha 3mm',   cat: 'Acero',        stock: 80,  min: 40  },
-    { name: 'Pintura base',  cat: 'Acabados',     stock: 28,  min: 30  },
-    { name: 'Remache pop',   cat: 'Fijación',     stock: 340, min: 100 },
-    { name: 'Sellador PU',   cat: 'Acabados',     stock: 5,   min: 20  },
+  let products = [
+    { id:1, name:'Tornillo M8',   cat:'Fijación',  stock:12,  min:50,  moves:[{type:'out',qty:35,date:'25 Jun'},{type:'in',qty:100,date:'20 Jun'},{type:'out',qty:50,date:'18 Jun'}] },
+    { id:2, name:'Plancha 3mm',   cat:'Acero',     stock:80,  min:40,  moves:[{type:'in',qty:80,date:'22 Jun'},{type:'out',qty:20,date:'15 Jun'}] },
+    { id:3, name:'Pintura base',  cat:'Acabados',  stock:28,  min:30,  moves:[{type:'out',qty:10,date:'24 Jun'},{type:'in',qty:30,date:'10 Jun'}] },
+    { id:4, name:'Remache pop',   cat:'Fijación',  stock:340, min:100, moves:[{type:'in',qty:500,date:'18 Jun'},{type:'out',qty:60,date:'12 Jun'}] },
+    { id:5, name:'Sellador PU',   cat:'Acabados',  stock:5,   min:20,  moves:[{type:'out',qty:15,date:'23 Jun'}] },
   ];
 
-  function stClass(p){ return p.stock<=0?'crit':p.stock<p.min?(p.stock<p.min*0.3?'crit':'low'):'ok'; }
-  function stLabel(p){ return p.stock<=0?'Sin stock':p.stock<p.min?(p.stock<p.min*0.3?'Crítico':'Bajo'):'OK'; }
+  let view          = 'list';
+  let detailId      = -1;
+  let filter        = '';
+  let entryOpen     = false;
+  let entryTargetId = -1;
 
-  function render(filter='') {
-    const list = products.filter(p=>!filter||p.name.toLowerCase().includes(filter.toLowerCase()));
-    return `<div class="demo-wrap">
-      <p class="demo-title">DEMO · BUSCA Y REGISTRA ENTRADAS DE STOCK</p>
-      <input class="demo-input" id="demo-stock-search" placeholder="Buscar producto…" oninput="demoFilterStock(this.value)" value="${filter}">
-      <table class="demo-stock-table">
-        <thead><tr><th>Producto</th><th>Stock</th><th>Mín.</th><th>Estado</th><th></th></tr></thead>
-        <tbody>
-          ${list.map((p,i)=>`<tr>
-            <td>${p.name}<div style="font-size:9px;color:#bbb;font-family:'JetBrains Mono',monospace">${p.cat}</div></td>
-            <td class="mock-mono">${p.stock}</td>
-            <td class="mock-mono">${p.min}</td>
-            <td><span class="demo-badge ${stClass(p)}">${stLabel(p)}</span></td>
-            <td><button class="demo-btn-sm" onclick="demoAddStock(${products.indexOf(p)})">+ Entrada</button></td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
+  function stClass(p) { return p.stock <= 0 ? 'crit' : p.stock < p.min * 0.3 ? 'crit' : p.stock < p.min ? 'low' : 'ok'; }
+  function stLabel(p) { return p.stock <= 0 ? 'Sin stock' : p.stock < p.min * 0.3 ? 'Crítico' : p.stock < p.min ? 'Bajo' : 'OK'; }
+  function barColor(p) { const c = stClass(p); return c==='ok'?'#111':c==='low'?'#f59e0b':'#dc2626'; }
+  function barPct(p)   { return Math.min(100, Math.round(p.stock / Math.max(p.min, 1) * 100)); }
+
+  function entryPanel(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return '';
+    return `<div class="demo-entry-panel">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#888;margin-bottom:6px">REGISTRAR ENTRADA · ${p.name.toUpperCase()}</div>
+      <div class="demo-row">
+        <div class="demo-field">
+          <div class="demo-label">CANTIDAD</div>
+          <input class="demo-input" id="demo-inv-qty" type="number" min="1" placeholder="0">
+        </div>
+        <div class="demo-field" style="flex:2">
+          <div class="demo-label">NOTA (OPCIONAL)</div>
+          <input class="demo-input" id="demo-inv-note" placeholder="Ej: Compra a proveedor">
+        </div>
+      </div>
+      <div class="demo-row" style="gap:8px">
+        <button class="btn-primary" style="font-size:12px;padding:8px 16px" onclick="demoInvEntry(${id})">Registrar</button>
+        <button class="demo-btn-sm" onclick="demoInvEntryClose()">Cancelar</button>
+      </div>
     </div>`;
   }
 
-  window.demoFilterStock = function(v) {
+  function renderList() {
+    const list = products.filter(p => !filter || p.name.toLowerCase().includes(filter.toLowerCase()));
+    return `<div class="demo-wrap">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <p class="demo-title" style="margin:0">INVENTARIO</p>
+        <input class="demo-input" id="demo-inv-search" placeholder="Buscar…" value="${filter}" oninput="demoInvFilter(this.value)" style="width:110px">
+      </div>
+      <table class="demo-stock-table">
+        <thead><tr><th>Producto</th><th>Stock / Mín.</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          ${list.map(p => `<tr>
+            <td>
+              <div style="font-weight:600;font-size:11px">${p.name}</div>
+              <div style="font-size:9px;color:#bbb;font-family:'JetBrains Mono',monospace">${p.cat}</div>
+            </td>
+            <td>
+              <div class="mock-mono" style="font-size:11px">${p.stock}<span style="color:#bbb"> / ${p.min}</span></div>
+              <div class="demo-stock-bar-wrap">
+                <div class="demo-stock-bar-fill" style="width:${barPct(p)}%;background:${barColor(p)}"></div>
+              </div>
+            </td>
+            <td><span class="demo-badge ${stClass(p)}">${stLabel(p)}</span></td>
+            <td style="white-space:nowrap">
+              <button class="demo-btn-sm" onclick="demoInvDetail(${p.id})" style="margin-right:4px">Ver</button>
+              <button class="demo-btn-sm" onclick="demoInvEntryOpen(${p.id})">+ Entrada</button>
+            </td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      ${entryOpen && entryTargetId > 0 ? entryPanel(entryTargetId) : ''}
+    </div>`;
+  }
+
+  function renderDetail(id) {
+    const p = products.find(x => x.id === id);
+    if (!p) return renderList();
+    return `<div class="demo-wrap">
+      <button class="demo-back-btn" onclick="demoInvBack()">← Inventario</button>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-size:16px;font-weight:700">${p.name}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa">${p.cat}</div>
+        </div>
+        <span class="demo-badge ${stClass(p)}" style="font-size:11px;padding:5px 12px">${stLabel(p)}</span>
+      </div>
+      <div class="demo-kpis" style="margin-bottom:14px">
+        <div class="demo-kpi">
+          <div class="demo-kpi-val" style="${p.stock<p.min?'color:#dc2626':''}">${p.stock}</div>
+          <div class="demo-kpi-lbl">Stock actual</div>
+        </div>
+        <div class="demo-kpi">
+          <div class="demo-kpi-val">${p.min}</div>
+          <div class="demo-kpi-lbl">Stock mínimo</div>
+        </div>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-bottom:6px">MOVIMIENTOS RECIENTES</div>
+      <div style="display:flex;flex-direction:column">
+        ${p.moves.map(m => `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f7f7f6">
+          <div style="width:26px;height:26px;border-radius:50%;background:${m.type==='in'?'#d1fae5':'#f7f7f6'};display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0">${m.type==='in'?'↑':'↓'}</div>
+          <div style="flex:1;font-size:11px;font-weight:600;color:${m.type==='in'?'#065f46':'#555'}">${m.type==='in'?'Entrada':'Salida'} ${m.qty} uds</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#bbb">${m.date}</div>
+        </div>`).join('')}
+      </div>
+      <button class="demo-btn-sm" style="margin-top:12px" onclick="demoInvDetailEntry(${p.id})">+ Registrar entrada</button>
+      ${entryOpen && entryTargetId === p.id ? entryPanel(p.id) : ''}
+    </div>`;
+  }
+
+  window.demoInvFilter = function(v) {
+    filter = v; entryOpen = false;
     const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = render(v);
+    if (area) area.innerHTML = renderList();
   };
 
-  window.demoAddStock = function(i) {
-    const qty = parseInt(prompt('¿Cuántas unidades ingresan?'));
-    if (!qty || qty<=0) return;
-    products[i].stock += qty;
+  window.demoInvDetail = function(id) {
+    detailId = id; view = 'detail'; entryOpen = false;
     const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = render(document.getElementById('demo-stock-search')?.value||'');
+    if (area) area.innerHTML = renderDetail(id);
   };
 
-  return render();
+  window.demoInvBack = function() {
+    view = 'list'; entryOpen = false;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderList();
+  };
+
+  window.demoInvEntryOpen = function(id) {
+    entryOpen = true; entryTargetId = id;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderList();
+    setTimeout(() => document.getElementById('demo-inv-qty')?.focus(), 50);
+  };
+
+  window.demoInvDetailEntry = function(id) {
+    entryOpen = true; entryTargetId = id;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderDetail(id);
+    setTimeout(() => document.getElementById('demo-inv-qty')?.focus(), 50);
+  };
+
+  window.demoInvEntryClose = function() {
+    entryOpen = false;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = view === 'detail' ? renderDetail(detailId) : renderList();
+  };
+
+  window.demoInvEntry = function(id) {
+    const qty  = parseInt(document.getElementById('demo-inv-qty')?.value || '0');
+    const note = document.getElementById('demo-inv-note')?.value.trim() || 'Entrada de stock';
+    if (!qty || qty <= 0) return;
+    const p = products.find(x => x.id === id);
+    if (!p) return;
+    p.stock += qty;
+    p.moves.unshift({ type:'in', qty, date:'Hoy', note });
+    entryOpen = false;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = view === 'detail' ? renderDetail(id) : renderList();
+  };
+
+  return renderList();
 }
 
 /* ===== MODAL ===== */
