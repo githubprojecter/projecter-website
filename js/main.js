@@ -25,9 +25,9 @@ const PROJECTS = [
     features: ['Cotizador de lámina y teja en tiempo real', 'Pipeline de producción y maquila', 'Inventario por rollo con alertas de stock', 'Panel ejecutivo multi-usuario'],
   },
   {
-    id: '02', name: 'Seguimiento de clientes', tag: 'CRM', kind: 'PLATAFORMA', url: 'crm.projecter.mx',
-    desc: 'Plataforma CRM que ordena tu pipeline de ventas y registra cada interacción con el cliente. Deja de perseguir prospectos: el sistema te dice cuándo actuar y qué decir.',
-    features: ['Pipeline visual de ventas', 'Historial de interacciones', 'Tareas y recordatorios automáticos', 'Reportes de conversión'],
+    id: '02', name: 'OnOffice — Punto de venta multi-sucursal', tag: 'Retail', kind: 'PLATAFORMA WEB', url: 'onoffice.projecter.mx',
+    desc: 'Sistema de punto de venta y gestión integral para negocios con múltiples sucursales. Centraliza ventas, inventario, clientes y reportes en tiempo real desde cualquier dispositivo.',
+    features: ['Punto de venta rápido desde cualquier dispositivo', 'Inventario sincronizado por sucursal', 'Dashboard de ventas, ganancias y productos top', 'Gestión de clientes, proveedores y gastos'],
   },
   {
     id: '03', name: 'Cotizador en línea', tag: 'Ventas', kind: 'WEB APP', url: 'cotiza.projecter.mx',
@@ -982,40 +982,49 @@ const PROJECT_GALLERY = {
   ],
   '02': [
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">crm.projecter.mx</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">onoffice.projecter.mx / venta</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">PIPELINE DE VENTAS</p>
-        <div class="mock-pipe">
-          <div class="mock-pipe-col"><div class="mock-pipe-head">PROSPECTO</div><div class="mock-pipe-card">Almacenes Durán<span class="mock-mono">Contacto inicial</span></div><div class="mock-pipe-card">Textiles Monroy<span class="mock-mono">Demo agendada</span></div></div>
-          <div class="mock-pipe-col"><div class="mock-pipe-head">NEGOCIACIÓN</div><div class="mock-pipe-card">Grupo Vidal<span class="mock-mono">Cotización enviada</span></div></div>
-          <div class="mock-pipe-col"><div class="mock-pipe-head">CERRADO</div><div class="mock-pipe-card" style="background:#d1fae5;border-color:#a7f3d0">Constructora PE<span class="mock-mono" style="color:#065f46">Firmado ✓</span></div></div>
+        <p class="mock-section-title">PUNTO DE VENTA</p>
+        <div style="display:flex;gap:8px">
+          <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:5px">
+            ${['Café Americano $45','Café Latte $55','Agua 600ml $18','Refresco $25','Sándwich $85','Galletas $32'].map((p,i)=>`<div style="padding:6px 8px;border:1px solid ${i===0||i===2?'#111':'#e8e8e6'};border-radius:6px;font-size:9px;line-height:1.3">${p}</div>`).join('')}
+          </div>
+          <div style="width:90px;border-left:1px solid #e8e8e6;padding-left:8px;display:flex;flex-direction:column;gap:4px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#aaa">CARRITO</div>
+            <div style="font-size:9px">Café Americano <strong>×2</strong></div>
+            <div style="font-size:9px">Agua 600ml <strong>×1</strong></div>
+            <div style="margin-top:auto;padding-top:6px;border-top:1px solid #e8e8e6;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700">$108.00</div>
+            <div style="padding:4px 8px;background:#111;color:#fff;border-radius:5px;font-size:9px;text-align:center">Cobrar</div>
+          </div>
         </div>
       </div>
     </div>`,
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">crm.projecter.mx / clientes</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">onoffice.projecter.mx / dashboard</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">CONTACTO · GRUPO VIDAL</p>
+        <p class="mock-section-title">DASHBOARD HOY</p>
         <div class="mock-kpi-row">
-          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">Grupo Vidal SA</span><span class="mock-kpi-lbl">Empresa</span></div>
-          <div class="mock-kpi"><span class="mock-kpi-val mock-badge-new" style="font-size:10px;padding:3px 0">Negociación</span><span class="mock-kpi-lbl">Etapa</span></div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
-          ${['Llamada inicial — 10 jun','Demo enviada — 14 jun','Cotización enviada — 17 jun'].map(n=>`<div style="padding:6px 8px;background:#f7f7f6;border-radius:5px;font-size:10px;color:#555">${n}</div>`).join('')}
-        </div>
-      </div>
-    </div>`,
-    `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">crm.projecter.mx / reportes</span></div>
-      <div class="mock-body">
-        <p class="mock-section-title">CONVERSIÓN</p>
-        <div class="mock-kpi-row">
-          <div class="mock-kpi"><span class="mock-kpi-val">68%</span><span class="mock-kpi-lbl">Tasa de cierre</span></div>
-          <div class="mock-kpi"><span class="mock-kpi-val">24</span><span class="mock-kpi-lbl">Prospectos activos</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">$3,840</span><span class="mock-kpi-lbl">Ventas</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">$1,152</span><span class="mock-kpi-lbl">Ganancia</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">24</span><span class="mock-kpi-lbl">Tickets</span></div>
         </div>
         <div class="mock-bar-chart" style="margin-top:6px">
-          ${[40,55,60,48,72,68].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${v}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
+          ${[2100,3400,2850,4200,3180,3840,800].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${Math.round(v/42)}%;background:${i===6?'#111':'#d4d4d4'}"></div><span class="mock-bar-lbl">${['L','M','X','J','V','S','H'][i]}</span></div>`).join('')}
         </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">onoffice.projecter.mx / inventario</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">INVENTARIO · SUCURSAL PRINCIPAL</p>
+        <table class="mock-table">
+          <thead><tr><th>Producto</th><th>Stock</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Café Americano</td><td class="mock-mono">50</td><td><span class="mock-badge mock-badge-done">OK</span></td></tr>
+            <tr><td>Sándwich Club</td><td class="mock-mono">8</td><td><span class="mock-badge mock-badge-pend">Bajo</span></td></tr>
+            <tr><td>Galletas surtidas</td><td class="mock-mono">0</td><td><span class="mock-badge" style="background:#fee2e2;color:#991b1b">Crítico</span></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>`,
   ],
@@ -1171,7 +1180,7 @@ const PROJECT_GALLERY = {
 
 function buildDemo(id) {
   if (id === '01') return buildDemoCentauro();
-  if (id === '02') return buildDemoCRM();
+  if (id === '02') return buildDemoOnoffice();
   if (id === '03') return buildDemoCotizador();
   if (id === '04') return buildDemoDashboard();
   if (id === '05') return buildDemoAgenda();
@@ -1604,145 +1613,338 @@ function buildDemoCentauro() {
   return renderTabs();
 }
 
-function buildDemoCRM() {
-  const STAGES = ['Prospecto','Negociación','Propuesta','Cerrado'];
+function buildDemoOnoffice() {
+  /* ---- estado compartido ---- */
+  var ooTab = 'pos';
 
-  let contacts = [
-    { id:1, name:'Carlos Durán',    company:'Almacenes Durán',    stage:0, interactions:[{type:'llamada',text:'Contacto inicial por referido.',date:'10 Jun'}] },
-    { id:2, name:'Laura Torres',    company:'Torres & Asociados', stage:1, interactions:[{type:'visita',text:'Visita a sus instalaciones.',date:'12 Jun'},{type:'llamada',text:'Propuesta comercial enviada.',date:'14 Jun'}] },
-    { id:3, name:'Marco Vidal',     company:'Grupo Vidal SA',     stage:2, interactions:[{type:'llamada',text:'Demo del sistema presentada.',date:'16 Jun'},{type:'llamada',text:'Cotización enviada por correo.',date:'18 Jun'}] },
-    { id:4, name:'Ana Constructora',company:'Constructora PE',    stage:3, interactions:[{type:'visita',text:'Firma de contrato.',date:'20 Jun'}] },
+  /* ---- POS ---- */
+  var ooProducts = [
+    { id:1, name:'Café Americano', cat:'Bebida',   price:45, stock:50 },
+    { id:2, name:'Café Latte',     cat:'Bebida',   price:55, stock:42 },
+    { id:3, name:'Agua 600ml',     cat:'Bebida',   price:18, stock:120 },
+    { id:4, name:'Refresco 355ml', cat:'Bebida',   price:25, stock:85 },
+    { id:5, name:'Sándwich Club',  cat:'Alimento', price:85, stock:15 },
+    { id:6, name:'Galletas',       cat:'Alimento', price:32, stock:30 },
   ];
-  let nextId = 5;
-  let view = 'pipeline';
-  let activeId = -1;
+  var ooCart = [];
+  var ooPay = false;
+  var ooPayMethod = 'efectivo';
+  var ooTicketDone = false;
+  var ooLastTotal = 0;
 
-  function typePill(t) {
-    const bg  = t==='visita'?'#f0fdf4':t==='tarea'?'#fef3c7':'#eff6ff';
-    const col = t==='visita'?'#166534':t==='tarea'?'#92400e':'#1e40af';
-    return `<span style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 6px;border-radius:99px;background:${bg};color:${col};flex-shrink:0">${t}</span>`;
+  /* ---- Dashboard ---- */
+  var ooDashBase = { ventas:3840, tickets:24, ganancia:1152, vendidos:87 };
+  var ooDash = { ventas:3840, tickets:24, ganancia:1152, vendidos:87 };
+  var ooBars = [2100, 3400, 2850, 4200, 3180, 3840, 800];
+
+  /* ---- Inventario ---- */
+  var ooInvFilter = '';
+  var ooInv = [
+    { id:1, name:'Café Americano', cat:'Bebida',   stock:50,  min:10, precio:45 },
+    { id:2, name:'Café Latte',     cat:'Bebida',   stock:42,  min:10, precio:55 },
+    { id:3, name:'Agua 600ml',     cat:'Bebida',   stock:120, min:24, precio:18 },
+    { id:4, name:'Refresco 355ml', cat:'Bebida',   stock:85,  min:24, precio:25 },
+    { id:5, name:'Sándwich Club',  cat:'Alimento', stock:8,   min:20, precio:85 },
+    { id:6, name:'Galletas',       cat:'Alimento', stock:0,   min:15, precio:32 },
+  ];
+
+  /* ---- Clientes ---- */
+  var ooClientes = [
+    { id:1, name:'Roberto García', tipo:'Frecuente',   compras:47, total:12480, pendiente:0 },
+    { id:2, name:'María López',    tipo:'Regular',     compras:12, total:3200,  pendiente:1 },
+    { id:3, name:'Juan Pérez',     tipo:'Nuevo',       compras:2,  total:340,   pendiente:0 },
+    { id:4, name:'Ana Torres',     tipo:'Frecuente',   compras:63, total:18900, pendiente:0 },
+    { id:5, name:'Empresa XYZ',    tipo:'Corporativo', compras:8,  total:24500, pendiente:2 },
+  ];
+  var ooClienteIdx = -1;
+
+  /* ---- helpers ---- */
+  function fmtMXN(n) {
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+  function cartQty(id) {
+    var item = ooCart.find(function(x) { return x.id === id; });
+    return item ? item.qty : 0;
+  }
+  function cartTotal() {
+    return ooCart.reduce(function(s, x) { return s + x.price * x.qty; }, 0);
+  }
+  function rerender() {
+    var area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderMain();
   }
 
-  function renderPipeline() {
-    const cols = STAGES.map((_,si) => contacts.filter(c => c.stage === si));
-    return `<div class="demo-wrap">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-        <p class="demo-title" style="margin:0">PIPELINE CRM</p>
-        <button class="demo-btn-sm" onclick="demoCRMNew()">+ Prospecto</button>
-      </div>
-      <div class="demo-pipeline">
-        ${STAGES.map((s, si) => `<div class="demo-pipeline-col">
-          <div class="demo-pipeline-head">${s} <strong style="color:#111">${cols[si].length}</strong></div>
-          ${cols[si].map(c => `<div class="demo-pipeline-card" onclick="demoCRMContact(${c.id})">
-            <div class="demo-pipeline-card-name">${c.name}</div>
-            <div class="demo-pipeline-card-sub">${c.company}</div>
-            <div style="margin-top:5px;font-size:9px;font-family:'JetBrains Mono',monospace;color:#aaa">${c.interactions.length} interacción${c.interactions.length!==1?'es':''}</div>
-          </div>`).join('')}
-        </div>`).join('')}
-      </div>
-    </div>`;
+  /* ---- POS renders ---- */
+  function renderTicketOk() {
+    return '<div class="demo-wrap" style="align-items:center;justify-content:center;text-align:center;gap:12px;padding-top:32px">' +
+      '<div style="font-size:40px;line-height:1">✓</div>' +
+      '<div style="font-size:15px;font-weight:700;margin-top:4px">¡Cobro realizado!</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;color:#888;margin-top:2px">Ticket #0847 · ' + fmtMXN(ooLastTotal) + '</div>' +
+      '<button class="demo-btn-sm" style="margin-top:12px" onclick="ooNuevaTxn()">+ Nueva venta</button>' +
+    '</div>';
   }
 
-  function renderContact(id) {
-    const c = contacts.find(x => x.id === id);
-    if (!c) return renderPipeline();
-    return `<div class="demo-wrap">
-      <button class="demo-back-btn" onclick="demoCRMBack()">← Pipeline</button>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-        <div>
-          <div style="font-size:16px;font-weight:700">${c.name}</div>
-          <div style="font-size:11px;color:#888">${c.company}</div>
-        </div>
-        <select class="demo-input" style="width:auto;padding:5px 8px;font-size:11px" onchange="demoCRMStage(${c.id},this.value)">
-          ${STAGES.map((s, si) => `<option value="${si}"${si===c.stage?' selected':''}>${s}</option>`).join('')}
-        </select>
-      </div>
-      <div class="demo-note-log" style="max-height:120px">
-        ${c.interactions.slice().reverse().map(it => `<div class="demo-note-item" style="display:flex;align-items:flex-start;gap:8px">
-          ${typePill(it.type)}
-          <div style="flex:1">${it.text}<div class="demo-note-time">${it.date}</div></div>
-        </div>`).join('')}
-      </div>
-      <div class="demo-form" style="margin-top:8px">
-        <div class="demo-row">
-          <select class="demo-input" id="demo-crm-itype" style="flex:.9;padding:6px 8px;font-size:11px">
-            <option value="llamada">llamada</option>
-            <option value="visita">visita</option>
-            <option value="tarea">tarea</option>
-          </select>
-          <div class="demo-field" style="flex:2"><input class="demo-input" id="demo-crm-inote" placeholder="Registro de interacción…"></div>
-          <button class="demo-btn-sm" style="flex-shrink:0" onclick="demoCRMLog(${c.id})">Guardar</button>
-        </div>
-      </div>
-    </div>`;
+  function renderPago() {
+    var total = cartTotal();
+    return '<div class="demo-wrap">' +
+      '<button class="demo-back-btn" onclick="ooPayCancel()">← Carrito</button>' +
+      '<p class="demo-title">COBRO</p>' +
+      '<div style="display:flex;gap:6px;margin-bottom:12px">' +
+        '<button class="demo-btn-sm" onclick="ooPayMeth(\'efectivo\')" style="flex:1' + (ooPayMethod === 'efectivo' ? ';background:#111;color:#fff' : '') + '">Efectivo</button>' +
+        '<button class="demo-btn-sm" onclick="ooPayMeth(\'tarjeta\')"  style="flex:1' + (ooPayMethod === 'tarjeta'  ? ';background:#111;color:#fff' : '') + '">Tarjeta</button>' +
+      '</div>' +
+      '<div style="border:1px solid #e8e8e6;border-radius:10px;padding:14px;margin-bottom:12px">' +
+        '<div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:10px">' +
+          '<span>Total a cobrar</span><span style="font-family:\'JetBrains Mono\',monospace">' + fmtMXN(total) + '</span>' +
+        '</div>' +
+        (ooPayMethod === 'efectivo'
+          ? '<div class="demo-field" style="margin-bottom:8px"><div class="demo-label">MONTO RECIBIDO</div><input class="demo-input" id="oo-efectivo" type="number" placeholder="0.00" oninput="ooCalcCambio()" style="font-size:14px;font-weight:600;text-align:right"></div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:#888">Cambio</span><span id="oo-cambio" style="font-family:\'JetBrains Mono\',monospace;font-weight:600">$0.00</span></div>'
+          : '<div style="padding:12px;background:#f7f7f6;border-radius:8px;text-align:center;font-size:11px;color:#888">Terminal lista · ' + fmtMXN(total) + '</div>'
+        ) +
+      '</div>' +
+      '<button class="btn-primary" style="width:100%;font-size:12px;padding:10px" onclick="ooConfirmPago()">Confirmar cobro</button>' +
+    '</div>';
   }
 
-  function renderNew() {
-    return `<div class="demo-wrap">
-      <button class="demo-back-btn" onclick="demoCRMBack()">← Pipeline</button>
-      <p class="demo-title">NUEVO PROSPECTO</p>
-      <div class="demo-form">
-        <div class="demo-row">
-          <div class="demo-field"><div class="demo-label">NOMBRE</div><input class="demo-input" id="demo-crm-name" placeholder="Nombre completo"></div>
-          <div class="demo-field"><div class="demo-label">EMPRESA</div><input class="demo-input" id="demo-crm-company" placeholder="Empresa"></div>
-        </div>
-        <div class="demo-field"><div class="demo-label">PRIMERA INTERACCIÓN</div><input class="demo-input" id="demo-crm-note" placeholder="Ej: Referido por García Muebles"></div>
-        <button class="btn-primary" style="font-size:12px;padding:10px 16px" onclick="demoCRMCreate()">Agregar prospecto</button>
-      </div>
-    </div>`;
+  function renderPOS() {
+    if (ooTicketDone) return renderTicketOk();
+    if (ooPay)        return renderPago();
+    var total = cartTotal();
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;gap:10px">' +
+        '<div style="flex:1;display:flex;flex-direction:column;gap:8px">' +
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;letter-spacing:.1em">PRODUCTOS</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">' +
+            ooProducts.map(function(p) {
+              var qty = cartQty(p.id);
+              return '<div style="padding:10px 9px;border:1px solid ' + (qty > 0 ? '#111' : '#e8e8e6') + ';border-radius:8px;cursor:pointer;background:' + (qty > 0 ? '#f7f7f6' : '#fff') + '" onclick="ooAddToCart(' + p.id + ')">' +
+                '<div style="font-size:11px;font-weight:600;line-height:1.3">' + p.name + '</div>' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">' +
+                  '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px">' + fmtMXN(p.price) + '</span>' +
+                  (qty > 0 ? '<span style="font-size:10px;font-weight:700">×' + qty + '</span>' : '') +
+                '</div>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+        '<div style="width:130px;display:flex;flex-direction:column;gap:5px;border-left:1px solid #e8e8e6;padding-left:10px">' +
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;letter-spacing:.1em">CARRITO</div>' +
+          (ooCart.length === 0
+            ? '<div style="font-size:11px;color:#ccc;padding:14px 0;text-align:center">Vacío</div>'
+            : ooCart.map(function(item, idx) {
+                return '<div style="font-size:10px;display:flex;flex-direction:column;gap:2px;padding-bottom:5px;border-bottom:1px solid #f0f0ee">' +
+                  '<div style="line-height:1.3;font-weight:500">' + item.name + '</div>' +
+                  '<div style="display:flex;align-items:center;gap:4px">' +
+                    '<button class="demo-btn-sm" style="padding:0 5px;font-size:12px;line-height:16px" onclick="ooCartQty(' + idx + ',-1)">−</button>' +
+                    '<span style="font-family:\'JetBrains Mono\',monospace;font-size:10px;min-width:14px;text-align:center">' + item.qty + '</span>' +
+                    '<button class="demo-btn-sm" style="padding:0 5px;font-size:12px;line-height:16px" onclick="ooCartQty(' + idx + ',1)">+</button>' +
+                    '<span style="margin-left:auto;font-family:\'JetBrains Mono\',monospace;font-size:10px">' + fmtMXN(item.price * item.qty) + '</span>' +
+                  '</div>' +
+                '</div>';
+              }).join('')
+          ) +
+          '<div style="margin-top:auto;padding-top:8px;border-top:1px solid #e8e8e6">' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:8px"><span>Total</span><span style="font-family:\'JetBrains Mono\',monospace">' + fmtMXN(total) + '</span></div>' +
+            '<button class="btn-primary" style="width:100%;font-size:11px;padding:8px;' + (ooCart.length === 0 ? 'opacity:.4;pointer-events:none' : '') + '" onclick="ooCobrar()">Cobrar</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
   }
 
-  window.demoCRMBack = function() {
-    view = 'pipeline';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderPipeline();
-  };
+  /* ---- Dashboard render ---- */
+  function renderDashboard() {
+    var days = ['L','M','X','J','V','S','H'];
+    var maxBar = Math.max.apply(null, ooBars);
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">' +
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">HOY · SUCURSAL PRINCIPAL</div>' +
+        '<button class="demo-btn-sm" onclick="ooDashRefresh()">↻ Actualizar</button>' +
+      '</div>' +
+      '<div class="mock-kpi-row" style="margin-bottom:10px">' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">' + fmtMXN(ooDash.ventas) + '</span><span class="mock-kpi-lbl">Ventas</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">' + ooDash.tickets + '</span><span class="mock-kpi-lbl">Tickets</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">' + fmtMXN(ooDash.ganancia) + '</span><span class="mock-kpi-lbl">Ganancia</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">' + ooDash.vendidos + '</span><span class="mock-kpi-lbl">Piezas</span></div>' +
+      '</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">VENTAS ÚLTIMOS 7 DÍAS</div>' +
+      '<div class="mock-bar-chart">' +
+        ooBars.map(function(v, i) {
+          var pct = Math.round((v / maxBar) * 100);
+          return '<div class="mock-bar-col"><div class="mock-bar-fill" style="height:' + pct + '%;background:' + (i === 6 ? '#111' : '#d4d4d4') + '"></div><span class="mock-bar-lbl">' + days[i] + '</span></div>';
+        }).join('') +
+      '</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin:10px 0 6px">MÁS VENDIDOS HOY</div>' +
+      '<div style="display:flex;flex-direction:column;gap:5px">' +
+        [['Café Americano',32],['Agua 600ml',28],['Café Latte',18]].map(function(row, i) {
+          var pct = Math.round((row[1] / 32) * 100);
+          return '<div style="display:flex;align-items:center;gap:8px">' +
+            '<div style="width:110px;font-size:11px;flex-shrink:0">' + (i + 1) + '. ' + row[0] + '</div>' +
+            '<div style="flex:1;height:5px;background:#f0f0ee;border-radius:99px"><div style="height:5px;border-radius:99px;background:#111;width:' + pct + '%"></div></div>' +
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#888;width:24px;text-align:right">' + row[1] + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
 
-  window.demoCRMContact = function(id) {
-    activeId = id; view = 'contact';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderContact(id);
-  };
-
-  window.demoCRMNew = function() {
-    view = 'new';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderNew();
-    document.getElementById('demo-crm-name')?.focus();
-  };
-
-  window.demoCRMStage = function(id, stage) {
-    const c = contacts.find(x => x.id === id);
-    if (c) c.stage = parseInt(stage);
-  };
-
-  window.demoCRMLog = function(id) {
-    const c    = contacts.find(x => x.id === id);
-    const note = document.getElementById('demo-crm-inote')?.value.trim();
-    const type = document.getElementById('demo-crm-itype')?.value || 'llamada';
-    if (!c || !note) return;
-    const now = new Date();
-    c.interactions.push({ type, text: note, date: 'Hoy ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') });
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderContact(id);
-  };
-
-  window.demoCRMCreate = function() {
-    const name    = document.getElementById('demo-crm-name')?.value.trim();
-    const company = document.getElementById('demo-crm-company')?.value.trim();
-    const note    = document.getElementById('demo-crm-note')?.value.trim();
-    if (!name || !company) return;
-    const now = new Date();
-    contacts.push({
-      id: nextId++, name, company, stage: 0,
-      interactions: note ? [{ type:'llamada', text: note, date: 'Hoy ' + now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') }] : [],
+  /* ---- Inventario render ---- */
+  function renderInventario() {
+    var list = ooInv.filter(function(p) {
+      return !ooInvFilter || p.name.toLowerCase().indexOf(ooInvFilter.toLowerCase()) >= 0;
     });
-    view = 'pipeline';
-    const area = document.getElementById('pj-modal-demo');
-    if (area) area.innerHTML = renderPipeline();
+    return '<div class="demo-wrap">' +
+      '<input class="demo-input" placeholder="Buscar producto…" value="' + ooInvFilter + '" oninput="ooInvSearch(this.value)" style="margin-bottom:10px;padding:6px 10px;font-size:11px;width:100%">' +
+      '<table class="demo-table">' +
+        '<thead><tr><th>Producto</th><th>Cat.</th><th>Stock</th><th>Estado</th></tr></thead>' +
+        '<tbody>' +
+          list.map(function(p) {
+            var s = p.stock === 0 ? 'crit' : (p.stock < p.min ? 'bajo' : 'ok');
+            var bg  = s === 'crit' ? '#fee2e2' : (s === 'bajo' ? '#fef3c7' : '#d1fae5');
+            var col = s === 'crit' ? '#991b1b' : (s === 'bajo' ? '#92400e' : '#065f46');
+            var lbl = s === 'crit' ? 'Crítico' : (s === 'bajo' ? 'Bajo' : 'OK');
+            return '<tr>' +
+              '<td style="font-size:11px">' + p.name + '</td>' +
+              '<td style="font-size:10px;color:#888">' + p.cat + '</td>' +
+              '<td class="mock-mono">' + p.stock + '</td>' +
+              '<td><span style="font-size:9px;padding:2px 6px;border-radius:99px;background:' + bg + ';color:' + col + '">' + lbl + '</span></td>' +
+            '</tr>';
+          }).join('') +
+        '</tbody>' +
+      '</table>' +
+    '</div>';
+  }
+
+  /* ---- Clientes render ---- */
+  function renderClientes() {
+    if (ooClienteIdx >= 0) {
+      var c = ooClientes[ooClienteIdx];
+      var hist = [
+        { folio:'T-0847', monto:450,  fecha:'Hoy 10:32' },
+        { folio:'T-0831', monto:285,  fecha:'Ayer 14:15' },
+        { folio:'T-0812', monto:620,  fecha:'26 Jun 9:40' },
+      ];
+      return '<div class="demo-wrap">' +
+        '<button class="demo-back-btn" onclick="ooClienteBack()">← Clientes</button>' +
+        '<div style="margin-bottom:12px">' +
+          '<div style="font-size:15px;font-weight:700">' + c.name + '</div>' +
+          '<div style="font-size:11px;color:#888">' + c.tipo + ' · ' + c.compras + ' compras</div>' +
+        '</div>' +
+        '<div class="mock-kpi-row" style="margin-bottom:12px">' +
+          '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">' + fmtMXN(c.total) + '</span><span class="mock-kpi-lbl">Histórico</span></div>' +
+          '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">' + c.pendiente + '</span><span class="mock-kpi-lbl">Pendientes</span></div>' +
+        '</div>' +
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">ÚLTIMAS COMPRAS</div>' +
+        '<table class="demo-table">' +
+          '<thead><tr><th>Folio</th><th>Monto</th><th>Fecha</th></tr></thead>' +
+          '<tbody>' +
+            hist.map(function(h) {
+              return '<tr><td class="mock-mono" style="font-size:10px">' + h.folio + '</td><td class="mock-mono">' + fmtMXN(h.monto) + '</td><td style="font-size:10px;color:#888">' + h.fecha + '</td></tr>';
+            }).join('') +
+          '</tbody>' +
+        '</table>' +
+      '</div>';
+    }
+    return '<div class="demo-wrap">' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:8px">CLIENTES</div>' +
+      '<div style="display:flex;flex-direction:column;gap:5px">' +
+        ooClientes.map(function(c, i) {
+          return '<div style="display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #e8e8e6;border-radius:8px;cursor:pointer" onclick="ooClienteVer(' + i + ')">' +
+            '<div style="flex:1">' +
+              '<div style="font-size:12px;font-weight:600">' + c.name + '</div>' +
+              '<div style="font-size:10px;color:#888">' + c.tipo + ' · ' + c.compras + ' compras</div>' +
+            '</div>' +
+            '<div style="text-align:right">' +
+              '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px">' + fmtMXN(c.total) + '</div>' +
+              (c.pendiente > 0 ? '<div style="font-size:9px;color:#dc2626">' + c.pendiente + ' pendiente' + (c.pendiente > 1 ? 's' : '') + '</div>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ---- tabs ---- */
+  var ooTabsKeys   = ['pos','dashboard','inventario','clientes'];
+  var ooTabsLabels = ['Punto de Venta','Dashboard','Inventario','Clientes'];
+
+  function renderMain() {
+    var tabBar = '<div class="demo-tabs">' +
+      ooTabsKeys.map(function(t, i) {
+        return '<button class="demo-tab' + (ooTab === t ? ' active' : '') + '" onclick="ooTab_(' + i + ')">' + ooTabsLabels[i] + '</button>';
+      }).join('') +
+    '</div>';
+    var body = '';
+    if (ooTab === 'pos')        body = renderPOS();
+    if (ooTab === 'dashboard')  body = renderDashboard();
+    if (ooTab === 'inventario') body = renderInventario();
+    if (ooTab === 'clientes')   body = renderClientes();
+    return tabBar + body;
+  }
+
+  /* ---- handlers globales ---- */
+  window.ooTab_ = function(i) {
+    ooTab = ooTabsKeys[i];
+    if (ooTab === 'clientes') ooClienteIdx = -1;
+    rerender();
   };
 
-  return renderPipeline();
+  window.ooAddToCart = function(id) {
+    var item = ooCart.find(function(x) { return x.id === id; });
+    if (item) {
+      item.qty++;
+    } else {
+      var prod = ooProducts.find(function(p) { return p.id === id; });
+      if (prod) ooCart.push({ id: prod.id, name: prod.name, price: prod.price, qty: 1 });
+    }
+    rerender();
+  };
+
+  window.ooCartQty = function(idx, delta) {
+    ooCart[idx].qty += delta;
+    if (ooCart[idx].qty <= 0) ooCart.splice(idx, 1);
+    rerender();
+  };
+
+  window.ooCobrar    = function() { ooPay = true; rerender(); };
+  window.ooPayCancel = function() { ooPay = false; rerender(); };
+  window.ooPayMeth   = function(m) { ooPayMethod = m; rerender(); };
+
+  window.ooCalcCambio = function() {
+    var el = document.getElementById('oo-efectivo');
+    var monto = parseFloat(el ? el.value : '0') || 0;
+    var cambio = monto - cartTotal();
+    var cel = document.getElementById('oo-cambio');
+    if (cel) cel.textContent = fmtMXN(Math.max(0, cambio));
+  };
+
+  window.ooConfirmPago = function() {
+    ooLastTotal = cartTotal();
+    ooTicketDone = true;
+    ooCart = [];
+    ooPay  = false;
+    ooDash.ventas += ooLastTotal;
+    ooDash.tickets++;
+    rerender();
+  };
+
+  window.ooNuevaTxn = function() { ooTicketDone = false; rerender(); };
+
+  window.ooDashRefresh = function() {
+    function rnd(v) { return Math.round(v * (0.92 + Math.random() * 0.16)); }
+    ooDash.ventas   = rnd(ooDashBase.ventas);
+    ooDash.tickets  = rnd(ooDashBase.tickets);
+    ooDash.ganancia = rnd(ooDashBase.ganancia);
+    ooDash.vendidos = rnd(ooDashBase.vendidos);
+    rerender();
+  };
+
+  window.ooInvSearch  = function(v) { ooInvFilter = v; rerender(); };
+  window.ooClienteVer = function(i) { ooClienteIdx = i; rerender(); };
+  window.ooClienteBack = function() { ooClienteIdx = -1; rerender(); };
+
+  return renderMain();
 }
 
 function buildDemoCotizador() {
