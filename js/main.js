@@ -1568,7 +1568,7 @@ function buildDemoCotizador() {
           <div style="font-size:16px;font-weight:700;font-family:'JetBrains Mono',monospace">TOTAL: ${fmt(total())}</div>
         </div>
       </div>
-      <button class="btn-primary" style="margin-top:10px;font-size:12px;padding:10px 16px" onclick="demoCotDownload(this)">↓ Descargar PDF</button>
+      <button class="btn-primary" style="margin-top:10px;font-size:12px;padding:10px 16px" onclick="demoCotDownload()">↓ Ver nota sobre PDF</button>
     </div>`;
   }
 
@@ -1612,10 +1612,16 @@ function buildDemoCotizador() {
     if (area) area.innerHTML = renderForm();
   };
 
-  window.demoCotDownload = function(btn) {
-    btn.textContent = '✓ PDF descargado (simulado)';
-    btn.disabled = true;
-    setTimeout(() => { btn.textContent = '↓ Descargar PDF'; btn.disabled = false; }, 2200);
+  window.demoCotDownload = function() {
+    const area = document.getElementById('pj-modal-demo');
+    if (!area) return;
+    const msg = area.querySelector('.demo-pdf-note');
+    if (msg) return;
+    const note = document.createElement('div');
+    note.className = 'demo-pdf-note';
+    note.style.cssText = 'margin-top:10px;padding:10px 14px;background:#f7f7f6;border-radius:8px;font-size:11px;color:#555;border:1px solid #e8e8e6;line-height:1.5';
+    note.innerHTML = 'En el sistema real el PDF se genera y descarga automáticamente con logo, datos fiscales del cliente y folio correlativo.';
+    area.querySelector('.demo-wrap').appendChild(note);
   };
 
   return renderForm();
