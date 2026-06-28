@@ -216,6 +216,46 @@
   <div id="footer" class="footer footer-fixed hidden">© 2026 P R O J E C T E R. Marca 100% Mexicana.</div>
 
 </div>
+<!-- ============ MODAL DE PROYECTO ============ -->
+<div id="pj-modal" class="pj-modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="pj-modal-bd" id="pj-modal-bd"></div>
+  <div class="pj-modal-panel">
+    <button class="pj-modal-x" id="pj-modal-x" aria-label="Cerrar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="#111" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+    <div class="pj-modal-left">
+      <div class="pj-modal-gallery" id="pj-modal-gallery">
+        <div class="pj-gallery-track" id="pj-gallery-track"></div>
+        <div class="pj-gallery-ctrl">
+          <button class="pj-gallery-arr" id="pj-gallery-prev" aria-label="Anterior">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#111" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="pj-gallery-dots" id="pj-gallery-dots"></div>
+          <button class="pj-gallery-arr" id="pj-gallery-next" aria-label="Siguiente">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 2l5 5-5 5" stroke="#111" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="pj-modal-demo hidden" id="pj-modal-demo"></div>
+    </div>
+    <div class="pj-modal-right">
+      <div class="pj-modal-info">
+        <div class="pj-modal-meta2">
+          <span class="pj-modal-mid" id="pj-modal-mid"></span>
+          <span class="pj-modal-mtag" id="pj-modal-mtag"></span>
+        </div>
+        <h2 class="pj-modal-mname" id="pj-modal-mname"></h2>
+        <p class="pj-modal-mdesc" id="pj-modal-mdesc"></p>
+        <ul class="pj-modal-mfeats" id="pj-modal-mfeats"></ul>
+        <div class="pj-modal-mbtns">
+          <button class="btn-primary" id="pj-demo-btn">Probar demo</button>
+          <button class="btn-secondary pj-gallery-back hidden" id="pj-gallery-back">← Galería</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/main.js"></script>
 </body>
 </html>

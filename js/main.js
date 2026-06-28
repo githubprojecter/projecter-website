@@ -19,12 +19,36 @@ const QUESTIONS = [
 ];
 
 const PROJECTS = [
-  { id: '01', name: 'Flujo de pedidos automatizado',  tag: 'Operaciones', kind: 'SISTEMA WEB', url: 'pedidos.projecter.mx' },
-  { id: '02', name: 'Seguimiento de clientes',        tag: 'CRM',         kind: 'PLATAFORMA',  url: 'crm.projecter.mx'     },
-  { id: '03', name: 'Cotizador en línea',              tag: 'Ventas',      kind: 'WEB APP',     url: 'cotiza.projecter.mx'  },
-  { id: '04', name: 'Panel de control operativo',     tag: 'Datos',       kind: 'DASHBOARD',   url: 'panel.projecter.mx'   },
-  { id: '05', name: 'Agenda y reservas',               tag: 'Atención',    kind: 'SISTEMA WEB', url: 'agenda.projecter.mx'  },
-  { id: '06', name: 'Inventario inteligente',          tag: 'Inventario',  kind: 'PLATAFORMA',  url: 'stock.projecter.mx'   },
+  {
+    id: '01', name: 'Flujo de pedidos automatizado', tag: 'Operaciones', kind: 'SISTEMA WEB', url: 'pedidos.projecter.mx',
+    desc: 'Sistema que centraliza la captura, asignación y seguimiento de pedidos en tiempo real. Elimina el rastreo manual por WhatsApp o Excel y notifica automáticamente a cada área.',
+    features: ['Captura de pedidos en segundos', 'Seguimiento de estatus en tiempo real', 'Notificaciones automáticas al equipo', 'Historial completo por cliente'],
+  },
+  {
+    id: '02', name: 'Seguimiento de clientes', tag: 'CRM', kind: 'PLATAFORMA', url: 'crm.projecter.mx',
+    desc: 'Plataforma CRM que ordena tu pipeline de ventas y registra cada interacción con el cliente. Deja de perseguir prospectos: el sistema te dice cuándo actuar y qué decir.',
+    features: ['Pipeline visual de ventas', 'Historial de interacciones', 'Tareas y recordatorios automáticos', 'Reportes de conversión'],
+  },
+  {
+    id: '03', name: 'Cotizador en línea', tag: 'Ventas', kind: 'WEB APP', url: 'cotiza.projecter.mx',
+    desc: 'Genera cotizaciones profesionales en menos de dos minutos desde cualquier dispositivo. Calcula automáticamente precios, impuestos y descuentos, y envía el PDF al cliente de inmediato.',
+    features: ['Cotizaciones en 2 minutos', 'Catálogo de productos integrado', 'PDF profesional automático', 'Historial y seguimiento de cotizaciones'],
+  },
+  {
+    id: '04', name: 'Panel de control operativo', tag: 'Datos', kind: 'DASHBOARD', url: 'panel.projecter.mx',
+    desc: 'Dashboard ejecutivo que consolida los KPIs clave del negocio en una sola pantalla. Sin exportar Excel ni esperar reportes: toda la información disponible al instante.',
+    features: ['KPIs actualizados en tiempo real', 'Gráficas de tendencia mensuales', 'Alertas automáticas por umbral', 'Acceso desde cualquier dispositivo'],
+  },
+  {
+    id: '05', name: 'Agenda y reservas', tag: 'Atención', kind: 'SISTEMA WEB', url: 'agenda.projecter.mx',
+    desc: 'Sistema de citas que reemplaza la agenda en papel. Tus clientes reservan en línea 24/7 y reciben confirmación y recordatorio automático, sin intervención de tu equipo.',
+    features: ['Reservas en línea 24/7', 'Confirmaciones y recordatorios automáticos', 'Vista de calendario por día o semana', 'Gestión de disponibilidad por servicio'],
+  },
+  {
+    id: '06', name: 'Inventario inteligente', tag: 'Inventario', kind: 'PLATAFORMA', url: 'stock.projecter.mx',
+    desc: 'Control de inventario que te avisa antes de que se agote el stock. Registra entradas, salidas y mermas, con reportes automáticos de rotación y valor en almacén.',
+    features: ['Alertas de stock mínimo', 'Entradas y salidas en tiempo real', 'Reportes de rotación automáticos', 'Soporte de múltiples almacenes'],
+  },
 ];
 
 const SERVICES = [
@@ -507,6 +531,8 @@ function createProjectCard(p, ratio) {
   };
   const drawFn = animMap[p.tag] || drawFlow;
 
+  div.addEventListener('click', () => openProjectModal(p));
+
   div.addEventListener('mouseenter', () => {
     if (!cctx) cctx = cvs.getContext('2d');
     tStart = performance.now();
@@ -903,6 +929,616 @@ function navigateSection(direction) {
   }, SECTION_ANIM_MS);
 }
 
+/* ===== GALLERY MOCKUPS ===== */
+
+const PROJECT_GALLERY = {
+  '01': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">pedidos.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">PEDIDOS RECIENTES</p>
+        <table class="mock-table">
+          <thead><tr><th>#</th><th>Cliente</th><th>Producto</th><th>Estatus</th></tr></thead>
+          <tbody>
+            <tr><td class="mock-mono">#0041</td><td>García Muebles</td><td class="mock-mono" style="color:#bbb">Mesa centro x4</td><td><span class="mock-badge mock-badge-done">Completado</span></td></tr>
+            <tr><td class="mock-mono">#0040</td><td>Torres & Asoc.</td><td class="mock-mono" style="color:#bbb">Silla x10</td><td><span class="mock-badge mock-badge-proc">En proceso</span></td></tr>
+            <tr><td class="mock-mono">#0039</td><td>Distribuidora P</td><td class="mock-mono" style="color:#bbb">Repisa x2</td><td><span class="mock-badge mock-badge-pend">Pendiente</span></td></tr>
+            <tr><td class="mock-mono">#0038</td><td>Rivas Interiores</td><td class="mock-mono" style="color:#bbb">Cajonera x6</td><td><span class="mock-badge mock-badge-done">Completado</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">pedidos.projecter.mx / #0040</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">DETALLE · PEDIDO #0040</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val">Torres</span><span class="mock-kpi-lbl">Cliente</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val mock-badge-proc" style="font-size:11px;padding:3px 0">En proceso</span><span class="mock-kpi-lbl">Estatus</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+          ${['Captura recibida','Asignado a producción','En proceso ←','Calidad','Entrega'].map((s,i)=>`<div style="display:flex;align-items:center;gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:${i<3?'#111':'#e0e0de'}"></div><span style="font-size:11px;color:${i<3?'#111':'#bbb'}">${s}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">pedidos.projecter.mx / resumen</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">RESUMEN DEL MES</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val">142</span><span class="mock-kpi-lbl">Total pedidos</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">38</span><span class="mock-kpi-lbl">En proceso</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">96%</span><span class="mock-kpi-lbl">A tiempo</span></div>
+        </div>
+        <div class="mock-bar-chart" style="margin-top:6px">
+          ${[55,70,48,82,65,91].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${v}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+  ],
+  '02': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">crm.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">PIPELINE DE VENTAS</p>
+        <div class="mock-pipe">
+          <div class="mock-pipe-col"><div class="mock-pipe-head">PROSPECTO</div><div class="mock-pipe-card">Almacenes Durán<span class="mock-mono">Contacto inicial</span></div><div class="mock-pipe-card">Textiles Monroy<span class="mock-mono">Demo agendada</span></div></div>
+          <div class="mock-pipe-col"><div class="mock-pipe-head">NEGOCIACIÓN</div><div class="mock-pipe-card">Grupo Vidal<span class="mock-mono">Cotización enviada</span></div></div>
+          <div class="mock-pipe-col"><div class="mock-pipe-head">CERRADO</div><div class="mock-pipe-card" style="background:#d1fae5;border-color:#a7f3d0">Constructora PE<span class="mock-mono" style="color:#065f46">Firmado ✓</span></div></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">crm.projecter.mx / clientes</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">CONTACTO · GRUPO VIDAL</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">Grupo Vidal SA</span><span class="mock-kpi-lbl">Empresa</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val mock-badge-new" style="font-size:10px;padding:3px 0">Negociación</span><span class="mock-kpi-lbl">Etapa</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+          ${['Llamada inicial — 10 jun','Demo enviada — 14 jun','Cotización enviada — 17 jun'].map(n=>`<div style="padding:6px 8px;background:#f7f7f6;border-radius:5px;font-size:10px;color:#555">${n}</div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">crm.projecter.mx / reportes</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">CONVERSIÓN</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val">68%</span><span class="mock-kpi-lbl">Tasa de cierre</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">24</span><span class="mock-kpi-lbl">Prospectos activos</span></div>
+        </div>
+        <div class="mock-bar-chart" style="margin-top:6px">
+          ${[40,55,60,48,72,68].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${v}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+  ],
+  '03': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">NUEVA COTIZACIÓN</p>
+        <table class="mock-table">
+          <thead><tr><th>Producto</th><th>Cant.</th><th>P. Unit.</th><th>Subtotal</th></tr></thead>
+          <tbody>
+            <tr><td>Mesa ejecutiva</td><td class="mock-mono">2</td><td class="mock-mono">$4,500</td><td class="mock-mono">$9,000</td></tr>
+            <tr><td>Silla ergonómica</td><td class="mock-mono">6</td><td class="mock-mono">$2,800</td><td class="mock-mono">$16,800</td></tr>
+            <tr><td>Librero modular</td><td class="mock-mono">1</td><td class="mock-mono">$6,200</td><td class="mock-mono">$6,200</td></tr>
+          </tbody>
+        </table>
+        <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding-top:8px;border-top:1px solid #f0f0ee">TOTAL: $37,236 <span style="font-size:10px;color:#aaa">(IVA inc.)</span></div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / pdf</span></div>
+      <div class="mock-body">
+        <div style="border:1px solid #f0f0ee;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500">P R O J E C T E R</span><span style="font-size:10px;color:#aaa">COT-2026-0134</span></div>
+          <div style="height:1px;background:#f0f0ee"></div>
+          <div style="font-size:11px;color:#555">Cliente: <strong>Torres & Asociados</strong></div>
+          <div style="font-size:11px;color:#555">Válida hasta: <span style="font-family:'JetBrains Mono',monospace">2026-07-15</span></div>
+          <div style="background:#f7f7f6;border-radius:6px;padding:8px;font-size:10px;color:#888;text-align:center">[ Vista previa del PDF generado ]</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;text-align:right">$37,236.00 MXN</div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / historial</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">COTIZACIONES RECIENTES</p>
+        <table class="mock-table">
+          <thead><tr><th>COT-#</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td class="mock-mono">0134</td><td>Torres &amp; Asoc.</td><td class="mock-mono">$37,236</td><td><span class="mock-badge mock-badge-pend">Enviada</span></td></tr>
+            <tr><td class="mock-mono">0133</td><td>García Muebles</td><td class="mock-mono">$12,450</td><td><span class="mock-badge mock-badge-done">Aceptada</span></td></tr>
+            <tr><td class="mock-mono">0132</td><td>Rivas Interior</td><td class="mock-mono">$8,900</td><td><span class="mock-badge mock-badge-done">Aceptada</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`,
+  ],
+  '04': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">panel.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">INDICADORES · HOY</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val">$347k</span><span class="mock-kpi-lbl">Ventas del mes</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">23</span><span class="mock-kpi-lbl">Pedidos activos</span></div>
+        </div>
+        <div class="mock-kpi-row" style="margin-top:6px">
+          <div class="mock-kpi"><span class="mock-kpi-val">14</span><span class="mock-kpi-lbl">Clientes nuevos</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">68%</span><span class="mock-kpi-lbl">Conversión</span></div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">panel.projecter.mx / ventas</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">VENTAS ÚLTIMOS 6 MESES</p>
+        <div class="mock-bar-chart" style="height:70px">
+          ${[210,285,190,310,250,347].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${Math.round(v/347*100)}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
+        </div>
+        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa;margin-top:6px"><span>vs mes anterior</span><span style="color:#065f46">↑ +38.8%</span></div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">panel.projecter.mx / alertas</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">ACTIVIDAD RECIENTE</p>
+        ${[['Pedido #0041 completado','hace 12 min'],['Stock bajo: Tornillo M8','hace 35 min'],['Nueva cotización enviada','hace 1h'],['Cliente Grupo Vidal — cierre','hace 2h']].map(([msg,t])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f7f7f6"><span style="font-size:11px;color:#333">${msg}</span><span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#bbb">${t}</span></div>`).join('')}
+      </div>
+    </div>`,
+  ],
+  '05': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">agenda.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">SEMANA DEL 23 AL 27 JUN</p>
+        <div class="mock-cal">
+          ${['Lun','Mar','Mié','Jue','Vie'].map(d=>`<div class="mock-cal-head">${d}</div>`).join('')}
+          ${['','García 10h','','Rivas 10h',''].map(v=>v?`<div class="mock-cal-slot booked">${v}</div>`:`<div class="mock-cal-slot free">libre</div>`).join('')}
+          ${['Torres 11h','','Monroy 11h','','libre'].map(v=>v==='libre'?`<div class="mock-cal-slot free">libre</div>`:`<div class="mock-cal-slot booked">${v}</div>`).join('')}
+          ${['','libre','','Vidal 12h','Torres 12h'].map(v=>v==='libre'?`<div class="mock-cal-slot free">libre</div>`:`<div class="mock-cal-slot booked">${v}</div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">agenda.projecter.mx / nueva</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">NUEVA CITA</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          ${[['Nombre del cliente','María González'],['Servicio','Consultoría de procesos'],['Fecha','Lunes 30 Jun — 10:00 am']].map(([l,v])=>`<div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin-bottom:3px">${l}</div><div style="border:1px solid #e8e8e6;border-radius:5px;padding:6px 9px;font-size:11px;color:#333">${v}</div></div>`).join('')}
+          <div style="background:#111;color:#fff;border-radius:99px;padding:7px 16px;font-size:11px;text-align:center;margin-top:4px">Confirmar cita</div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">agenda.projecter.mx / hoy</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">HOY — MIÉRCOLES 25 JUN</p>
+        ${[['10:00','Monroy & Hijos','Asesoría operativa','proc'],['12:00','Constructora PE','Revisión de propuesta','done'],['15:00','Almacenes Durán','Demo del sistema','pend']].map(([h,n,s,b])=>`<div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #f7f7f6;align-items:center"><span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#aaa;flex-shrink:0">${h}</span><div style="flex:1"><div style="font-size:11px;font-weight:600">${n}</div><div style="font-size:10px;color:#888">${s}</div></div><span class="mock-badge mock-badge-${b}">${{proc:'Confirmada',done:'Completada',pend:'Pendiente'}[b]}</span></div>`).join('')}
+      </div>
+    </div>`,
+  ],
+  '06': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">stock.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">INVENTARIO ACTUAL</p>
+        <table class="mock-table">
+          <thead><tr><th>Producto</th><th>Stock</th><th>Mín.</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr><td>Tornillo M8</td><td class="mock-mono">12</td><td class="mock-mono">50</td><td><span class="mock-badge mock-badge-crit">Crítico</span></td></tr>
+            <tr><td>Plancha 3mm</td><td class="mock-mono">80</td><td class="mock-mono">40</td><td><span class="mock-badge mock-badge-ok">OK</span></td></tr>
+            <tr><td>Pintura base</td><td class="mock-mono">28</td><td class="mock-mono">30</td><td><span class="mock-badge mock-badge-low">Bajo</span></td></tr>
+            <tr><td>Remache pop</td><td class="mock-mono">340</td><td class="mock-mono">100</td><td><span class="mock-badge mock-badge-ok">OK</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">stock.projecter.mx / tornillo-m8</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">DETALLE · TORNILLO M8</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val" style="color:#991b1b">12</span><span class="mock-kpi-lbl">Stock actual</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">50</span><span class="mock-kpi-lbl">Stock mínimo</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">200</span><span class="mock-kpi-lbl">Punto de reorden</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-top:6px">
+          ${[['25 jun','Salida -35 uds','pend'],['20 jun','Entrada +100 uds','done'],['18 jun','Salida -50 uds','pend']].map(([f,m,b])=>`<div style="display:flex;justify-content:space-between;font-size:10px;padding:5px 0;border-bottom:1px solid #f7f7f6"><span style="color:#555">${m}</span><span style="color:#aaa;font-family:'JetBrains Mono',monospace">${f}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">stock.projecter.mx / alertas</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">ALERTAS DE REPOSICIÓN</p>
+        ${[['Tornillo M8','Crítico — 12 uds restantes','crit'],['Pintura base','Bajo — 28 uds (mín. 30)','low'],['Sellador PU','Crítico — 5 uds restantes','crit']].map(([p,m,b])=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:${b==='crit'?'#fff1f1':'#fffbeb'};border-radius:7px;border:1px solid ${b==='crit'?'#fee2e2':'#fef3c7'};margin-bottom:5px"><div style="flex:1"><div style="font-size:11px;font-weight:600;color:#111">${p}</div><div style="font-size:10px;color:#888">${m}</div></div><span class="mock-badge mock-badge-${b}">${b==='crit'?'Crítico':'Bajo'}</span></div>`).join('')}
+      </div>
+    </div>`,
+  ],
+};
+
+/* ===== DEMO SIMULADO ===== */
+
+function buildDemo(id) {
+  if (id === '01') return buildDemoPedidos();
+  if (id === '02') return buildDemoCRM();
+  if (id === '03') return buildDemoCotizador();
+  if (id === '04') return buildDemoDashboard();
+  if (id === '05') return buildDemoAgenda();
+  if (id === '06') return buildDemoInventario();
+  return '<p style="color:#aaa;font-size:13px">Demo no disponible.</p>';
+}
+
+function buildDemoPedidos() {
+  const orders = [
+    { id: '#0042', client: 'Almacenes Durán', product: 'Estante industrial x3', status: 0 },
+    { id: '#0043', client: 'Torres & Asoc.',  product: 'Mesa de trabajo x2',    status: 0 },
+    { id: '#0044', client: 'Rivas Interiores',product: 'Silla ergonómica x8',   status: 1 },
+    { id: '#0045', client: 'Constructora PE', product: 'Locker doble x5',       status: 0 },
+  ];
+  const labels = ['Pendiente','En proceso','Completado'];
+  const cls    = ['pend','proc','done'];
+
+  function render() {
+    return `<div class="demo-wrap">
+      <p class="demo-title">DEMO · AVANZA EL ESTADO DE CADA PEDIDO</p>
+      <table class="demo-table">
+        <thead><tr><th>#</th><th>Cliente</th><th>Producto</th><th>Estatus</th><th></th></tr></thead>
+        <tbody>
+          ${orders.map((o,i) => `<tr>
+            <td class="mock-mono">${o.id}</td>
+            <td>${o.client}</td>
+            <td style="color:#999;font-size:11px">${o.product}</td>
+            <td><span class="demo-badge ${cls[o.status]}" id="dbadge-${i}">${labels[o.status]}</span></td>
+            <td><button class="demo-btn-sm" id="dadv-${i}" ${o.status>=2?'disabled':''} onclick="demoAdvance(${i})">${o.status>=2?'✓':'Avanzar →'}</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  window.demoAdvance = function(i) {
+    if (orders[i].status < 2) {
+      orders[i].status++;
+      const area = document.getElementById('pj-modal-demo');
+      if (area) area.innerHTML = render();
+    }
+  };
+
+  return render();
+}
+
+function buildDemoCRM() {
+  const contacts = [
+    { name: 'Carlos Durán',   company: 'Almacenes Durán',  stage: 'Prospecto' },
+    { name: 'Laura Torres',   company: 'Torres & Asoc.',   stage: 'Negociación' },
+    { name: 'Marco Rivas',    company: 'Rivas Interiores', stage: 'Cerrado' },
+  ];
+  let activeIdx = 0;
+  const notes   = [['Primer contacto por teléfono.','10:15 AM'], ['Envío de propuesta comercial.','11:42 AM']];
+
+  function render() {
+    return `<div class="demo-wrap">
+      <p class="demo-title">DEMO · SELECCIONA UN CLIENTE Y REGISTRA UNA NOTA</p>
+      <div class="demo-contacts">
+        ${contacts.map((c,i) => `<div class="demo-contact${i===activeIdx?' active':''}" onclick="demoSelectContact(${i})">
+          <div class="demo-contact-av">${c.name[0]}</div>
+          <div class="demo-contact-info">
+            <div class="demo-contact-name">${c.name}</div>
+            <div class="demo-contact-sub">${c.company} · ${c.stage}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+      <div class="demo-form" style="margin-top:4px">
+        <div class="demo-note-log" id="demo-note-log">
+          ${notes.map(([t,h])=>`<div class="demo-note-item">${t}<div class="demo-note-time">${h}</div></div>`).join('')}
+        </div>
+        <div class="demo-row">
+          <div class="demo-field"><input class="demo-input" id="demo-note-input" placeholder="Escribe una nota de seguimiento…"></div>
+          <button class="demo-btn-sm" onclick="demoAddNote()" style="flex-shrink:0">Guardar</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  window.demoSelectContact = function(i) {
+    activeIdx = i;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+  };
+
+  window.demoAddNote = function() {
+    const inp = document.getElementById('demo-note-input');
+    if (!inp || !inp.value.trim()) return;
+    const now = new Date();
+    notes.unshift([inp.value.trim(), now.getHours()+':'+String(now.getMinutes()).padStart(2,'0')]);
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+  };
+
+  return render();
+}
+
+function buildDemoCotizador() {
+  const items = [
+    { name: 'Mesa ejecutiva', qty: 2, price: 4500 },
+  ];
+
+  function total() {
+    const sub = items.reduce((s,it)=>s+it.qty*it.price,0);
+    return { sub, iva: sub*0.16, total: sub*1.16 };
+  }
+
+  function fmt(n) { return '$'+n.toLocaleString('es-MX',{minimumFractionDigits:2}); }
+
+  function render() {
+    const t = total();
+    return `<div class="demo-wrap">
+      <p class="demo-title">DEMO · CONSTRUYE UNA COTIZACIÓN EN TIEMPO REAL</p>
+      <div class="demo-form">
+        <div class="demo-row">
+          <div class="demo-field" style="flex:2"><div class="demo-label">PRODUCTO</div><input class="demo-input" id="demo-pname" placeholder="Nombre del producto"></div>
+          <div class="demo-field" style="flex:.7"><div class="demo-label">CANT.</div><input class="demo-input" id="demo-pqty" type="number" min="1" value="1" placeholder="1"></div>
+          <div class="demo-field" style="flex:1"><div class="demo-label">PRECIO UNIT.</div><input class="demo-input" id="demo-pprice" type="number" min="0" placeholder="0.00"></div>
+        </div>
+        <button class="demo-btn-sm" onclick="demoAddItem()" style="align-self:flex-start">+ Agregar partida</button>
+      </div>
+      <table class="demo-table" style="margin-top:6px">
+        <thead><tr><th>Producto</th><th>Cant.</th><th>P. Unit.</th><th>Subtotal</th></tr></thead>
+        <tbody>
+          ${items.map((it,i)=>`<tr>
+            <td>${it.name}</td>
+            <td class="mock-mono">${it.qty}</td>
+            <td class="mock-mono">${fmt(it.price)}</td>
+            <td class="mock-mono">${fmt(it.qty*it.price)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div class="demo-total-row"><span class="demo-total-lbl">SUBTOTAL</span><span class="demo-total-val">${fmt(t.sub)}</span></div>
+      <div class="demo-total-row" style="padding-top:4px;border-top:none"><span class="demo-total-lbl">IVA 16%</span><span class="demo-total-val" style="font-size:13px">${fmt(t.iva)}</span></div>
+      <div class="demo-total-row" style="border-top:2px solid #111"><span class="demo-total-lbl" style="color:#111;font-weight:600">TOTAL</span><span class="demo-total-val" style="font-size:20px">${fmt(t.total)}</span></div>
+      <button class="btn-primary" style="margin-top:8px;font-size:13px;padding:11px 20px" onclick="demoGenPDF(this)">Generar PDF</button>
+    </div>`;
+  }
+
+  window.demoAddItem = function() {
+    const n = document.getElementById('demo-pname').value.trim();
+    const q = parseInt(document.getElementById('demo-pqty').value)||1;
+    const p = parseFloat(document.getElementById('demo-pprice').value)||0;
+    if (!n || p<=0) return;
+    items.push({name:n,qty:q,price:p});
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+  };
+
+  window.demoGenPDF = function(btn) {
+    btn.textContent = '✓ PDF generado';
+    btn.disabled = true;
+    setTimeout(()=>{ btn.textContent='Generar PDF'; btn.disabled=false; }, 2000);
+  };
+
+  return render();
+}
+
+function buildDemoDashboard() {
+  const baseKPIs = [
+    { val: 347200, label: 'Ventas del mes', fmt: n=>'$'+Math.round(n/1000)+'k', id:'kv' },
+    { val: 23,     label: 'Pedidos activos', fmt: n=>n, id:'kp' },
+    { val: 14,     label: 'Clientes nuevos', fmt: n=>n, id:'kc' },
+    { val: 68,     label: 'Conversión (%)',  fmt: n=>n+'%', id:'kt' },
+  ];
+  let kpis = baseKPIs.map(k=>({...k}));
+
+  function animCount(id, target, fmtFn) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let start = 0;
+    const step = target/20;
+    const iv = setInterval(()=>{
+      start = Math.min(start+step, target);
+      el.textContent = fmtFn(Math.round(start));
+      if (start >= target) clearInterval(iv);
+    }, 40);
+  }
+
+  function render() {
+    return `<div class="demo-wrap">
+      <p class="demo-title">DEMO · PANEL EN TIEMPO REAL</p>
+      <div class="demo-kpis">
+        ${kpis.map(k=>`<div class="demo-kpi">
+          <div class="demo-kpi-val" id="${k.id}">${k.fmt(k.val)}</div>
+          <div class="demo-kpi-lbl">${k.label}</div>
+        </div>`).join('')}
+      </div>
+      <div class="mock-bar-chart" style="margin-top:12px;height:60px;background:#fff;border-radius:8px;border:1px solid #ececeb;padding:10px 12px;box-sizing:border-box">
+        ${[210,285,190,310,250,347].map((v,i)=>`<div class="mock-bar-col"><div class="mock-bar-fill" style="height:${Math.round(v/347*100)}%"></div><span class="mock-bar-lbl">${['E','F','M','A','M','J'][i]}</span></div>`).join('')}
+      </div>
+      <button class="demo-btn-sm" style="margin-top:10px" onclick="demoRefreshKPIs()">↻ Actualizar datos</button>
+    </div>`;
+  }
+
+  window.demoRefreshKPIs = function() {
+    kpis.forEach(k=>{
+      const variance = 0.8 + Math.random()*0.4;
+      k.val = Math.round(baseKPIs.find(b=>b.id===k.id).val * variance);
+    });
+    const area = document.getElementById('pj-modal-demo');
+    if (area) {
+      area.innerHTML = render();
+      kpis.forEach(k=>animCount(k.id, k.val, k.fmt));
+    }
+  };
+
+  const html = render();
+  setTimeout(()=>kpis.forEach(k=>animCount(k.id, k.val, k.fmt)), 100);
+  return html;
+}
+
+function buildDemoAgenda() {
+  const days  = ['Lun','Mar','Mié','Jue','Vie'];
+  const hours = ['09:00','10:00','11:00','12:00','15:00'];
+  const slots = {};
+  slots['1-2'] = 'García';
+  slots['3-1'] = 'Rivas';
+  slots['0-3'] = 'Torres';
+
+  function key(d,h){ return d+'-'+h; }
+
+  function render() {
+    return `<div class="demo-wrap">
+      <p class="demo-title">DEMO · HAZ CLIC EN UN ESPACIO LIBRE PARA RESERVAR</p>
+      <div class="demo-cal-grid">
+        ${days.map(d=>`<div class="demo-cal-head">${d}</div>`).join('')}
+        ${hours.flatMap((h,hi)=>days.map((_,di)=>{
+          const k=key(di,hi);
+          const bk=slots[k];
+          return bk
+            ? `<div class="demo-cal-slot booked">${bk}<br>${h}</div>`
+            : `<div class="demo-cal-slot free" onclick="demoBookSlot(${di},${hi})">${h}</div>`;
+        })).join('')}
+      </div>
+    </div>`;
+  }
+
+  window.demoBookSlot = function(di, hi) {
+    const name = prompt('Nombre del cliente:');
+    if (!name || !name.trim()) return;
+    slots[key(di,hi)] = name.trim();
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render();
+  };
+
+  return render();
+}
+
+function buildDemoInventario() {
+  const products = [
+    { name: 'Tornillo M8',    cat: 'Fijación',    stock: 12,  min: 50  },
+    { name: 'Plancha 3mm',   cat: 'Acero',        stock: 80,  min: 40  },
+    { name: 'Pintura base',  cat: 'Acabados',     stock: 28,  min: 30  },
+    { name: 'Remache pop',   cat: 'Fijación',     stock: 340, min: 100 },
+    { name: 'Sellador PU',   cat: 'Acabados',     stock: 5,   min: 20  },
+  ];
+
+  function stClass(p){ return p.stock<=0?'crit':p.stock<p.min?(p.stock<p.min*0.3?'crit':'low'):'ok'; }
+  function stLabel(p){ return p.stock<=0?'Sin stock':p.stock<p.min?(p.stock<p.min*0.3?'Crítico':'Bajo'):'OK'; }
+
+  function render(filter='') {
+    const list = products.filter(p=>!filter||p.name.toLowerCase().includes(filter.toLowerCase()));
+    return `<div class="demo-wrap">
+      <p class="demo-title">DEMO · BUSCA Y REGISTRA ENTRADAS DE STOCK</p>
+      <input class="demo-input" id="demo-stock-search" placeholder="Buscar producto…" oninput="demoFilterStock(this.value)" value="${filter}">
+      <table class="demo-stock-table">
+        <thead><tr><th>Producto</th><th>Stock</th><th>Mín.</th><th>Estado</th><th></th></tr></thead>
+        <tbody>
+          ${list.map((p,i)=>`<tr>
+            <td>${p.name}<div style="font-size:9px;color:#bbb;font-family:'JetBrains Mono',monospace">${p.cat}</div></td>
+            <td class="mock-mono">${p.stock}</td>
+            <td class="mock-mono">${p.min}</td>
+            <td><span class="demo-badge ${stClass(p)}">${stLabel(p)}</span></td>
+            <td><button class="demo-btn-sm" onclick="demoAddStock(${products.indexOf(p)})">+ Entrada</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+  }
+
+  window.demoFilterStock = function(v) {
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render(v);
+  };
+
+  window.demoAddStock = function(i) {
+    const qty = parseInt(prompt('¿Cuántas unidades ingresan?'));
+    if (!qty || qty<=0) return;
+    products[i].stock += qty;
+    const area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = render(document.getElementById('demo-stock-search')?.value||'');
+  };
+
+  return render();
+}
+
+/* ===== MODAL ===== */
+
+let modalCurrentSlide = 0;
+let modalSlides       = [];
+
+function openProjectModal(p) {
+  const modal   = document.getElementById('pj-modal');
+  const track   = document.getElementById('pj-gallery-track');
+  const dots    = document.getElementById('pj-gallery-dots');
+  const gallery = document.getElementById('pj-modal-gallery');
+  const demo    = document.getElementById('pj-modal-demo');
+  const demoBtn = document.getElementById('pj-demo-btn');
+  const backBtn = document.getElementById('pj-gallery-back');
+
+  // Fill right panel
+  document.getElementById('pj-modal-mid').textContent  = p.id;
+  document.getElementById('pj-modal-mtag').textContent = p.tag;
+  document.getElementById('pj-modal-mname').textContent = p.name;
+  document.getElementById('pj-modal-mdesc').textContent = p.desc;
+  const featList = document.getElementById('pj-modal-mfeats');
+  featList.innerHTML = (p.features||[]).map(f=>`<li>${f}</li>`).join('');
+
+  // Gallery slides
+  modalSlides = PROJECT_GALLERY[p.id] || [];
+  track.innerHTML = modalSlides.map(html=>`<div class="pj-gallery-slide">${html}</div>`).join('');
+  dots.innerHTML  = modalSlides.map((_,i)=>`<span class="pj-gallery-dot${i===0?' active':''}" onclick="goToSlide(${i})"></span>`).join('');
+  modalCurrentSlide = 0;
+  track.style.transform = 'translateX(0)';
+
+  // Reset demo/gallery state
+  gallery.classList.remove('hidden');
+  demo.classList.add('hidden');
+  demo.innerHTML = '';
+  demoBtn.classList.remove('hidden');
+  backBtn.classList.add('hidden');
+
+  // Wire demo button
+  demoBtn.onclick = () => {
+    gallery.classList.add('hidden');
+    demo.classList.remove('hidden');
+    demo.innerHTML = buildDemo(p.id);
+    demoBtn.classList.add('hidden');
+    backBtn.classList.remove('hidden');
+  };
+
+  backBtn.onclick = () => {
+    demo.classList.add('hidden');
+    demo.innerHTML = '';
+    gallery.classList.remove('hidden');
+    demoBtn.classList.remove('hidden');
+    backBtn.classList.add('hidden');
+  };
+
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProjectModal() {
+  const modal = document.getElementById('pj-modal');
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+window.goToSlide = function(idx) {
+  const track = document.getElementById('pj-gallery-track');
+  const dots  = document.querySelectorAll('.pj-gallery-dot');
+  if (!track || idx < 0 || idx >= modalSlides.length) return;
+  modalCurrentSlide = idx;
+  track.style.transform = `translateX(-${idx * 100}%)`;
+  dots.forEach((d,i)=>d.classList.toggle('active', i===idx));
+};
+
 /* ===== INICIALIZACIÓN ===== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -935,6 +1571,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (landingContainer) {
     landingContainer.addEventListener('wheel', e => {
       if (state.phase !== 'landing') return;
+      if (document.getElementById('pj-modal').classList.contains('is-open')) return;
       e.preventDefault();
       navigateSection(e.deltaY > 0 ? 1 : -1);
     }, { passive: false });
@@ -954,6 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Teclado
   document.addEventListener('keydown', e => {
     if (state.phase !== 'landing') return;
+    if (document.getElementById('pj-modal').classList.contains('is-open')) return;
     if (e.key === 'ArrowDown' || e.key === 'PageDown') {
       e.preventDefault();
       navigateSection(1);
@@ -1030,4 +1668,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Voz
   $('btn-record').addEventListener('click', startRecording);
   $('btn-stop').addEventListener('click', stopAndAdvance);
+
+  // Modal: cerrar con X, backdrop y ESC
+  $('pj-modal-x').addEventListener('click', closeProjectModal);
+  $('pj-modal-bd').addEventListener('click', closeProjectModal);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeProjectModal();
+  });
+
+  // Modal: navegación galería
+  $('pj-gallery-prev').addEventListener('click', () => goToSlide(modalCurrentSlide - 1));
+  $('pj-gallery-next').addEventListener('click', () => goToSlide(modalCurrentSlide + 1));
 });
