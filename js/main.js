@@ -30,9 +30,9 @@ const PROJECTS = [
     features: ['Punto de venta rápido desde cualquier dispositivo', 'Inventario sincronizado por sucursal', 'Dashboard de ventas, ganancias y productos top', 'Gestión de clientes, proveedores y gastos'],
   },
   {
-    id: '03', name: 'Cotizador en línea', tag: 'Ventas', kind: 'WEB APP', url: 'cotiza.projecter.mx',
-    desc: 'Genera cotizaciones profesionales en menos de dos minutos desde cualquier dispositivo. Calcula automáticamente precios, impuestos y descuentos, y envía el PDF al cliente de inmediato.',
-    features: ['Cotizaciones en 2 minutos', 'Catálogo de productos integrado', 'PDF profesional automático', 'Historial y seguimiento de cotizaciones'],
+    id: '03', name: 'Tailorp — CRM para inmobiliaria', tag: 'Inmobiliaria', kind: 'PLATAFORMA WEB', url: 'tailorp.projecter.mx',
+    desc: 'Plataforma CRM diseñada para agencias inmobiliarias. Centraliza prospectos, propiedades, tareas pendientes y seguimiento de operaciones de compra, renta y venta en un solo lugar.',
+    features: ['Cartera de prospectos con estatus y filtros', 'Vinculación de prospectos a inmuebles de interés', 'Agenda de pendientes por prospecto', 'Dashboard de conversiones y portafolio activo'],
   },
   {
     id: '04', name: 'Panel de control operativo', tag: 'Datos', kind: 'DASHBOARD', url: 'panel.projecter.mx',
@@ -1030,43 +1030,42 @@ const PROJECT_GALLERY = {
   ],
   '03': [
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">tailorp.projecter.mx / prospectos</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">NUEVA COTIZACIÓN</p>
+        <p class="mock-section-title">PROSPECTOS CRM</p>
         <table class="mock-table">
-          <thead><tr><th>Producto</th><th>Cant.</th><th>P. Unit.</th><th>Subtotal</th></tr></thead>
+          <thead><tr><th>Nombre</th><th>Operación</th><th>Estatus</th><th>Pend.</th></tr></thead>
           <tbody>
-            <tr><td>Mesa ejecutiva</td><td class="mock-mono">2</td><td class="mock-mono">$4,500</td><td class="mock-mono">$9,000</td></tr>
-            <tr><td>Silla ergonómica</td><td class="mock-mono">6</td><td class="mock-mono">$2,800</td><td class="mock-mono">$16,800</td></tr>
-            <tr><td>Librero modular</td><td class="mock-mono">1</td><td class="mock-mono">$6,200</td><td class="mock-mono">$6,200</td></tr>
+            <tr><td>Carlos Méndez</td><td class="mock-mono" style="font-size:9px">Compra</td><td><span class="mock-badge mock-badge-new">Calificado</span></td><td class="mock-mono">2</td></tr>
+            <tr><td>Ana García</td><td class="mock-mono" style="font-size:9px">Renta</td><td><span class="mock-badge mock-badge-pend">Nuevo</span></td><td class="mock-mono">1</td></tr>
+            <tr><td>Roberto Silva</td><td class="mock-mono" style="font-size:9px">Venta</td><td><span class="mock-badge mock-badge-pend">Seguimiento</span></td><td class="mock-mono">0</td></tr>
+            <tr><td>Laura Torres</td><td class="mock-mono" style="font-size:9px">Compra</td><td><span class="mock-badge mock-badge-done">Cerrado</span></td><td class="mock-mono">0</td></tr>
           </tbody>
         </table>
-        <div style="text-align:right;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding-top:8px;border-top:1px solid #f0f0ee">TOTAL: $37,236 <span style="font-size:10px;color:#aaa">(IVA inc.)</span></div>
       </div>
     </div>`,
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / pdf</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">tailorp.projecter.mx / prospectos / detalle</span></div>
       <div class="mock-body">
-        <div style="border:1px solid #f0f0ee;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px">
-          <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500">P R O J E C T E R</span><span style="font-size:10px;color:#aaa">COT-2026-0134</span></div>
-          <div style="height:1px;background:#f0f0ee"></div>
-          <div style="font-size:11px;color:#555">Cliente: <strong>Torres & Asociados</strong></div>
-          <div style="font-size:11px;color:#555">Válida hasta: <span style="font-family:'JetBrains Mono',monospace">2026-07-15</span></div>
-          <div style="background:#f7f7f6;border-radius:6px;padding:8px;font-size:10px;color:#888;text-align:center">[ Vista previa del PDF generado ]</div>
-          <div style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;text-align:right">$37,236.00 MXN</div>
+        <p class="mock-section-title">CARLOS MÉNDEZ · COMPRA</p>
+        <div class="mock-kpi-row" style="margin-bottom:8px">
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:12px">$2,400,000</span><span class="mock-kpi-lbl">Presupuesto</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val mock-badge-new" style="font-size:10px;padding:3px 0">Calificado</span><span class="mock-kpi-lbl">Estatus</span></div>
         </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:8px;color:#aaa;margin-bottom:5px">PENDIENTES</div>
+        ${['Confirmar visita a INM-001','Enviar fichas técnicas'].map(t=>`<div style="display:flex;gap:6px;align-items:center;padding:5px 0;border-bottom:1px solid #f0f0ee;font-size:10px"><span style="width:12px;height:12px;border:1px solid #ccc;border-radius:3px;display:inline-block;flex-shrink:0"></span>${t}</div>`).join('')}
       </div>
     </div>`,
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">cotiza.projecter.mx / historial</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">tailorp.projecter.mx / inmuebles</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">COTIZACIONES RECIENTES</p>
+        <p class="mock-section-title">CARTERA DE INMUEBLES</p>
         <table class="mock-table">
-          <thead><tr><th>COT-#</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+          <thead><tr><th>ID</th><th>Tipo</th><th>Zona</th><th>Precio</th><th></th></tr></thead>
           <tbody>
-            <tr><td class="mock-mono">0134</td><td>Torres &amp; Asoc.</td><td class="mock-mono">$37,236</td><td><span class="mock-badge mock-badge-pend">Enviada</span></td></tr>
-            <tr><td class="mock-mono">0133</td><td>García Muebles</td><td class="mock-mono">$12,450</td><td><span class="mock-badge mock-badge-done">Aceptada</span></td></tr>
-            <tr><td class="mock-mono">0132</td><td>Rivas Interior</td><td class="mock-mono">$8,900</td><td><span class="mock-badge mock-badge-done">Aceptada</span></td></tr>
+            <tr><td class="mock-mono">INM-001</td><td>Casa</td><td style="font-size:9px">Las Palmas</td><td class="mock-mono" style="font-size:9px">$2.4M</td><td><span class="mock-badge mock-badge-done">Disp.</span></td></tr>
+            <tr><td class="mock-mono">INM-002</td><td>Depto</td><td style="font-size:9px">Centro</td><td class="mock-mono" style="font-size:9px">$8,500/m</td><td><span class="mock-badge mock-badge-done">Disp.</span></td></tr>
+            <tr><td class="mock-mono">INM-003</td><td>Casa</td><td style="font-size:9px">Res. Norte</td><td class="mock-mono" style="font-size:9px">$3.8M</td><td><span class="mock-badge" style="background:#e5e5e5;color:#555">Vendido</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -1181,7 +1180,7 @@ const PROJECT_GALLERY = {
 function buildDemo(id) {
   if (id === '01') return buildDemoCentauro();
   if (id === '02') return buildDemoOnoffice();
-  if (id === '03') return buildDemoCotizador();
+  if (id === '03') return buildDemoTailorp();
   if (id === '04') return buildDemoDashboard();
   if (id === '05') return buildDemoAgenda();
   if (id === '06') return buildDemoInventario();
@@ -1947,7 +1946,276 @@ function buildDemoOnoffice() {
   return renderMain();
 }
 
-function buildDemoCotizador() {
+function buildDemoTailorp() {
+  /* ---- estado ---- */
+  var tpTab = 'prospectos';
+  var tpDetalle = -1;
+  var tpFiltroOp = '';
+
+  var tpProspectos = [
+    { id:1, nombre:'Carlos Méndez', tel:'664-123-4567', op:'Compra', estatus:'Calificado', presup:2400000, inm:['INM-001'], pend:[{id:1,txt:'Confirmar visita a INM-001',done:false},{id:2,txt:'Enviar fichas técnicas',done:false}] },
+    { id:2, nombre:'Ana García',    tel:'664-987-6543', op:'Renta',  estatus:'Nuevo',       presup:8500,    inm:[],          pend:[{id:3,txt:'Llamar para calificar presupuesto',done:false}] },
+    { id:3, nombre:'Roberto Silva', tel:'664-456-7890', op:'Venta',  estatus:'Seguimiento', presup:3800000, inm:['INM-003'], pend:[] },
+    { id:4, nombre:'Laura Torres',  tel:'664-321-0987', op:'Compra', estatus:'Cerrado',     presup:1800000, inm:['INM-002'], pend:[] },
+    { id:5, nombre:'Marcos Ríos',   tel:'664-555-0101', op:'Compra', estatus:'Calificado',  presup:3200000, inm:[],          pend:[{id:4,txt:'Agendar recorrido INM-004',done:false},{id:5,txt:'Validar documentación',done:false},{id:6,txt:'Enviar propuesta',done:false}] },
+  ];
+
+  var tpInmuebles = [
+    { id:'INM-001', tipo:'Casa',   zona:'Las Palmas',     precio:2400000, op:'Venta', estatus:'Disponible' },
+    { id:'INM-002', tipo:'Depto',  zona:'Centro',         precio:8500,    op:'Renta', estatus:'Disponible' },
+    { id:'INM-003', tipo:'Casa',   zona:'Res. Norte',     precio:3800000, op:'Venta', estatus:'Vendido' },
+    { id:'INM-004', tipo:'Local',  zona:'Zona Centro',    precio:15000,   op:'Renta', estatus:'Disponible' },
+  ];
+
+  var tpNextPend = 10;
+
+  /* ---- helpers ---- */
+  function fmtP(n, op) {
+    if (op === 'Renta') return '$' + n.toLocaleString('es-MX') + '/mes';
+    return '$' + (n / 1000000).toFixed(1) + 'M';
+  }
+  function statusBg(s) {
+    if (s === 'Cerrado')     return 'background:#d1fae5;color:#065f46';
+    if (s === 'Calificado')  return 'background:#eff6ff;color:#1e40af';
+    if (s === 'Nuevo')       return 'background:#fef3c7;color:#92400e';
+    return 'background:#f3f4f6;color:#374151';
+  }
+  function rerender() {
+    var area = document.getElementById('pj-modal-demo');
+    if (area) area.innerHTML = renderMain();
+  }
+
+  /* ---- Prospectos ---- */
+  function renderProspectos() {
+    var list = tpProspectos.filter(function(p) {
+      return !tpFiltroOp || p.op === tpFiltroOp;
+    });
+    var formHtml = tpNuevoForm
+      ? '<div style="border:1px solid #e8e8e6;border-radius:8px;padding:12px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px">' +
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:2px">NUEVO PROSPECTO</div>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">' +
+            '<input class="demo-input" id="tp-nuevo-nombre" placeholder="Nombre completo" style="padding:6px 9px;font-size:11px">' +
+            '<input class="demo-input" id="tp-nuevo-tel" placeholder="Teléfono" style="padding:6px 9px;font-size:11px">' +
+          '</div>' +
+          '<select class="demo-input" id="tp-nuevo-op" style="padding:6px 9px;font-size:11px"><option>Compra</option><option>Renta</option><option>Venta</option></select>' +
+          '<div style="display:flex;gap:6px">' +
+            '<button class="btn-primary" style="font-size:11px;padding:7px 14px" onclick="tpNuevoGuardar()">Guardar</button>' +
+            '<button class="demo-btn-sm" onclick="tpNuevoCancel()">Cancelar</button>' +
+          '</div>' +
+        '</div>'
+      : '';
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap">' +
+        ['','Compra','Renta','Venta'].map(function(op) {
+          var lbl = op || 'Todos';
+          var active = tpFiltroOp === op;
+          return '<button class="demo-btn-sm" onclick="tpFiltro(\'' + op + '\')" style="' + (active ? 'background:#111;color:#fff;' : '') + 'padding:4px 10px;font-size:10px">' + lbl + '</button>';
+        }).join('') +
+        (tpNuevoForm ? '' : '<button class="demo-btn-sm" onclick="tpNuevo()" style="margin-left:auto;padding:4px 10px;font-size:10px">+ Prospecto</button>') +
+      '</div>' +
+      formHtml +
+      '<div style="display:flex;flex-direction:column;gap:5px">' +
+        list.map(function(p, i) {
+          var pendAct = p.pend.filter(function(t) { return !t.done; }).length;
+          return '<div style="display:flex;align-items:center;gap:8px;padding:9px 10px;border:1px solid #e8e8e6;border-radius:8px;cursor:pointer" onclick="tpVerDetalle(' + p.id + ')">' +
+            '<div style="flex:1">' +
+              '<div style="font-size:12px;font-weight:600">' + p.nombre + '</div>' +
+              '<div style="font-size:10px;color:#888">' + p.tel + ' · ' + p.op + '</div>' +
+            '</div>' +
+            '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">' +
+              '<span style="font-size:9px;padding:2px 7px;border-radius:99px;' + statusBg(p.estatus) + '">' + p.estatus + '</span>' +
+              (pendAct > 0 ? '<span style="font-size:9px;color:#dc2626">' + pendAct + ' pendiente' + (pendAct > 1 ? 's' : '') + '</span>' : '') +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderDetalle(id) {
+    var p = tpProspectos.find(function(x) { return x.id === id; });
+    if (!p) return renderProspectos();
+    var pendAct = p.pend.filter(function(t) { return !t.done; }).length;
+    return '<div class="demo-wrap">' +
+      '<button class="demo-back-btn" onclick="tpBackLista()">← Prospectos</button>' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">' +
+        '<div>' +
+          '<div style="font-size:15px;font-weight:700">' + p.nombre + '</div>' +
+          '<div style="font-size:11px;color:#888">' + p.tel + '</div>' +
+        '</div>' +
+        '<select class="demo-input" style="width:auto;padding:5px 8px;font-size:10px" onchange="tpCambiarEstatus(' + p.id + ',this.value)">' +
+          ['Nuevo','Calificado','Seguimiento','Cerrado'].map(function(s) {
+            return '<option value="' + s + '"' + (s === p.estatus ? ' selected' : '') + '>' + s + '</option>';
+          }).join('') +
+        '</select>' +
+      '</div>' +
+      '<div class="mock-kpi-row" style="margin-bottom:12px">' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:12px">' + p.op + '</span><span class="mock-kpi-lbl">Operación</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:12px">' + fmtP(p.presup, p.op) + '</span><span class="mock-kpi-lbl">Presupuesto</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:12px">' + pendAct + '</span><span class="mock-kpi-lbl">Pendientes</span></div>' +
+      '</div>' +
+      (p.inm.length > 0
+        ? '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:5px">INMUEBLES DE INTERÉS</div>' +
+          '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">' +
+            p.inm.map(function(id) {
+              return '<span style="font-size:10px;padding:3px 9px;border-radius:99px;background:#f0f0ee;font-family:\'JetBrains Mono\',monospace">' + id + '</span>';
+            }).join('') +
+          '</div>'
+        : ''
+      ) +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">PENDIENTES</div>' +
+      '<div style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px">' +
+        (p.pend.length === 0
+          ? '<div style="font-size:11px;color:#ccc;padding:8px 0">Sin pendientes</div>'
+          : p.pend.map(function(t) {
+              return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0f0ee">' +
+                '<div style="width:14px;height:14px;border:1.5px solid ' + (t.done ? '#16a34a' : '#ccc') + ';border-radius:3px;flex-shrink:0;background:' + (t.done ? '#d1fae5' : 'transparent') + ';cursor:pointer;display:flex;align-items:center;justify-content:center" onclick="tpTogglePend(' + p.id + ',' + t.id + ')">' +
+                  (t.done ? '<span style="font-size:9px;color:#16a34a">✓</span>' : '') +
+                '</div>' +
+                '<span style="font-size:11px;' + (t.done ? 'text-decoration:line-through;color:#aaa' : '') + '">' + t.txt + '</span>' +
+              '</div>';
+            }).join('')
+        ) +
+      '</div>' +
+      '<div style="display:flex;gap:6px">' +
+        '<input class="demo-input" id="tp-nuevo-pend" placeholder="Agregar pendiente…" style="flex:1;padding:6px 10px;font-size:11px">' +
+        '<button class="demo-btn-sm" onclick="tpAgregarPend(' + p.id + ')">+ Agregar</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ---- Inmuebles ---- */
+  function renderInmuebles() {
+    return '<div class="demo-wrap">' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:8px">CARTERA DE INMUEBLES</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' +
+        tpInmuebles.map(function(inm) {
+          var disp = inm.estatus === 'Disponible';
+          return '<div style="padding:10px 12px;border:1px solid ' + (disp ? '#e8e8e6' : '#f0f0ee') + ';border-radius:8px;display:flex;align-items:center;gap:10px;' + (disp ? '' : 'opacity:.6') + '">' +
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;min-width:52px">' + inm.id + '</div>' +
+            '<div style="flex:1">' +
+              '<div style="font-size:12px;font-weight:600">' + inm.tipo + ' · ' + inm.zona + '</div>' +
+              '<div style="font-size:10px;color:#888">' + inm.op + '</div>' +
+            '</div>' +
+            '<div style="text-align:right">' +
+              '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:600">' + fmtP(inm.precio, inm.op) + '</div>' +
+              '<span style="font-size:9px;padding:2px 7px;border-radius:99px;background:' + (disp ? '#d1fae5' : '#e5e7eb') + ';color:' + (disp ? '#065f46' : '#6b7280') + '">' + inm.estatus + '</span>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ---- Dashboard ---- */
+  function renderDashboard() {
+    var activos = tpProspectos.filter(function(p) { return p.estatus !== 'Cerrado'; }).length;
+    var cerrados = tpProspectos.filter(function(p) { return p.estatus === 'Cerrado'; }).length;
+    var pendTotal = tpProspectos.reduce(function(s, p) { return s + p.pend.filter(function(t) { return !t.done; }).length; }, 0);
+    var disponibles = tpInmuebles.filter(function(i) { return i.estatus === 'Disponible'; }).length;
+    var portafolio = tpInmuebles.filter(function(i) { return i.estatus === 'Disponible'; }).reduce(function(s, i) { return s + (i.op === 'Venta' ? i.precio : 0); }, 0);
+    return '<div class="demo-wrap">' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:10px">RESUMEN OPERATIVO</div>' +
+      '<div class="mock-kpi-row" style="margin-bottom:10px">' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:15px">' + activos + '</span><span class="mock-kpi-lbl">Prospectos activos</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:15px">' + cerrados + '</span><span class="mock-kpi-lbl">Cierres</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:15px">' + pendTotal + '</span><span class="mock-kpi-lbl">Pendientes hoy</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:15px">' + disponibles + '</span><span class="mock-kpi-lbl">Inmuebles disp.</span></div>' +
+      '</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:6px">PROSPECTOS POR OPERACIÓN</div>' +
+      '<div style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px">' +
+        ['Compra','Renta','Venta'].map(function(op) {
+          var cnt = tpProspectos.filter(function(p) { return p.op === op; }).length;
+          var pct = Math.round((cnt / tpProspectos.length) * 100);
+          return '<div style="display:flex;align-items:center;gap:8px">' +
+            '<div style="width:48px;font-size:11px;flex-shrink:0">' + op + '</div>' +
+            '<div style="flex:1;height:5px;background:#f0f0ee;border-radius:99px"><div style="height:5px;border-radius:99px;background:#111;width:' + pct + '%"></div></div>' +
+            '<div style="font-family:\'JetBrains Mono\',monospace;font-size:10px;color:#888;width:18px;text-align:right">' + cnt + '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+      '<div style="padding:10px 14px;background:#f7f7f6;border-radius:8px;display:flex;justify-content:space-between;align-items:center">' +
+        '<div style="font-size:11px;color:#555">Portafolio activo en venta</div>' +
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:700">$' + (portafolio / 1000000).toFixed(1) + 'M</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /* ---- Tabs ---- */
+  var tpTabsKeys   = ['prospectos','inmuebles','dashboard'];
+  var tpTabsLabels = ['Prospectos','Inmuebles','Dashboard'];
+
+  function renderMain() {
+    var tabBar = '<div class="demo-tabs">' +
+      tpTabsKeys.map(function(t, i) {
+        return '<button class="demo-tab' + (tpTab === t ? ' active' : '') + '" onclick="tpTab_(' + i + ')">' + tpTabsLabels[i] + '</button>';
+      }).join('') +
+    '</div>';
+    var body = '';
+    if (tpTab === 'prospectos') body = tpDetalle >= 0 ? renderDetalle(tpDetalle) : renderProspectos();
+    if (tpTab === 'inmuebles')  body = renderInmuebles();
+    if (tpTab === 'dashboard')  body = renderDashboard();
+    return tabBar + body;
+  }
+
+  /* ---- handlers globales ---- */
+  window.tpTab_ = function(i) {
+    tpTab = tpTabsKeys[i];
+    tpDetalle = -1;
+    rerender();
+  };
+
+  window.tpFiltro = function(op) { tpFiltroOp = op; rerender(); };
+
+  window.tpVerDetalle = function(id) { tpDetalle = id; rerender(); };
+  window.tpBackLista  = function()   { tpDetalle = -1; rerender(); };
+
+  window.tpCambiarEstatus = function(id, s) {
+    var p = tpProspectos.find(function(x) { return x.id === id; });
+    if (p) p.estatus = s;
+  };
+
+  window.tpTogglePend = function(pid, tid) {
+    var p = tpProspectos.find(function(x) { return x.id === pid; });
+    if (!p) return;
+    var t = p.pend.find(function(x) { return x.id === tid; });
+    if (t) t.done = !t.done;
+    rerender();
+  };
+
+  window.tpAgregarPend = function(pid) {
+    var el = document.getElementById('tp-nuevo-pend');
+    var txt = el ? el.value.trim() : '';
+    if (!txt) return;
+    var p = tpProspectos.find(function(x) { return x.id === pid; });
+    if (p) p.pend.push({ id: tpNextPend++, txt: txt, done: false });
+    rerender();
+  };
+
+  var tpNuevoForm = false;
+
+  window.tpNuevo = function() { tpNuevoForm = true; rerender(); };
+
+  window.tpNuevoCancel = function() { tpNuevoForm = false; rerender(); };
+
+  window.tpNuevoGuardar = function() {
+    var nEl = document.getElementById('tp-nuevo-nombre');
+    var tEl = document.getElementById('tp-nuevo-tel');
+    var oEl = document.getElementById('tp-nuevo-op');
+    var nombre = nEl ? nEl.value.trim() : '';
+    var tel    = tEl ? tEl.value.trim() : '—';
+    var op     = oEl ? oEl.value : 'Compra';
+    if (!nombre) return;
+    tpProspectos.unshift({ id: tpNextPend++, nombre: nombre, tel: tel || '—', op: op, estatus: 'Nuevo', presup: 0, inm: [], pend: [] });
+    tpNuevoForm = false;
+    rerender();
+  };
+
+  return renderMain();
+}
+
+/* ---- placeholder para CATALOG (ya no se usa buildDemoCotizador) ---- */
+function buildDemoCotizador_UNUSED() {
   const CATALOG = [
     { name:'Mesa ejecutiva',      price:4500, unit:'PZA' },
     { name:'Silla ergonómica',    price:2800, unit:'PZA' },
