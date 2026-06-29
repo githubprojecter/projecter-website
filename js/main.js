@@ -35,9 +35,9 @@ const PROJECTS = [
     features: ['Cartera de prospectos con estatus y filtros', 'Vinculación de prospectos a inmuebles de interés', 'Agenda de pendientes por prospecto', 'Dashboard de conversiones y portafolio activo'],
   },
   {
-    id: '04', name: 'BeeLabs Studio — Sitio web de agencia digital', tag: 'Marca', kind: 'SITIO WEB', url: 'beelabs.studio',
-    desc: 'Sitio web institucional para una agencia de diseño, estrategia y tecnología. Comunica propósito, servicios y portafolio con una dirección visual cuidada y orientada a conversión.',
-    features: ['Landing de alto impacto visual', 'Sección de servicios y metodología', 'Portafolio de proyectos', 'Formulario de contacto integrado'],
+    id: '04', name: 'Exhibijoya — Tienda web con catálogo y envíos', tag: 'E-commerce', kind: 'TIENDA WEB', url: 'exhibijoya.projecter.mx',
+    desc: 'Portal de e-commerce para negocio de joyería y accesorios. Catálogo de productos con filtros, carrito, selección de paquetería y pago en línea. Incluye panel de administración de inventario.',
+    features: ['Catálogo con filtros por categoría', 'Carrito de compras con control de cantidad', 'Checkout con cálculo de envío', 'Panel de administración de productos'],
   },
   {
     id: '05', name: 'Soporte Projecter — Plataforma de atención', tag: 'Soporte', kind: 'PLATAFORMA WEB', url: 'soporte.projecter.mx',
@@ -1145,33 +1145,44 @@ const PROJECT_GALLERY = {
   ],
   '04': [
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">beelabs.studio</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">exhibijoya.projecter.mx / catalogo</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">BEELABS — HERO</p>
-        <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="font-size:18px;font-weight:700;letter-spacing:-.02em;line-height:1.2">Diseño,<br>estrategia<br>y tecnología.</div>
-          <div style="font-size:10px;color:#888;line-height:1.5;max-width:160px">Para marcas que quieren crecer con propósito y presencia.</div>
-          <div style="display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:99px;font-size:9px;font-family:'JetBrains Mono',monospace;width:fit-content">Conocer servicios →</div>
+        <p class="mock-section-title">CATÁLOGO DE PRODUCTOS</p>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px">
+          ${['Todos','Collares','Aretes','Pulseras'].map(c=>`<span style="padding:2px 8px;border-radius:99px;font-size:9px;font-family:'JetBrains Mono',monospace;border:1px solid ${c==='Todos'?'#111':'#e0e0de'};background:${c==='Todos'?'#111':'#fff'};color:${c==='Todos'?'#fff':'#888'}">${c}</span>`).join('')}
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+          ${[['Collar Venus','Collares','$480'],['Aretes Rombo','Aretes','$320'],['Pulsera Jade','Pulseras','$280'],['Anillo Luna','Anillos','$450'],['Collar Cadena','Collares','$560'],['Aretes Perla','Aretes','$390']].map(([n,c,p])=>`<div style="border:1px solid #ececeb;border-radius:8px;overflow:hidden"><div style="background:linear-gradient(135deg,#f7f5f0,#ece8e0);aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:'JetBrains Mono',monospace;color:#ccc">${c.slice(0,3).toUpperCase()}</div><div style="padding:5px"><div style="font-size:9px;font-weight:600;line-height:1.2">${n}</div><div style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;margin-top:2px">${p}</div></div></div>`).join('')}
         </div>
       </div>
     </div>`,
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">beelabs.studio / servicios</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">exhibijoya.projecter.mx / carrito</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">SERVICIOS</p>
-        ${[['Diseño web','Landing pages, sitios corporativos y apps'],['Identidad','Branding, logotipo y sistema visual'],['Estrategia','Posicionamiento, copy y funnel de ventas']].map(([t,d])=>`<div style="padding:8px 0;border-bottom:1px solid #f2f2f0"><div style="font-size:11px;font-weight:600">${t}</div><div style="font-size:10px;color:#888;margin-top:2px">${d}</div></div>`).join('')}
+        <p class="mock-section-title">CARRITO DE COMPRAS</p>
+        ${[['Collar Venus','Collares',1,480],['Aretes Rombo','Aretes',2,320]].map(([n,c,q,p])=>`<div style="display:flex;gap:8px;padding:8px 0;border-bottom:1px solid #f2f2f0;align-items:center"><div style="background:#f7f5f0;width:32px;height:32px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:'JetBrains Mono',monospace;color:#ccc">${c.slice(0,3).toUpperCase()}</div><div style="flex:1"><div style="font-size:10px;font-weight:600">${n}</div><div style="font-size:9px;color:#888">×${q}</div></div><div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600">$${p*q}</div></div>`).join('')}
+        <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:10px;padding-top:8px;border-top:1px solid #f2f2f0"><span style="color:#888">Subtotal</span><span style="font-family:'JetBrains Mono',monospace;font-weight:700">$1,120</span></div>
+        <div style="margin-top:10px;padding:8px 14px;background:#111;color:#fff;border-radius:99px;font-size:10px;text-align:center;font-family:'JetBrains Mono',monospace">Proceder al pago → $1,120</div>
       </div>
     </div>`,
     `<div class="mock-win">
-      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">beelabs.studio / portafolio</span></div>
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">exhibijoya.projecter.mx / panel</span></div>
       <div class="mock-body">
-        <p class="mock-section-title">PORTAFOLIO</p>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-          ${[['Proyecto A','E-commerce'],['Proyecto B','Marca personal'],['Proyecto C','SaaS'],['Proyecto D','Inmobiliaria']].map(([n,c])=>`<div style="background:#f7f7f6;border-radius:6px;padding:10px 8px"><div style="font-size:10px;font-weight:600">${n}</div><div style="font-size:9px;color:#aaa;margin-top:2px">${c}</div></div>`).join('')}
+        <p class="mock-section-title">PANEL · ADMINISTRACIÓN</p>
+        <div class="mock-kpi-row" style="margin-bottom:8px">
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:12px">$12,480</span><span class="mock-kpi-lbl">Ventas mes</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="font-size:12px">34</span><span class="mock-kpi-lbl">Pedidos</span></div>
         </div>
+        <table class="mock-table">
+          <thead><tr><th>Producto</th><th>Stock</th><th>Precio</th></tr></thead>
+          <tbody>
+            ${[['Collar Venus',8,480],['Aretes Rombo',14,320],['Pulsera Jade',5,280]].map(([n,s,p])=>`<tr><td style="font-size:10px">${n}</td><td><span class="mock-mono" style="color:${s<=5?'#dc2626':'#111'}">${s}</span></td><td class="mock-mono" style="font-size:10px">$${p}</td></tr>`).join('')}
+          </tbody>
+        </table>
       </div>
     </div>`,
   ],
+
   '05': [
     `<div class="mock-win">
       <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">soporte.projecter.mx</span></div>
@@ -1227,6 +1238,9 @@ function buildDemo(id) {
   if (id === '01') return buildDemoCentauro();
   if (id === '02') return buildDemoOnoffice();
   if (id === '03') return buildDemoTailorp();
+  if (id === '04') return buildDemoExhibijoya();
+  if (id === '05') return buildDemoSoporte();
+  if (id === '06') return buildDemoCusaem();
   return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:10px"><span style="font-size:11px;font-family:\'JetBrains Mono\',monospace;color:#bbb;letter-spacing:.06em">DEMO INTERACTIVO</span><span style="font-size:13px;color:#aaa;text-align:center;max-width:240px;line-height:1.5">Disponible próximamente. Contáctanos para una demostración personalizada.</span></div>';
 }
 
@@ -2256,6 +2270,500 @@ function buildDemoTailorp() {
 
   return renderMain();
 }
+
+
+/* ===== DEMO EXHIBIJOYA ===== */
+
+function buildDemoExhibijoya() {
+  var ejView = 'catalogo';
+  var ejCat  = 'Todos';
+  var ejSelectedId = -1;
+  var ejQty  = 1;
+  var ejCart = [];
+
+  var ejProducts = [
+    { id:1, name:'Collar Venus',   cat:'Collares', price:480, desc:'Plata 925 con piedra turquesa', stock:8  },
+    { id:2, name:'Aretes Rombo',   cat:'Aretes',   price:320, desc:'Oro laminado 18k, hipoalergénico', stock:14 },
+    { id:3, name:'Pulsera Jade',   cat:'Pulseras', price:280, desc:'Jade natural con cierre plateado', stock:5  },
+    { id:4, name:'Anillo Luna',    cat:'Anillos',  price:450, desc:'Plata 925 con ópalo blanco', stock:11 },
+    { id:5, name:'Collar Cadena',  cat:'Collares', price:560, desc:'Cadena eslabón grueso dorado 18k', stock:6  },
+    { id:6, name:'Aretes Perla',   cat:'Aretes',   price:390, desc:'Perla cultivada en aro plateado', stock:9  },
+  ];
+
+  var ejCats = ['Todos','Collares','Aretes','Pulseras','Anillos'];
+
+  function cartQty(id) { var i = ejCart.find(function(x){return x.id===id;}); return i?i.qty:0; }
+  function cartTotal(){ return ejCart.reduce(function(s,x){return s+x.price*x.qty;},0); }
+  function cartCount(){ return ejCart.reduce(function(s,x){return s+x.qty;},0); }
+  function fmtP(n){ return '$'+n.toLocaleString('es-MX'); }
+  function rerender(){ var a=document.getElementById('pj-modal-demo'); if(a) a.innerHTML=renderMain(); }
+
+  function renderCatalogo() {
+    var filtered = ejCat==='Todos' ? ejProducts : ejProducts.filter(function(p){return p.cat===ejCat;});
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+        '<div style="display:flex;gap:5px;flex-wrap:wrap">' +
+          ejCats.map(function(c){
+            return '<button onclick="ejCatFlt(\''+c+'\')" style="padding:3px 10px;border-radius:99px;font-size:9px;font-family:\'JetBrains Mono\',monospace;border:1px solid '+(c===ejCat?'#111':'#e0e0de')+';background:'+(c===ejCat?'#111':'#fff')+';color:'+(c===ejCat?'#fff':'#555')+';cursor:pointer">'+c+'</button>';
+          }).join('') +
+        '</div>' +
+        (cartCount()>0
+          ? '<button onclick="ejTab_(1)" style="padding:4px 10px;border-radius:99px;font-size:9px;border:1px solid #111;background:#fff;cursor:pointer;font-family:\'JetBrains Mono\',monospace">Carrito ('+cartCount()+')</button>'
+          : '') +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">' +
+        filtered.map(function(p){
+          var inCart = cartQty(p.id)>0;
+          return '<div onclick="ejSelProd('+p.id+')" style="cursor:pointer;border:1px solid '+(inCart?'#111':'#ececeb')+';border-radius:10px;overflow:hidden" onmouseenter="this.style.boxShadow=\'0 8px 20px -8px rgba(0,0,0,.18)\'" onmouseleave="this.style.boxShadow=\'none\'">' +
+            '<div style="background:linear-gradient(135deg,#f7f5f0 0%,#ece8e0 100%);aspect-ratio:1;display:flex;align-items:center;justify-content:center">' +
+              '<div style="font-size:10px;font-family:\'JetBrains Mono\',monospace;color:#bbb;letter-spacing:.05em">'+p.cat.slice(0,3).toUpperCase()+'</div>' +
+            '</div>' +
+            '<div style="padding:8px">' +
+              '<div style="font-size:10px;font-weight:600;line-height:1.3">'+p.name+'</div>' +
+              '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:700;margin-top:4px">'+fmtP(p.price)+'</div>' +
+              (inCart?'<div style="font-size:9px;color:#065f46;margin-top:2px">x'+cartQty(p.id)+' en carrito</div>':'') +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderDetalle() {
+    var p = ejProducts.find(function(x){return x.id===ejSelectedId;});
+    if (!p) return renderCatalogo();
+    return '<div class="demo-wrap">' +
+      '<button class="demo-back-btn" onclick="ejSetView(\'catalogo\')">&#8592; Catálogo</button>' +
+      '<div style="display:flex;gap:14px">' +
+        '<div style="background:linear-gradient(135deg,#f7f5f0 0%,#ece8e0 100%);width:96px;height:96px;flex-shrink:0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:9px;font-family:\'JetBrains Mono\',monospace;color:#bbb">'+p.cat.toUpperCase()+'</div>' +
+        '<div style="flex:1">' +
+          '<div style="font-size:14px;font-weight:700;line-height:1.2">'+p.name+'</div>' +
+          '<div style="font-size:10px;color:#888;margin-top:4px;line-height:1.4">'+p.desc+'</div>' +
+          '<div style="font-family:\'JetBrains Mono\',monospace;font-size:16px;font-weight:700;margin-top:8px">'+fmtP(p.price)+'</div>' +
+          '<div style="font-size:9px;color:#aaa;margin-top:2px">Stock: '+p.stock+' disponibles</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-top:14px">' +
+        '<div style="display:flex;align-items:center;gap:8px;border:1px solid #e0e0de;border-radius:99px;padding:4px 12px">' +
+          '<button onclick="ejQtyAdj(-1)" style="background:none;border:none;cursor:pointer;font-size:16px;color:#555;line-height:1;padding:0">-</button>' +
+          '<span id="ej-qty-val" style="font-family:\'JetBrains Mono\',monospace;font-size:12px;min-width:20px;text-align:center">'+ejQty+'</span>' +
+          '<button onclick="ejQtyAdj(1)"  style="background:none;border:none;cursor:pointer;font-size:16px;color:#555;line-height:1;padding:0">+</button>' +
+        '</div>' +
+        '<button onclick="ejAddCart('+p.id+')" class="btn-primary" style="flex:1;padding:9px;font-size:11px">Agregar al carrito</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderCarrito() {
+    var total = cartTotal();
+    var count = cartCount();
+    return '<div class="demo-wrap">' +
+      '<button class="demo-back-btn" onclick="ejSetView(\'catalogo\')">&#8592; Seguir comprando</button>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:8px">CARRITO · '+count+' ARTÍCULO'+(count!==1?'S':'')+'</div>' +
+      (ejCart.length===0
+        ? '<div style="text-align:center;padding:24px;color:#aaa;font-size:12px">Tu carrito está vacío</div>'
+        : ejCart.map(function(item,idx){
+            return '<div style="display:flex;gap:10px;padding:10px;border:1px solid #ececeb;border-radius:8px;margin-bottom:6px;align-items:center">' +
+              '<div style="background:#f7f5f0;width:36px;height:36px;border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;font-family:\'JetBrains Mono\',monospace;color:#bbb">'+item.cat.slice(0,3).toUpperCase()+'</div>' +
+              '<div style="flex:1">' +
+                '<div style="font-size:11px;font-weight:600">'+item.name+'</div>' +
+                '<div style="display:flex;align-items:center;gap:6px;margin-top:4px">' +
+                  '<button onclick="ejCartAdj('+idx+',-1)" style="width:20px;height:20px;border:1px solid #e0e0de;border-radius:50%;background:#fff;cursor:pointer;font-size:12px;line-height:1;padding:0">-</button>' +
+                  '<span style="font-family:\'JetBrains Mono\',monospace;font-size:10px">'+item.qty+'</span>' +
+                  '<button onclick="ejCartAdj('+idx+',1)"  style="width:20px;height:20px;border:1px solid #e0e0de;border-radius:50%;background:#fff;cursor:pointer;font-size:12px;line-height:1;padding:0">+</button>' +
+                '</div>' +
+              '</div>' +
+              '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:600">'+fmtP(item.price*item.qty)+'</div>' +
+            '</div>';
+          }).join('') +
+          '<div style="border-top:1px solid #ececeb;margin-top:8px;padding-top:10px">' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px"><span style="color:#888">Subtotal</span><span style="font-family:\'JetBrains Mono\',monospace">'+fmtP(total)+'</span></div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:12px"><span style="color:#888">Envío</span><span style="font-size:10px;color:#888">Calculado al pagar</span></div>' +
+            '<button class="btn-primary" style="width:100%;font-size:11px;padding:10px">Proceder al pago → '+fmtP(total)+'</button>' +
+          '</div>'
+      ) +
+    '</div>';
+  }
+
+  function renderAdmin() {
+    return '<div class="demo-wrap">' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:10px">PANEL DE ADMINISTRACIÓN</div>' +
+      '<div class="mock-kpi-row" style="margin-bottom:12px">' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">6</span><span class="mock-kpi-lbl">Productos</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">$12,480</span><span class="mock-kpi-lbl">Ventas mes</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val" style="font-size:13px">34</span><span class="mock-kpi-lbl">Pedidos</span></div>' +
+      '</div>' +
+      '<table class="demo-table">' +
+        '<thead><tr><th>Producto</th><th>Cat.</th><th>Stock</th><th>Precio</th></tr></thead>' +
+        '<tbody>' +
+          ejProducts.map(function(p){
+            return '<tr>' +
+              '<td style="font-size:10px;font-weight:500">'+p.name+'</td>' +
+              '<td style="font-size:9px;color:#888">'+p.cat+'</td>' +
+              '<td><span style="font-size:10px;font-family:\'JetBrains Mono\',monospace;color:'+(p.stock<=5?'#dc2626':'#111')+'">'+p.stock+'</span></td>' +
+              '<td class="mock-mono" style="font-size:10px">'+fmtP(p.price)+'</td>' +
+            '</tr>';
+          }).join('') +
+        '</tbody>' +
+      '</table>' +
+    '</div>';
+  }
+
+  var ejTabsKeys   = ['catalogo','carrito','admin'];
+  var ejTabsLabels = ['Catálogo','Carrito','Admin'];
+
+  function renderMain() {
+    var tabBar = '<div class="demo-tabs">' +
+      ejTabsKeys.map(function(t,i){
+        var lbl = ejTabsLabels[i];
+        if (t==='carrito' && cartCount()>0) lbl += ' ('+cartCount()+')';
+        var active = ejView===t || (ejView==='detalle' && t==='catalogo');
+        return '<button class="demo-tab'+(active?' active':'')+'" onclick="ejTab_('+i+')">'+lbl+'</button>';
+      }).join('') +
+    '</div>';
+    var body = '';
+    if (ejView==='catalogo') body = renderCatalogo();
+    if (ejView==='detalle')  body = renderDetalle();
+    if (ejView==='carrito')  body = renderCarrito();
+    if (ejView==='admin')    body = renderAdmin();
+    return tabBar + body;
+  }
+
+  window.ejTab_     = function(i){ ejView=ejTabsKeys[i]; rerender(); };
+  window.ejCatFlt   = function(c){ ejCat=c; ejView='catalogo'; rerender(); };
+  window.ejSelProd  = function(id){ ejSelectedId=id; ejQty=1; ejView='detalle'; rerender(); };
+  window.ejSetView  = function(v){ ejView=v; rerender(); };
+  window.ejQtyAdj   = function(d){ ejQty=Math.max(1,ejQty+d); var el=document.getElementById('ej-qty-val'); if(el) el.textContent=ejQty; };
+  window.ejAddCart  = function(id){
+    var p=ejProducts.find(function(x){return x.id===id;});
+    if(!p) return;
+    var ex=ejCart.find(function(x){return x.id===id;});
+    if(ex) ex.qty+=ejQty; else ejCart.push({id:p.id,name:p.name,cat:p.cat,price:p.price,qty:ejQty});
+    ejView='carrito'; rerender();
+  };
+  window.ejCartAdj  = function(idx,d){
+    ejCart[idx].qty+=d;
+    if(ejCart[idx].qty<=0) ejCart.splice(idx,1);
+    rerender();
+  };
+
+  return renderMain();
+}
+
+/* ===== DEMO SOPORTE ===== */
+
+function buildDemoSoporte() {
+  var spTab       = 'tickets';
+  var spDetalle   = -1;
+  var spFiltro    = 'Todos';
+  var spNuevoForm = true;
+  var spNextId    = 6;
+
+  var spTickets = [
+    { id:1, folio:'TKT-001', asunto:'Error al generar PDF de cotización', area:'Sistema',  prioridad:'Alta',  estatus:'En curso', fecha:'Hoy 09:14',    coms:[{de:'Cliente',msg:'El PDF sale en blanco desde ayer.',time:'09:14'},{de:'Soporte',msg:'Revisando el módulo de exportación.',time:'09:32'}] },
+    { id:2, folio:'TKT-002', asunto:'Agregar usuario con rol AUDITORIA',        area:'Accesos',  prioridad:'Media', estatus:'Nuevo',    fecha:'Hoy 11:05',    coms:[{de:'Cliente',msg:'Necesito acceso para mi contador.',time:'11:05'}] },
+    { id:3, folio:'TKT-003', asunto:'Ajuste de precios en inventario',          area:'Catálogo', prioridad:'Baja',  estatus:'Cerrado',  fecha:'Ayer 16:30',   coms:[{de:'Cliente',msg:'Necesito actualizar precios de rollos.',time:'16:30'},{de:'Soporte',msg:'Actualizado. Ticket cerrado.',time:'17:10'}] },
+    { id:4, folio:'TKT-004', asunto:'Reporte de ventas no carga en Safari',     area:'Sistema',  prioridad:'Alta',  estatus:'En curso', fecha:'Ayer 08:50',   coms:[{de:'Cliente',msg:'Aparece pantalla en blanco en Safari.',time:'08:50'}] },
+    { id:5, folio:'TKT-005', asunto:'Cambio de contraseña usuario Gerencia',area:'Accesos',  prioridad:'Media', estatus:'Cerrado',  fecha:'23 Jun 14:00', coms:[{de:'Cliente',msg:'Olvidamos la contraseña.',time:'14:00'},{de:'Soporte',msg:'Restablecida. Revisa tu correo.',time:'14:22'}] },
+  ];
+
+  var spEstatus = ['Todos','Nuevo','En curso','Cerrado'];
+
+  function esBg(e){ if(e==='Cerrado') return 'background:#d1fae5;color:#065f46'; if(e==='En curso') return 'background:#eff6ff;color:#1e40af'; return 'background:#fef3c7;color:#92400e'; }
+  function prioCol(p){ return p==='Alta'?'#dc2626':p==='Media'?'#d97706':'#888'; }
+  function rerender(){ var a=document.getElementById('pj-modal-demo'); if(a) a.innerHTML=renderMain(); }
+
+  function renderLista() {
+    var list = spFiltro==='Todos' ? spTickets : spTickets.filter(function(t){return t.estatus===spFiltro;});
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px">' +
+        spEstatus.map(function(e){
+          return '<button onclick="spFltE(\''+e+'\')" style="padding:3px 10px;border-radius:99px;font-size:9px;font-family:\'JetBrains Mono\',monospace;border:1px solid '+(e===spFiltro?'#111':'#e0e0de')+';background:'+(e===spFiltro?'#111':'#fff')+';color:'+(e===spFiltro?'#fff':'#555')+';cursor:pointer">'+e+'</button>';
+        }).join('') +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' +
+        list.map(function(t){
+          return '<div onclick="spVer('+t.id+')" style="padding:10px 12px;border:1px solid #ececeb;border-radius:8px;cursor:pointer" onmouseenter="this.style.background=\'#fafafa\'" onmouseleave="this.style.background=\'#fff\'">' +
+            '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">' +
+              '<span style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">'+t.folio+'</span>' +
+              '<span style="font-size:9px;color:'+prioCol(t.prioridad)+'">'+t.prioridad+'</span>' +
+              '<span style="margin-left:auto;font-size:9px;padding:2px 8px;border-radius:99px;'+esBg(t.estatus)+'">'+t.estatus+'</span>' +
+            '</div>' +
+            '<div style="font-size:11px;font-weight:600;line-height:1.3">'+t.asunto+'</div>' +
+            '<div style="display:flex;justify-content:space-between;margin-top:5px"><span style="font-size:9px;color:#aaa">'+t.area+'</span><span style="font-size:9px;color:#aaa">'+t.fecha+'</span></div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderDetalleTkt() {
+    var t = spTickets.find(function(x){return x.id===spDetalle;});
+    if (!t) return renderLista();
+    return '<div class="demo-wrap">' +
+      '<button class="demo-back-btn" onclick="spBack()">&#8592; Tickets</button>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">'+t.folio+'</span>' +
+        '<span style="font-size:9px;padding:2px 8px;border-radius:99px;'+esBg(t.estatus)+'">'+t.estatus+'</span>' +
+        '<span style="margin-left:auto;font-size:9px;color:'+prioCol(t.prioridad)+'">'+t.prioridad+'</span>' +
+      '</div>' +
+      '<div style="font-size:13px;font-weight:700;margin-bottom:4px">'+t.asunto+'</div>' +
+      '<div style="font-size:10px;color:#888;margin-bottom:12px">'+t.area+' · '+t.fecha+'</div>' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:8px">COMENTARIOS</div>' +
+      '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">' +
+        t.coms.map(function(c){
+          var isS = c.de==='Soporte';
+          return '<div style="display:flex;flex-direction:column;gap:2px;align-items:'+(isS?'flex-end':'flex-start')+'">' +
+            '<div style="max-width:85%;padding:8px 10px;border-radius:8px;background:'+(isS?'#111':'#f7f7f6')+';color:'+(isS?'#fff':'#333')+';font-size:11px;line-height:1.4">'+c.msg+'</div>' +
+            '<div style="font-size:9px;color:#bbb;font-family:\'JetBrains Mono\',monospace">'+c.de+' · '+c.time+'</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+      (t.estatus!=='Cerrado'
+        ? '<div style="display:flex;gap:6px">' +
+            '<button onclick="spActualizar('+t.id+',\'Cerrado\')" class="demo-btn-sm">Marcar cerrado</button>' +
+            '<button onclick="spActualizar('+t.id+',\'En curso\')" class="demo-btn-sm" style="margin-left:auto">En curso</button>' +
+          '</div>'
+        : '<div style="text-align:center;font-size:11px;color:#888;padding:6px;background:#f0fdf4;border-radius:8px">Ticket cerrado</div>'
+      ) +
+    '</div>';
+  }
+
+  function renderNuevo() {
+    if (spNuevoForm) {
+      return '<div class="demo-wrap">' +
+        '<p class="demo-title">NUEVO TICKET</p>' +
+        '<div class="demo-field"><div class="demo-label">ASUNTO</div><input class="demo-input" id="sp-asunto" placeholder="Describe el problema..." /></div>' +
+        '<div class="demo-field"><div class="demo-label">ÁREA</div>' +
+          '<select class="demo-input" id="sp-area">'+['Sistema','Accesos','Catálogo','Reportes','Otro'].map(function(a){return '<option>'+a+'</option>';}).join('')+'</select>' +
+        '</div>' +
+        '<div class="demo-field"><div class="demo-label">PRIORIDAD</div>' +
+          '<select class="demo-input" id="sp-prio">'+['Alta','Media','Baja'].map(function(p){return '<option>'+p+'</option>';}).join('')+'</select>' +
+        '</div>' +
+        '<button class="btn-primary" style="width:100%;margin-top:12px;font-size:11px;padding:10px" onclick="spSubmit()">Crear ticket</button>' +
+      '</div>';
+    }
+    return '<div class="demo-wrap" style="align-items:center;justify-content:center;text-align:center;padding-top:20px;gap:10px">' +
+      '<div style="font-size:36px">&#10003;</div>' +
+      '<div style="font-size:14px;font-weight:700">Ticket creado</div>' +
+      '<div style="font-size:11px;color:#888">Te avisaremos cuando tengamos novedades.</div>' +
+      '<button class="demo-btn-sm" style="margin-top:8px" onclick="spResetNuevo()">+ Nuevo ticket</button>' +
+    '</div>';
+  }
+
+  var spTabsKeys   = ['tickets','nuevo'];
+  var spTabsLabels = ['Tickets','Nuevo Ticket'];
+
+  function renderMain() {
+    var tabBar = '<div class="demo-tabs">' +
+      spTabsKeys.map(function(t,i){
+        var active = spTab===t || (t==='tickets' && spDetalle>=0);
+        return '<button class="demo-tab'+(active?' active':'')+'" onclick="spTab_('+i+')">'+spTabsLabels[i]+'</button>';
+      }).join('') +
+    '</div>';
+    var body = spTab==='tickets'
+      ? (spDetalle>=0 ? renderDetalleTkt() : renderLista())
+      : renderNuevo();
+    return tabBar + body;
+  }
+
+  window.spTab_       = function(i){ spTab=spTabsKeys[i]; spDetalle=-1; rerender(); };
+  window.spFltE       = function(e){ spFiltro=e; rerender(); };
+  window.spVer        = function(id){ spDetalle=id; rerender(); };
+  window.spBack       = function(){ spDetalle=-1; rerender(); };
+  window.spActualizar = function(id,e){
+    var t=spTickets.find(function(x){return x.id===id;});
+    if(t){ t.estatus=e; t.coms.push({de:'Soporte',msg:'Estatus actualizado: '+e,time:'Ahora'}); }
+    rerender();
+  };
+  window.spSubmit = function(){
+    var aEl=document.getElementById('sp-asunto');
+    var arEl=document.getElementById('sp-area');
+    var pEl=document.getElementById('sp-prio');
+    var asunto=aEl?aEl.value.trim():'Sin asunto';
+    var area=arEl?arEl.value:'Sistema';
+    var prio=pEl?pEl.value:'Media';
+    if(!asunto) asunto='Sin asunto';
+    spTickets.unshift({id:spNextId,folio:'TKT-00'+spNextId,asunto:asunto,area:area,prioridad:prio,estatus:'Nuevo',fecha:'Ahora',coms:[]});
+    spNextId++;
+    spNuevoForm=false;
+    rerender();
+  };
+  window.spResetNuevo = function(){ spNuevoForm=true; rerender(); };
+
+  return renderMain();
+}
+
+/* ===== DEMO CUSAEM ===== */
+
+function buildDemoCusaem() {
+  var csTab        = 'proyectos';
+  var csProyectoId = -1;
+  var csTRForm     = false;
+  var csNextEntry  = 4;
+
+  var csProyectos = [
+    { id:1, nombre:'Modernización de planta', estatus:'En curso',   avance:72,  lider:'A. García',  tareas:12, entregables:4, vence:'15 Jul' },
+    { id:2, nombre:'Auditoría de procesos',   estatus:'En curso',   avance:45,  lider:'R. Morales', tareas:8,  entregables:2, vence:'30 Jul' },
+    { id:3, nombre:'Plan de expansión 2025',  estatus:'Pendiente',  avance:10,  lider:'L. Torres',  tareas:6,  entregables:3, vence:'31 Ago' },
+    { id:4, nombre:'Capacitación de personal',estatus:'Completado', avance:100, lider:'M. Ríos',   tareas:5,  entregables:2, vence:'20 Jun' },
+  ];
+
+  var csPendientes = [
+    { id:1, texto:'Revisar entregable E-04 del proyecto 1', proyecto:'Modernización', done:false, vence:'Hoy' },
+    { id:2, texto:'Validar reporte de tiempos semana 26',   proyecto:'General',            done:false, vence:'Mañana' },
+    { id:3, texto:'Agendar reunión de cierre P4',     proyecto:'Capacitación',  done:true,  vence:'20 Jun' },
+    { id:4, texto:'Subir acta de avance mensual',           proyecto:'Auditoría',     done:false, vence:'30 Jun' },
+  ];
+
+  var csReportes = [
+    { id:1, usuario:'A. García',  proyecto:'Modernización', horas:8, desc:'Revisión de maquinaria',     fecha:'Hoy' },
+    { id:2, usuario:'R. Morales', proyecto:'Auditoría',      horas:6, desc:'Entrevistas a responsables', fecha:'Hoy' },
+    { id:3, usuario:'L. Torres',  proyecto:'Plan expansión', horas:4, desc:'Análisis de mercado inicial', fecha:'Ayer' },
+  ];
+
+  function esBg(e){ if(e==='Completado') return 'background:#d1fae5;color:#065f46'; if(e==='En curso') return 'background:#eff6ff;color:#1e40af'; return 'background:#f3f4f6;color:#374151'; }
+  function rerender(){ var a=document.getElementById('pj-modal-demo'); if(a) a.innerHTML=renderMain(); }
+
+  function renderProyectos() {
+    return '<div class="demo-wrap">' +
+      '<div class="mock-kpi-row" style="margin-bottom:12px">' +
+        '<div class="mock-kpi"><span class="mock-kpi-val">4</span><span class="mock-kpi-lbl">Proyectos</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val">2</span><span class="mock-kpi-lbl">En curso</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val">'+csPendientes.filter(function(p){return !p.done;}).length+'</span><span class="mock-kpi-lbl">Pendientes</span></div>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' +
+        csProyectos.map(function(p){
+          return '<div onclick="csVer('+p.id+')" style="padding:10px 12px;border:1px solid #ececeb;border-radius:8px;cursor:pointer" onmouseenter="this.style.background=\'#fafafa\'" onmouseleave="this.style.background=\'#fff\'">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">' +
+              '<div style="font-size:11px;font-weight:600">'+p.nombre+'</div>' +
+              '<span style="font-size:9px;padding:2px 8px;border-radius:99px;'+esBg(p.estatus)+'">'+p.estatus+'</span>' +
+            '</div>' +
+            '<div style="height:4px;background:#f0f0ee;border-radius:2px;margin-bottom:6px">' +
+              '<div style="height:4px;border-radius:2px;background:'+(p.avance===100?'#065f46':'#111')+';width:'+p.avance+'%"></div>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa">' +
+              '<span>'+p.lider+'</span><span>Vence: '+p.vence+'</span><span>'+p.avance+'%</span>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderDetalleProyecto() {
+    var p = csProyectos.find(function(x){return x.id===csProyectoId;});
+    if (!p) return renderProyectos();
+    return '<div class="demo-wrap">' +
+      '<button class="demo-back-btn" onclick="csBack()">&#8592; Proyectos</button>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+        '<div style="font-size:13px;font-weight:700;flex:1">'+p.nombre+'</div>' +
+        '<span style="font-size:9px;padding:2px 8px;border-radius:99px;'+esBg(p.estatus)+'">'+p.estatus+'</span>' +
+      '</div>' +
+      '<div class="mock-kpi-row" style="margin-bottom:12px">' +
+        '<div class="mock-kpi"><span class="mock-kpi-val">'+p.avance+'%</span><span class="mock-kpi-lbl">Avance</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val">'+p.tareas+'</span><span class="mock-kpi-lbl">Tareas</span></div>' +
+        '<div class="mock-kpi"><span class="mock-kpi-val">'+p.entregables+'</span><span class="mock-kpi-lbl">Entregables</span></div>' +
+      '</div>' +
+      '<div style="height:6px;background:#f0f0ee;border-radius:99px;margin-bottom:12px">' +
+        '<div style="height:6px;border-radius:99px;background:'+(p.avance===100?'#065f46':'#111')+';width:'+p.avance+'%"></div>' +
+      '</div>' +
+      [['Líder',p.lider],['Vence',p.vence],['Tareas',p.tareas+' definidas'],['Entregables',p.entregables+' definidos']].map(function(r){
+        return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f7f7f6;font-size:11px"><span style="color:#888">'+r[0]+'</span><span style="font-weight:500">'+r[1]+'</span></div>';
+      }).join('') +
+    '</div>';
+  }
+
+  function renderReporte() {
+    if (csTRForm) {
+      return '<div class="demo-wrap">' +
+        '<p class="demo-title">REGISTRAR TIEMPO</p>' +
+        '<div class="demo-field"><div class="demo-label">PROYECTO</div>' +
+          '<select class="demo-input" id="cs-tr-proyecto">'+
+            csProyectos.filter(function(p){return p.estatus!=='Completado';}).map(function(p){return '<option value="'+p.nombre+'">'+p.nombre+'</option>';}).join('')+
+          '</select>' +
+        '</div>' +
+        '<div class="demo-field"><div class="demo-label">HORAS</div><input class="demo-input" id="cs-tr-horas" type="number" min="0.5" step="0.5" placeholder="0.0" /></div>' +
+        '<div class="demo-field"><div class="demo-label">DESCRIPCIÓN</div><input class="demo-input" id="cs-tr-desc" placeholder="¿Qué hiciste?" /></div>' +
+        '<button class="btn-primary" style="width:100%;margin-top:12px;font-size:11px;padding:10px" onclick="csSubmitTR()">Guardar registro</button>' +
+      '</div>';
+    }
+    return '<div class="demo-wrap">' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+        '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa">REGISTROS RECIENTES</div>' +
+        '<button onclick="csTROpen()" class="demo-btn-sm">+ Registrar</button>' +
+      '</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' +
+        csReportes.map(function(r){
+          return '<div style="padding:10px;border:1px solid #ececeb;border-radius:8px">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:4px">' +
+              '<span style="font-size:11px;font-weight:600">'+r.usuario+'</span>' +
+              '<span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;font-weight:700">'+r.horas+'h</span>' +
+            '</div>' +
+            '<div style="font-size:10px;color:#555">'+r.desc+'</div>' +
+            '<div style="font-size:9px;color:#aaa;margin-top:4px">'+r.proyecto+' · '+r.fecha+'</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderPendientes() {
+    return '<div class="demo-wrap">' +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:9px;color:#aaa;margin-bottom:10px">PENDIENTES</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' +
+        csPendientes.map(function(p,i){
+          return '<div style="display:flex;gap:10px;padding:10px;border:1px solid #ececeb;border-radius:8px;opacity:'+(p.done?'0.5':'1')+'">' +
+            '<div onclick="csToggle('+i+')" style="width:18px;height:18px;border:'+(p.done?'2px solid #111':'1px solid #ccc')+';border-radius:4px;flex-shrink:0;cursor:pointer;background:'+(p.done?'#111':'#fff')+';display:flex;align-items:center;justify-content:center;margin-top:1px">' +
+              (p.done?'<span style="color:#fff;font-size:11px;line-height:1">&#10003;</span>':'') +
+            '</div>' +
+            '<div style="flex:1">' +
+              '<div style="font-size:11px;font-weight:500;'+(p.done?'text-decoration:line-through;color:#aaa':'')+'">' +p.texto+'</div>' +
+              '<div style="font-size:9px;color:#aaa;margin-top:3px">'+p.proyecto+' · Vence: '+p.vence+'</div>' +
+            '</div>' +
+          '</div>';
+        }).join('') +
+      '</div>' +
+    '</div>';
+  }
+
+  var csTabsKeys   = ['proyectos','reporte','pendientes'];
+  var csTabsLabels = ['Proyectos','Tiempo','Pendientes'];
+
+  function renderMain() {
+    var tabBar = '<div class="demo-tabs">' +
+      csTabsKeys.map(function(t,i){
+        var active = csTab===t;
+        return '<button class="demo-tab'+(active?' active':'')+'" onclick="csTab_('+i+')">'+csTabsLabels[i]+'</button>';
+      }).join('') +
+    '</div>';
+    var body = '';
+    if (csTab==='proyectos')  body = csProyectoId>=0 ? renderDetalleProyecto() : renderProyectos();
+    if (csTab==='reporte')    body = renderReporte();
+    if (csTab==='pendientes') body = renderPendientes();
+    return tabBar + body;
+  }
+
+  window.csTab_     = function(i){ csTab=csTabsKeys[i]; csProyectoId=-1; csTRForm=false; rerender(); };
+  window.csVer      = function(id){ csProyectoId=id; rerender(); };
+  window.csBack     = function(){ csProyectoId=-1; rerender(); };
+  window.csTROpen   = function(){ csTRForm=true; rerender(); };
+  window.csSubmitTR = function(){
+    var pEl=document.getElementById('cs-tr-proyecto');
+    var hEl=document.getElementById('cs-tr-horas');
+    var dEl=document.getElementById('cs-tr-desc');
+    var proyecto=pEl?pEl.value:'General';
+    var horas=hEl?parseFloat(hEl.value)||0:0;
+    var desc=dEl?dEl.value.trim():'';
+    if(horas<=0||!desc) return;
+    csReportes.unshift({id:csNextEntry++,usuario:'Tú',proyecto:proyecto,horas:horas,desc:desc,fecha:'Ahora'});
+    csTRForm=false; rerender();
+  };
+  window.csToggle = function(i){ csPendientes[i].done=!csPendientes[i].done; rerender(); };
+
+  return renderMain();
+}
+
 
 /* ---- placeholder para CATALOG (ya no se usa buildDemoCotizador) ---- */
 function buildDemoCotizador_UNUSED() {
