@@ -25,7 +25,7 @@ const PROJECTS = [
     features: ['Cotizador de lámina y teja en tiempo real', 'Pipeline de producción y maquila', 'Inventario por rollo con alertas de stock', 'Panel ejecutivo multi-usuario'],
   },
   {
-    id: '02', name: 'OnOffice — Punto de venta multi-sucursal', tag: 'Retail', kind: 'PLATAFORMA WEB', url: 'onoffice.projecter.mx',
+    id: '02', name: 'OnOffice — Punto de venta multi-sucursal', tag: 'Retail', kind: 'PLATAFORMA WEB', url: 'onoffice.projecter.mx', link: true,
     desc: 'Sistema de punto de venta y gestión integral para negocios con múltiples sucursales. Centraliza ventas, inventario, clientes y reportes en tiempo real desde cualquier dispositivo.',
     features: ['Punto de venta rápido desde cualquier dispositivo', 'Inventario sincronizado por sucursal', 'Dashboard de ventas, ganancias y productos top', 'Gestión de clientes, proveedores y gastos'],
   },
@@ -35,7 +35,7 @@ const PROJECTS = [
     features: ['Cartera de prospectos con estatus y filtros', 'Vinculación de prospectos a inmuebles de interés', 'Agenda de pendientes por prospecto', 'Dashboard de conversiones y portafolio activo'],
   },
   {
-    id: '04', name: 'Exhibijoya — Tienda web con catálogo y envíos', tag: 'E-commerce', kind: 'TIENDA WEB', url: 'exhibijoya.projecter.mx',
+    id: '04', name: 'Exhibijoya — Tienda web con catálogo y envíos', tag: 'E-commerce', kind: 'TIENDA WEB', url: 'exhibijoya.com', link: true,
     desc: 'Portal de e-commerce para negocio de joyería y accesorios. Catálogo de productos con filtros, carrito, selección de paquetería y pago en línea. Incluye panel de administración de inventario.',
     features: ['Catálogo con filtros por categoría', 'Carrito de compras con control de cantidad', 'Checkout con cálculo de envío', 'Panel de administración de productos'],
   },
@@ -2988,14 +2988,20 @@ function openProjectModal(p) {
   demoBtn.classList.remove('hidden');
   backBtn.classList.add('hidden');
 
-  // Wire demo button
-  demoBtn.onclick = () => {
-    gallery.classList.add('hidden');
-    demo.classList.remove('hidden');
-    demo.innerHTML = buildDemo(p.id);
-    demoBtn.classList.add('hidden');
-    backBtn.classList.remove('hidden');
-  };
+  // Wire demo button — projects with a real public URL go there directly
+  if (p.link) {
+    demoBtn.textContent = 'Ir →';
+    demoBtn.onclick = () => { window.open('https://' + p.url, '_blank'); };
+  } else {
+    demoBtn.textContent = 'Interactúa un poco';
+    demoBtn.onclick = () => {
+      gallery.classList.add('hidden');
+      demo.classList.remove('hidden');
+      demo.innerHTML = buildDemo(p.id);
+      demoBtn.classList.add('hidden');
+      backBtn.classList.remove('hidden');
+    };
+  }
 
   backBtn.onclick = () => {
     demo.classList.add('hidden');
