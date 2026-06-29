@@ -627,10 +627,7 @@ html, body {
 
 .pj-bento .pj-card:nth-child(1) { grid-column: span 4; }
 .pj-bento .pj-card:nth-child(2) { grid-column: span 2; }
-.pj-bento .pj-card:nth-child(3) { grid-column: span 2; }
-.pj-bento .pj-card:nth-child(4) { grid-column: span 2; }
-.pj-bento .pj-card:nth-child(5) { grid-column: span 2; }
-.pj-bento .pj-card:nth-child(6) { grid-column: span 6; }
+.pj-bento .pj-card:nth-child(3) { grid-column: span 6; }
 
 /* ===== GRID LAYOUT ===== */
 .pj-grid {
@@ -987,10 +984,7 @@ html, body {
   }
   .pj-bento .pj-card:nth-child(1) { grid-column: span 2; }
   .pj-bento .pj-card:nth-child(2) { grid-column: span 1; }
-  .pj-bento .pj-card:nth-child(3) { grid-column: span 1; }
-  .pj-bento .pj-card:nth-child(4) { grid-column: span 1; }
-  .pj-bento .pj-card:nth-child(5) { grid-column: span 1; }
-  .pj-bento .pj-card:nth-child(6) { grid-column: span 2; }
+  .pj-bento .pj-card:nth-child(3) { grid-column: span 2; }
   .pj-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -998,10 +992,7 @@ html, body {
   .pj-bento,
   .pj-bento .pj-card:nth-child(1),
   .pj-bento .pj-card:nth-child(2),
-  .pj-bento .pj-card:nth-child(3),
-  .pj-bento .pj-card:nth-child(4),
-  .pj-bento .pj-card:nth-child(5),
-  .pj-bento .pj-card:nth-child(6) {
+  .pj-bento .pj-card:nth-child(3) {
     grid-template-columns: 1fr;
     grid-column: span 1;
   }
