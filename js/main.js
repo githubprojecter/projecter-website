@@ -40,12 +40,12 @@ const PROJECTS = [
     features: ['Catálogo con filtros por categoría', 'Carrito de compras con control de cantidad', 'Checkout con cálculo de envío', 'Panel de administración de productos'],
   },
   {
-    id: '05', name: 'Soporte Projecter — Plataforma de atención', tag: 'Soporte', kind: 'PLATAFORMA WEB', url: 'soporte.projecter.mx',
+    id: '05', name: 'Soporte Projecter — Plataforma de atención', tag: 'Soporte', kind: 'PLATAFORMA WEB', url: 'soporte.projecter.mx', private: true,
     desc: 'Sistema interno de gestión de tickets y soporte técnico. Permite al equipo registrar solicitudes, hacer seguimiento por estatus y mantener historial de atención por cliente.',
     features: ['Registro y seguimiento de tickets', 'Panel de administración por rol', 'Historial de atención por cliente', 'Notificaciones de actualización'],
   },
   {
-    id: '06', name: 'CUSAEM — Gestión de proyectos y tiempos', tag: 'Operaciones', kind: 'PLATAFORMA WEB', url: 'proyectos.cusaem.mx',
+    id: '06', name: 'CUSAEM — Gestión de proyectos y tiempos', tag: 'Operaciones', kind: 'PLATAFORMA WEB', url: 'proyectos.cusaem.mx', private: true,
     desc: 'Plataforma de gestión de proyectos, tareas y reportes de tiempo para equipos de trabajo. Dashboard de avance, inbox centralizado, control de tiempos y notificaciones por proyecto.',
     features: ['Dashboard de avance por proyecto', 'Reporte de tiempos por colaborador', 'Inbox y notificaciones centralizadas', 'Control de pendientes y entregas'],
   },
