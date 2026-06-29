@@ -533,17 +533,23 @@ html, body {
 }
 
 .pj-bento .pj-card:nth-child(1),
-.pj-grid  .pj-card:nth-child(1) { animation-delay: .08s; }
+.pj-grid  .pj-card:nth-child(1),
+.pj-carousel-track .pj-card:nth-child(1) { animation-delay: .08s; }
 .pj-bento .pj-card:nth-child(2),
-.pj-grid  .pj-card:nth-child(2) { animation-delay: .18s; }
+.pj-grid  .pj-card:nth-child(2),
+.pj-carousel-track .pj-card:nth-child(2) { animation-delay: .18s; }
 .pj-bento .pj-card:nth-child(3),
-.pj-grid  .pj-card:nth-child(3) { animation-delay: .28s; }
+.pj-grid  .pj-card:nth-child(3),
+.pj-carousel-track .pj-card:nth-child(3) { animation-delay: .28s; }
 .pj-bento .pj-card:nth-child(4),
-.pj-grid  .pj-card:nth-child(4) { animation-delay: .38s; }
+.pj-grid  .pj-card:nth-child(4),
+.pj-carousel-track .pj-card:nth-child(4) { animation-delay: .38s; }
 .pj-bento .pj-card:nth-child(5),
-.pj-grid  .pj-card:nth-child(5) { animation-delay: .48s; }
+.pj-grid  .pj-card:nth-child(5),
+.pj-carousel-track .pj-card:nth-child(5) { animation-delay: .48s; }
 .pj-bento .pj-card:nth-child(6),
-.pj-grid  .pj-card:nth-child(6) { animation-delay: .58s; }
+.pj-grid  .pj-card:nth-child(6),
+.pj-carousel-track .pj-card:nth-child(6) { animation-delay: .58s; }
 
 .card-bar {
   display: flex;
@@ -565,6 +571,12 @@ html, body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   color: #b3b3b1;
+}
+
+.card-url--private {
+  font-style: italic;
+  color: #ccc;
+  letter-spacing: 0.02em;
 }
 
 .card-preview {
@@ -627,7 +639,68 @@ html, body {
 
 .pj-bento .pj-card:nth-child(1) { grid-column: span 4; }
 .pj-bento .pj-card:nth-child(2) { grid-column: span 2; }
-.pj-bento .pj-card:nth-child(3) { grid-column: span 6; }
+.pj-bento .pj-card:nth-child(3) { grid-column: span 2; }
+.pj-bento .pj-card:nth-child(4) { grid-column: span 2; }
+.pj-bento .pj-card:nth-child(5) { grid-column: span 2; }
+.pj-bento .pj-card:nth-child(6) { grid-column: span 6; }
+
+/* ===== CAROUSEL LAYOUT ===== */
+.pj-carousel-wrap {
+  position: relative;
+  overflow: hidden;
+}
+
+.pj-carousel-track {
+  display: flex;
+  gap: 18px;
+  transition: transform .55s cubic-bezier(.2,.75,.2,1);
+  will-change: transform;
+}
+
+.pj-carousel-track .pj-card {
+  flex: 0 0 calc((100% - 36px) / 3);
+  min-width: 0;
+}
+
+.pj-car-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.pj-car-btn {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #e0e0de;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s, border-color .2s, color .2s;
+  line-height: 1;
+}
+.pj-car-btn:hover:not(:disabled) {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+.pj-car-btn:disabled {
+  opacity: .28;
+  cursor: default;
+}
+
+.pj-car-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #aaa;
+  min-width: 36px;
+  text-align: center;
+}
 
 /* ===== GRID LAYOUT ===== */
 .pj-grid {
@@ -984,15 +1057,22 @@ html, body {
   }
   .pj-bento .pj-card:nth-child(1) { grid-column: span 2; }
   .pj-bento .pj-card:nth-child(2) { grid-column: span 1; }
-  .pj-bento .pj-card:nth-child(3) { grid-column: span 2; }
+  .pj-bento .pj-card:nth-child(3) { grid-column: span 1; }
+  .pj-bento .pj-card:nth-child(4) { grid-column: span 1; }
+  .pj-bento .pj-card:nth-child(5) { grid-column: span 1; }
+  .pj-bento .pj-card:nth-child(6) { grid-column: span 2; }
   .pj-grid { grid-template-columns: repeat(2, 1fr); }
+  .pj-carousel-track .pj-card { flex: 0 0 calc((100% - 18px) / 2); }
 }
 
 @media (max-width: 640px) {
   .pj-bento,
   .pj-bento .pj-card:nth-child(1),
   .pj-bento .pj-card:nth-child(2),
-  .pj-bento .pj-card:nth-child(3) {
+  .pj-bento .pj-card:nth-child(3),
+  .pj-bento .pj-card:nth-child(4),
+  .pj-bento .pj-card:nth-child(5),
+  .pj-bento .pj-card:nth-child(6) {
     grid-template-columns: 1fr;
     grid-column: span 1;
   }
@@ -1001,6 +1081,7 @@ html, body {
   .grid-2   { grid-template-columns: 1fr; }
   .voice-inner { flex-direction: column; }
   .landing-header { flex-direction: column; gap: 16px; text-align: center; }
+  .pj-carousel-track .pj-card { flex: 0 0 100%; }
 }
 
 /* ===== EFECTO MERCURIO (hero-p) ===== */

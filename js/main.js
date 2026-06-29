@@ -20,7 +20,7 @@ const QUESTIONS = [
 
 const PROJECTS = [
   {
-    id: '01', name: 'Centauro — ERP para industria del acero', tag: 'Manufactura', kind: 'PLATAFORMA WEB', url: 'cotiza.projecter.mx',
+    id: '01', name: 'Centauro — ERP para industria del acero', tag: 'Manufactura', kind: 'PLATAFORMA WEB', url: 'cotiza.projecter.mx', private: true,
     desc: 'Sistema de gestión integral para una empresa de lámina y teja metálica. Centraliza cotizaciones, pedidos, inventario por rollo/kg, maquila externa y operación multi-usuario en una sola plataforma.',
     features: ['Cotizador de lámina y teja en tiempo real', 'Pipeline de producción y maquila', 'Inventario por rollo con alertas de stock', 'Panel ejecutivo multi-usuario'],
   },
@@ -30,9 +30,24 @@ const PROJECTS = [
     features: ['Punto de venta rápido desde cualquier dispositivo', 'Inventario sincronizado por sucursal', 'Dashboard de ventas, ganancias y productos top', 'Gestión de clientes, proveedores y gastos'],
   },
   {
-    id: '03', name: 'Tailorp — CRM para inmobiliaria', tag: 'Inmobiliaria', kind: 'PLATAFORMA WEB', url: 'tailorp.projecter.mx',
+    id: '03', name: 'Tailorp — CRM para inmobiliaria', tag: 'Inmobiliaria', kind: 'PLATAFORMA WEB', url: 'tailorp.projecter.mx', private: true,
     desc: 'Plataforma CRM diseñada para agencias inmobiliarias. Centraliza prospectos, propiedades, tareas pendientes y seguimiento de operaciones de compra, renta y venta en un solo lugar.',
     features: ['Cartera de prospectos con estatus y filtros', 'Vinculación de prospectos a inmuebles de interés', 'Agenda de pendientes por prospecto', 'Dashboard de conversiones y portafolio activo'],
+  },
+  {
+    id: '04', name: 'BeeLabs Studio — Sitio web de agencia digital', tag: 'Marca', kind: 'SITIO WEB', url: 'beelabs.studio',
+    desc: 'Sitio web institucional para una agencia de diseño, estrategia y tecnología. Comunica propósito, servicios y portafolio con una dirección visual cuidada y orientada a conversión.',
+    features: ['Landing de alto impacto visual', 'Sección de servicios y metodología', 'Portafolio de proyectos', 'Formulario de contacto integrado'],
+  },
+  {
+    id: '05', name: 'Soporte Projecter — Plataforma de atención', tag: 'Soporte', kind: 'PLATAFORMA WEB', url: 'soporte.projecter.mx',
+    desc: 'Sistema interno de gestión de tickets y soporte técnico. Permite al equipo registrar solicitudes, hacer seguimiento por estatus y mantener historial de atención por cliente.',
+    features: ['Registro y seguimiento de tickets', 'Panel de administración por rol', 'Historial de atención por cliente', 'Notificaciones de actualización'],
+  },
+  {
+    id: '06', name: 'CUSAEM — Gestión de proyectos y tiempos', tag: 'Operaciones', kind: 'PLATAFORMA WEB', url: 'proyectos.cusaem.mx',
+    desc: 'Plataforma de gestión de proyectos, tareas y reportes de tiempo para equipos de trabajo. Dashboard de avance, inbox centralizado, control de tiempos y notificaciones por proyecto.',
+    features: ['Dashboard de avance por proyecto', 'Reporte de tiempos por colaborador', 'Inbox y notificaciones centralizadas', 'Control de pendientes y entregas'],
   },
 ];
 
@@ -57,6 +72,8 @@ const state = {
 };
 
 let prevPhase = 'loading';
+
+let carouselStep = 0;
 
 /* ===== CANVAS / AUDIO ===== */
 
@@ -485,7 +502,7 @@ function createProjectCard(p, ratio) {
       <span class="card-dot"></span>
       <span class="card-dot"></span>
       <span class="card-dot"></span>
-      <span class="card-url">${p.url}</span>
+      <span class="${p.private ? 'card-url card-url--private' : 'card-url'}">${p.private ? '— privado —' : p.url}</span>
     </div>
     <div class="card-preview card-preview-canvas" style="aspect-ratio:${ratio}">
       <canvas class="card-canvas" aria-hidden="true"></canvas>
@@ -513,6 +530,7 @@ function createProjectCard(p, ratio) {
     'Datos':       drawDatos,
     'Atención':    drawAtencion,
     'Inventario':  drawInventario,
+    'Soporte':     drawAtencion,
   };
   const drawFn = animMap[p.tag] || drawFlow;
 
@@ -643,8 +661,77 @@ function renderLanding() {
 
   const proj = $('landing-projects');
   proj.innerHTML = '';
-  $('landing-project-count').textContent = `[ ${PROJECTS.length} ]`;
-  PROJECTS.forEach(p => proj.appendChild(createProjectCard(p, '16/7')));
+  $('landing-project-count').textContent = '[ ' + PROJECTS.length + ' ]';
+
+  const track = document.createElement('div');
+  track.className = 'pj-carousel-track';
+  track.id = 'pj-car-track';
+  PROJECTS.forEach(function(p) { track.appendChild(createProjectCard(p, '16/7')); });
+  proj.appendChild(track);
+
+  const nav = document.createElement('div');
+  nav.className = 'pj-car-nav';
+  nav.innerHTML =
+    '<button class="pj-car-btn" id="pj-car-prev" aria-label="Anterior">&#8592;</button>' +
+    '<span class="pj-car-count" id="pj-car-count"></span>' +
+    '<button class="pj-car-btn" id="pj-car-next" aria-label="Siguiente">&#8594;</button>';
+  proj.appendChild(nav);
+
+  carouselStep = 0;
+  requestAnimationFrame(function() { carouselUpdate(); });
+}
+
+/* ===== CAROUSEL ===== */
+
+function carouselPerPage() {
+  if (window.innerWidth <= 640) return 1;
+  if (window.innerWidth <= 900) return 2;
+  return 3;
+}
+
+function carouselUpdate() {
+  const track = document.getElementById('pj-car-track');
+  const prev  = document.getElementById('pj-car-prev');
+  const next  = document.getElementById('pj-car-next');
+  const count = document.getElementById('pj-car-count');
+  if (!track || !prev || !next || !count) return;
+
+  const card = track.children[0];
+  if (!card) return;
+
+  const perPage = carouselPerPage();
+  const total   = PROJECTS.length;
+  const maxStep = Math.max(0, total - perPage);
+  carouselStep  = Math.min(carouselStep, maxStep);
+
+  const cardW  = card.offsetWidth;
+  const gap    = 18;
+  const offset = carouselStep * (cardW + gap);
+  track.style.transform = 'translateX(' + (-offset) + 'px)';
+
+  prev.disabled = carouselStep <= 0;
+  next.disabled = carouselStep >= maxStep;
+  count.textContent = (carouselStep + 1) + ' / ' + total;
+
+  const dots = document.querySelectorAll('.pj-car-dot');
+  dots.forEach(function(d, i) {
+    d.classList.toggle('is-active', i === carouselStep);
+  });
+}
+
+function initCarousel() {
+  var prev = document.getElementById('pj-car-prev');
+  var next = document.getElementById('pj-car-next');
+  if (!prev || !next) return;
+  prev.addEventListener('click', function() {
+    if (carouselStep > 0) { carouselStep--; carouselUpdate(); }
+  });
+  next.addEventListener('click', function() {
+    var perPage = carouselPerPage();
+    var maxStep = Math.max(0, PROJECTS.length - perPage);
+    if (carouselStep < maxStep) { carouselStep++; carouselUpdate(); }
+  });
+  window.addEventListener('resize', carouselUpdate);
 }
 
 /* ===== CANVAS · LOOP PRINCIPAL ===== */
@@ -1056,6 +1143,82 @@ const PROJECT_GALLERY = {
       </div>
     </div>`,
   ],
+  '04': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">beelabs.studio</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">BEELABS — HERO</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font-size:18px;font-weight:700;letter-spacing:-.02em;line-height:1.2">Diseño,<br>estrategia<br>y tecnología.</div>
+          <div style="font-size:10px;color:#888;line-height:1.5;max-width:160px">Para marcas que quieren crecer con propósito y presencia.</div>
+          <div style="display:inline-block;padding:6px 14px;background:#111;color:#fff;border-radius:99px;font-size:9px;font-family:'JetBrains Mono',monospace;width:fit-content">Conocer servicios →</div>
+        </div>
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">beelabs.studio / servicios</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">SERVICIOS</p>
+        ${[['Diseño web','Landing pages, sitios corporativos y apps'],['Identidad','Branding, logotipo y sistema visual'],['Estrategia','Posicionamiento, copy y funnel de ventas']].map(([t,d])=>`<div style="padding:8px 0;border-bottom:1px solid #f2f2f0"><div style="font-size:11px;font-weight:600">${t}</div><div style="font-size:10px;color:#888;margin-top:2px">${d}</div></div>`).join('')}
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">beelabs.studio / portafolio</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">PORTAFOLIO</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          ${[['Proyecto A','E-commerce'],['Proyecto B','Marca personal'],['Proyecto C','SaaS'],['Proyecto D','Inmobiliaria']].map(([n,c])=>`<div style="background:#f7f7f6;border-radius:6px;padding:10px 8px"><div style="font-size:10px;font-weight:600">${n}</div><div style="font-size:9px;color:#aaa;margin-top:2px">${c}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>`,
+  ],
+  '05': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">soporte.projecter.mx</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">TICKETS ABIERTOS</p>
+        ${[['TKT-001','Error en cotizador PDF','Alta','proc'],['TKT-002','Nuevo usuario AUDITORIA','Media','pend'],['TKT-003','Ajuste de precios inventario','Baja','done']].map(([id,t,p,b])=>`<div style="display:flex;gap:8px;padding:7px 0;border-bottom:1px solid #f7f7f6;align-items:center"><span class="mock-mono" style="font-size:9px;color:#aaa;flex-shrink:0">${id}</span><span style="flex:1;font-size:10px">${t}</span><span style="font-size:9px;color:${p==='Alta'?'#dc2626':p==='Media'?'#d97706':'#888'}">${p}</span><span class="mock-badge mock-badge-${b}">${{proc:'En curso',pend:'Nuevo',done:'Cerrado'}[b]}</span></div>`).join('')}
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">soporte.projecter.mx / admin</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">PANEL DE ADMINISTRACIÓN</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val">12</span><span class="mock-kpi-lbl">Abiertos</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val" style="color:#065f46">38</span><span class="mock-kpi-lbl">Cerrados</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">4.2h</span><span class="mock-kpi-lbl">T. respuesta</span></div>
+        </div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:#aaa;margin:8px 0 4px">ACTIVIDAD HOY</div>
+        ${[['TKT-004 resuelto','hace 20 min'],['TKT-002 actualizado','hace 45 min'],['TKT-005 asignado','hace 1h']].map(([m,t])=>`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #f7f7f6;font-size:10px"><span>${m}</span><span style="color:#bbb;font-family:'JetBrains Mono',monospace;font-size:9px">${t}</span></div>`).join('')}
+      </div>
+    </div>`,
+  ],
+  '06': [
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">proyectos.cusaem.mx / dashboard</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">RESUMEN DE PROYECTOS</p>
+        <div class="mock-kpi-row">
+          <div class="mock-kpi"><span class="mock-kpi-val">5</span><span class="mock-kpi-lbl">Activos</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">12</span><span class="mock-kpi-lbl">Tareas hoy</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">3</span><span class="mock-kpi-lbl">Vencen pronto</span></div>
+        </div>
+        ${[['Modernización de planta','En curso',72],['Auditoría de procesos','En curso',45],['Plan de expansión','Pendiente',10]].map(([n,s,p])=>`<div style="padding:7px 0;border-bottom:1px solid #f7f7f6"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="font-size:10px">${n}</span><span style="font-size:9px;color:#888">${s}</span></div><div style="height:4px;background:#f0f0ee;border-radius:2px"><div style="height:4px;background:#111;border-radius:2px;width:${p}%"></div></div></div>`).join('')}
+      </div>
+    </div>`,
+    `<div class="mock-win">
+      <div class="mock-bar"><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-dot"></span><span class="mock-url">proyectos.cusaem.mx / reporte</span></div>
+      <div class="mock-body">
+        <p class="mock-section-title">REPORTE DE TIEMPOS · JUNIO</p>
+        <div class="mock-kpi-row" style="margin-bottom:8px">
+          <div class="mock-kpi"><span class="mock-kpi-val">184h</span><span class="mock-kpi-lbl">Total registradas</span></div>
+          <div class="mock-kpi"><span class="mock-kpi-val">6</span><span class="mock-kpi-lbl">Colaboradores</span></div>
+        </div>
+        ${[['A. García','Ing. Civil','42h'],['R. Morales','Administración','38h'],['L. Torres','Supervisión','31h']].map(([n,r,h])=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f7f7f6"><div style="flex:1"><div style="font-size:10px;font-weight:600">${n}</div><div style="font-size:9px;color:#aaa">${r}</div></div><span class="mock-mono" style="font-size:11px">${h}</span></div>`).join('')}
+      </div>
+    </div>`,
+  ],
 };
 
 /* ===== DEMO SIMULADO ===== */
@@ -1064,7 +1227,7 @@ function buildDemo(id) {
   if (id === '01') return buildDemoCentauro();
   if (id === '02') return buildDemoOnoffice();
   if (id === '03') return buildDemoTailorp();
-  return '<p style="color:#aaa;font-size:13px">Demo no disponible.</p>';
+  return '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:10px"><span style="font-size:11px;font-family:\'JetBrains Mono\',monospace;color:#bbb;letter-spacing:.06em">DEMO INTERACTIVO</span><span style="font-size:13px;color:#aaa;text-align:center;max-width:240px;line-height:1.5">Disponible próximamente. Contáctanos para una demostración personalizada.</span></div>';
 }
 
 function buildDemoCentauro() {
@@ -2367,6 +2530,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Pre-renderizar contenido estático
   renderLanding();
+  initCarousel();
 
   // Iniciar loop de canvas
   rafLoop();
