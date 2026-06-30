@@ -111,6 +111,74 @@
     </div>
   </div>
 
+  <!-- ============ PROCESSING (análisis con IA) ============ -->
+  <div id="screen-processing" class="screen hidden">
+    <div class="proc-inner">
+      <div class="proc-orb" aria-hidden="true">
+        <div class="proc-orb-core"></div>
+      </div>
+      <div class="proc-text">
+        <div class="proc-overline" id="proc-label">TRANSCRIBIENDO RESPUESTAS</div>
+        <h2 class="proc-title">Analizando tu<br>diagnóstico</h2>
+        <div class="proc-dots" aria-hidden="true">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RESULTS (estadísticas + formulario) ============ -->
+  <div id="screen-results" class="screen hidden">
+    <div class="results-inner">
+
+      <!-- Cabecera: estadística principal -->
+      <div class="results-header">
+        <div class="overline anim-fadein">DIAGNÓSTICO COMPLETADO</div>
+        <div class="results-stat-hero anim-fadeup" style="animation-delay:.15s">
+          <span class="results-big-number" id="results-pct">78%</span>
+          <p class="results-stat-desc" id="results-stat-desc">de empresas mexicanas que tienen este perfil</p>
+        </div>
+        <p class="results-stat-source anim-fadein" id="results-stat-source" style="animation-delay:.25s"></p>
+      </div>
+
+      <!-- Separador -->
+      <div class="section-divider anim-fadein" style="animation-delay:.3s">
+        <span class="section-label">PUNTOS CRÍTICOS DETECTADOS</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Lista de errores -->
+      <div class="results-errors" id="results-errors" role="list"></div>
+
+      <!-- Separador formulario -->
+      <div class="section-divider anim-fadein" style="animation-delay:.4s">
+        <span class="section-label">RECIBE TU ANÁLISIS EN PDF</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Formulario lead -->
+      <form class="results-form anim-fadeup" id="results-form" style="animation-delay:.5s" novalidate>
+        <p class="results-form-subtitle">Te enviamos el análisis completo a tu WhatsApp.</p>
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label" for="field-name">NOMBRE</label>
+            <input type="text" id="field-name" class="form-input" placeholder="Tu nombre" autocomplete="given-name" required>
+          </div>
+          <div class="form-field">
+            <label class="form-label" for="field-wa">WHATSAPP</label>
+            <input type="tel" id="field-wa" class="form-input" placeholder="+52 55 0000 0000" autocomplete="tel" required>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary btn-send-results" id="btn-send">
+          <span id="btn-send-text">ENVIAR MI ANÁLISIS</span>
+        </button>
+        <p class="form-legal">Solo usamos tu WhatsApp para enviarte el análisis. Sin spam.</p>
+      </form>
+
+      <div class="footer" style="padding-top:32px">© 2026 P R O J E C T E R&reg;. Marca 100% Mexicana.</div>
+    </div>
+  </div>
+
   <!-- ============ FINAL ============ -->
   <div id="screen-final" class="screen hidden">
     <div class="final-inner">
@@ -256,6 +324,7 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

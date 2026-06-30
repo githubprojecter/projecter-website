@@ -98,8 +98,19 @@ let audioChunks   = [];
 
 let sessionId    = null;
 let savedUrls    = [];
+let uploadPromises = [];
 
 let advanceTimer = null;
+
+/* ===== ANÁLISIS IA ===== */
+let analysisData     = null;
+let processingInterval = null;
+const PROC_MESSAGES  = [
+  'TRANSCRIBIENDO RESPUESTAS',
+  'IDENTIFICANDO PATRONES',
+  'COMPARANDO CON DATOS MEXICANOS',
+  'GENERANDO TU DIAGNÓSTICO',
+];
 
 /* ===== UTILIDADES ===== */
 
@@ -177,10 +188,12 @@ async function saveSessionMetadata() {
 const $ = id => document.getElementById(id);
 
 const SCREENS = {
-  intro:    $('screen-intro'),
-  voice:    $('screen-voice'),
-  final:    $('screen-final'),
-  landing:  $('screen-landing'),
+  intro:      $('screen-intro'),
+  voice:      $('screen-voice'),
+  final:      $('screen-final'),
+  landing:    $('screen-landing'),
+  processing: $('screen-processing'),
+  results:    $('screen-results'),
 };
 
 /* ===== RENDER ===== */
@@ -196,6 +209,8 @@ function render() {
   SCREENS.voice.classList.toggle('hidden', !voiceActive);
   SCREENS.final.classList.toggle('hidden', phase !== 'final');
   SCREENS.landing.classList.toggle('hidden', phase !== 'landing');
+  SCREENS.processing.classList.toggle('hidden', phase !== 'processing');
+  SCREENS.results.classList.toggle('hidden', phase !== 'results');
 
   // Reiniciar animaciones de entrada al mostrar la pantalla de voz por primera vez
   if (voiceWasHidden && voiceActive) {
@@ -269,14 +284,16 @@ function render() {
 /* ===== ACCIONES ===== */
 
 function start() {
-  sessionId       = (typeof crypto.randomUUID === 'function')
+  sessionId        = (typeof crypto.randomUUID === 'function')
     ? crypto.randomUUID()
     : Date.now().toString(36) + Math.random().toString(36).substring(2);
-  savedUrls       = new Array(QUESTIONS.length).fill(null);
-  state.phase     = 'question';
-  state.qIndex    = 0;
-  state.recording = false;
-  state.micError  = null;
+  savedUrls        = new Array(QUESTIONS.length).fill(null);
+  uploadPromises   = new Array(QUESTIONS.length).fill(null);
+  analysisData     = null;
+  state.phase      = 'question';
+  state.qIndex     = 0;
+  state.recording  = false;
+  state.micError   = null;
   render();
 }
 
@@ -352,7 +369,7 @@ function stopAndAdvance() {
       const blob = new Blob(audioChunks, { type: mimeType });
       audioChunks = [];
       if (blob.size > 0) {
-        uploadResponse(qIdx, blob).then(url => {
+        uploadPromises[qIdx] = uploadResponse(qIdx, blob).then(url => {
           if (url) savedUrls[qIdx] = url;
         });
       }
@@ -371,13 +388,14 @@ function stopAndAdvance() {
   if (advanceTimer) clearTimeout(advanceTimer);
   advanceTimer = setTimeout(() => {
     if (isLast) {
-      state.phase = 'final';
-      renderFinal();
+      state.phase = 'processing';
+      render();
+      startAnalysis();
     } else {
       state.phase  = 'question';
       state.qIndex = qIdx + 1;
+      render();
     }
-    render();
     advanceTimer = null;
   }, 3000);
 }
@@ -562,6 +580,269 @@ function createProjectCard(p, ratio) {
 
   return div;
 }
+
+/* ===== IA: ANÁLISIS POST-DIAGNÓSTICO ===== */
+
+function startAnalysis() {
+  // Cyclar mensajes en la pantalla de procesamiento
+  let msgIdx = 0;
+  const labelEl = $('proc-label');
+  if (labelEl) labelEl.textContent = PROC_MESSAGES[0];
+
+  processingInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % PROC_MESSAGES.length;
+    const el = $('proc-label');
+    if (el) {
+      el.style.opacity = '0';
+      setTimeout(() => {
+        el.textContent = PROC_MESSAGES[msgIdx];
+        el.style.opacity = '1';
+      }, 200);
+    }
+  }, 3000);
+
+  // Esperar que todos los uploads terminen, luego llamar la API
+  Promise.allSettled(uploadPromises.filter(Boolean)).then(async () => {
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls: savedUrls, sessionId }),
+      });
+
+      if (!res.ok) throw new Error('API error ' + res.status);
+
+      const data = await res.json();
+      analysisData = data.analysis;
+
+      clearInterval(processingInterval);
+      state.phase = 'results';
+      renderResults(analysisData);
+      render();
+    } catch (err) {
+      console.error('Analysis error:', err);
+      clearInterval(processingInterval);
+      // Fallback graceful: ir a la pantalla final normal
+      state.phase = 'final';
+      renderFinal();
+      render();
+    }
+  });
+}
+
+function renderResults(analysis) {
+  if (!analysis) return;
+
+  // Estadística principal
+  const pct = analysis.main_stat?.percentage || 78;
+  const desc = analysis.main_stat?.description || 'de empresas mexicanas con este perfil';
+  const src  = analysis.main_stat?.source || '';
+
+  $('results-pct').textContent         = pct + '%';
+  $('results-stat-desc').textContent   = desc;
+  $('results-stat-source').textContent = src;
+
+  // Errores detectados
+  const errorsEl = $('results-errors');
+  errorsEl.innerHTML = '';
+  (analysis.errors || []).forEach((err, i) => {
+    const item = document.createElement('div');
+    item.className = 'results-error-item anim-fadeup';
+    item.style.animationDelay = (0.1 + i * 0.12) + 's';
+    item.setAttribute('role', 'listitem');
+    item.innerHTML = `
+      <div class="results-error-num">${err.number || String(i + 1).padStart(2, '0')}</div>
+      <div class="results-error-body">
+        <h3 class="results-error-title">${err.title}</h3>
+        <p class="results-error-desc">${err.description}</p>
+        <div class="results-error-stat">
+          <span class="stat-pct-badge">${err.stat_percentage}%</span>
+          <span class="stat-txt">${err.stat_text} — ${err.stat_source}</span>
+        </div>
+      </div>
+    `;
+    errorsEl.appendChild(item);
+  });
+
+  // Conectar formulario
+  const form = $('results-form');
+  if (form && !form.dataset.bound) {
+    form.dataset.bound = '1';
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await submitLead();
+    });
+  }
+}
+
+function generatePDF(analysis, name) {
+  if (!window.jspdf) return null;
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const W  = doc.internal.pageSize.getWidth();
+    const M  = 20; // margin
+    let y    = M;
+
+    const addLine = (wd) => {
+      doc.setDrawColor(220, 220, 216);
+      doc.setLineWidth(0.3);
+      doc.line(M, y, (wd || W - M), y);
+      y += 1;
+    };
+
+    // ── HEADER ──────────────────────────────────────────────────────
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text('PROJECTER · DIAGNÓSTICO DE PROCESOS', M, y);
+    y += 5;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.text(new Date().toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' }) + '  ·  Preparado para: ' + name, M, y);
+    y += 6;
+    addLine();
+    y += 8;
+
+    // ── ESTADÍSTICA PRINCIPAL ────────────────────────────────────────
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(52);
+    doc.setTextColor(17, 17, 17);
+    doc.text((analysis.main_stat?.percentage || 78) + '%', M, y);
+    y += 10;
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(13);
+    const mainDescLines = doc.splitTextToSize(analysis.main_stat?.description || '', W - M * 2 - 16);
+    doc.text(mainDescLines, M + 2, y);
+    y += mainDescLines.length * 6 + 2;
+
+    doc.setFontSize(8);
+    doc.setTextColor(150, 150, 150);
+    doc.text('Fuente: ' + (analysis.main_stat?.source || ''), M + 2, y);
+    y += 10;
+    addLine();
+    y += 8;
+
+    // ── ERRORES ──────────────────────────────────────────────────────
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(150, 150, 150);
+    doc.text('PUNTOS CRÍTICOS DETECTADOS', M, y);
+    y += 7;
+
+    (analysis.errors || []).forEach((err) => {
+      if (y > 265) { doc.addPage(); y = M; }
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(17, 17, 17);
+      doc.text(err.number + ' · ' + err.title, M, y);
+      y += 5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(60, 60, 60);
+      const descLines = doc.splitTextToSize(err.description, W - M * 2 - 4);
+      doc.text(descLines, M + 3, y);
+      y += descLines.length * 4.5 + 2;
+
+      doc.setFontSize(8);
+      doc.setTextColor(120, 120, 120);
+      doc.text(err.stat_percentage + '% ' + err.stat_text + ' — ' + err.stat_source, M + 3, y);
+      y += 8;
+
+      doc.setTextColor(17, 17, 17);
+    });
+
+    // ── RECOMENDACIÓN ────────────────────────────────────────────────
+    if (analysis.recommendation) {
+      if (y > 255) { doc.addPage(); y = M; }
+      y += 2;
+      addLine();
+      y += 7;
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(150, 150, 150);
+      doc.text('RECOMENDACIÓN', M, y);
+      y += 6;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(17, 17, 17);
+      const recLines = doc.splitTextToSize(analysis.recommendation, W - M * 2);
+      doc.text(recLines, M, y);
+    }
+
+    // ── FOOTER ───────────────────────────────────────────────────────
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(180, 180, 180);
+      doc.text('PROJECTER · projecter.mx · david@projecter.mx', M, 289);
+    }
+
+    return doc.output('datauristring').split(',')[1]; // base64
+  } catch (e) {
+    console.error('PDF error:', e);
+    return null;
+  }
+}
+
+async function submitLead() {
+  const name     = ($('field-name').value || '').trim();
+  const whatsapp = ($('field-wa').value  || '').trim();
+
+  if (!name || !whatsapp) return;
+
+  const btn     = $('btn-send');
+  const btnText = $('btn-send-text');
+  btn.disabled  = true;
+  btnText.textContent = 'ENVIANDO…';
+
+  const pdfBase64 = analysisData ? generatePDF(analysisData, name) : null;
+
+  try {
+    const res = await fetch('/api/send-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name,
+        whatsapp,
+        sessionId,
+        analysis: analysisData,
+        pdfBase64,
+      }),
+    });
+
+    if (res.ok) {
+      const form = $('results-form');
+      if (form) {
+        form.innerHTML = `
+          <div class="lead-success">
+            <span class="lead-success-icon">✓</span>
+            <p>¡Listo, ${name}! Te enviamos el análisis a tu WhatsApp en breve.</p>
+          </div>
+        `;
+      }
+      // Guardar metadata actualizada con el lead
+      setTimeout(saveSessionMetadata, 500);
+    } else {
+      btn.disabled = false;
+      btnText.textContent = 'ENVIAR MI ANÁLISIS';
+    }
+  } catch {
+    btn.disabled = false;
+    btnText.textContent = 'ENVIAR MI ANÁLISIS';
+  }
+}
+
+/* ===== PANTALLA FINAL (proyectos) ===== */
 
 function renderFinal() {
   const container = $('final-projects');
