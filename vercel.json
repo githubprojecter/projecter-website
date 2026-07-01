@@ -5,6 +5,12 @@
     },
     "api/send-lead.js": {
       "maxDuration": 30
+    },
+    "api/upload-audio.js": {
+      "maxDuration": 30
+    },
+    "api/save-metadata.js": {
+      "maxDuration": 15
     }
   }
 }

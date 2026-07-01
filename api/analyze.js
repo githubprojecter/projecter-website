@@ -4,17 +4,28 @@
    Returns:  { analysis: object, transcriptions: string[] }
    ============================================================ */
 
+const { put, list } = require('@vercel/blob');
+
 const QUESTIONS = [
-  '¿Qué parte de tu negocio sientes que todavía depende demasiado de estar "persiguiendo" a la gente?',
   'Si hoy tuvieras un asistente, ¿qué tarea repetitiva le delegarías?',
   '¿Has pensado que algunos colaboradores hacen cosas que no debieran hacer y que serían más útiles haciendo otra cosa? Platica un ejemplo.',
   '¿Cuál es la actividad que cada vez que la haces, te dices "esto no lo tendría que hacer yo"?',
   'Si pudieras escuchar a tu negocio, ¿qué proceso le duele en este momento?',
   '¿Tienes identificado dónde se rompe el proceso? Has intentado mil acciones, pero no mejora — menciona en qué tarea o proceso pensaste.',
   'Si hoy tuvieras un asistente que monitorea todos los flujos de tu negocio y lo consultaras para tomar decisiones, ¿cuánto pagarías por él?',
-  'Si mañana duplicaras tus clientes, ¿qué parte de tu operación se rompería primero?',
-  '¿Qué proceso te da más miedo delegar porque "si no lo haces tú, sale mal"?',
-  '¿Dónde sientes que se te pueden estar escapando oportunidades sin darte cuenta?',
+];
+
+const CATEGORIES = [
+  'Compras',
+  'Ventas',
+  'Gastos y finanzas',
+  'Documentación y trámites',
+  'Logística y entregas',
+  'Manufactura y producción',
+  'Atención a clientes',
+  'Recursos humanos',
+  'Infraestructura y tecnología',
+  'Otro',
 ];
 
 const SYSTEM_PROMPT = `Eres un consultor experto en diagnóstico de procesos para PyMEs mexicanas. Analizas respuestas de voz de empresarios y produces un diagnóstico estructurado basado en estadísticas mexicanas verificadas.
@@ -58,8 +69,14 @@ Devuelve EXCLUSIVAMENTE un JSON válido con esta estructura exacta (sin texto ad
       "stat_source": "<fuente exacta>"
     }
   ],
-  "recommendation": "<una oración directa y específica sobre qué tipo de solución necesita este negocio>"
+  "recommendation": "<una oración directa y específica sobre qué tipo de solución necesita este negocio>",
+  "classifications": [
+    { "question": <número de pregunta, 1 a ${QUESTIONS.length}>, "category": "<una categoría EXACTA de la lista de categorías>" }
+  ]
 }
+
+CATEGORÍAS VÁLIDAS (usa el texto exacto, una por pregunta, la que mejor describa el tema de esa respuesta):
+${CATEGORIES.map(c => `- ${c}`).join('\n')}
 
 REGLAS OBLIGATORIAS:
 - Detecta entre 3 y 5 errores (ni más, ni menos)
@@ -68,7 +85,63 @@ REGLAS OBLIGATORIAS:
 - Los títulos deben ser específicos ("Seguimiento manual de clientes", no "Falta de tecnología")
 - La descripción de cada error debe referenciar algo concreto que dijo el usuario
 - El tono es profesional y directo
-- No menciones "PROJECTER" en el análisis`;
+- No menciones "PROJECTER" en el análisis
+- "classifications" debe tener EXACTAMENTE una entrada por cada una de las ${QUESTIONS.length} preguntas, con "category" tomada literalmente de la lista de categorías válidas (usa "Otro" si ninguna aplica)`;
+
+async function readStatsFile(questionNum, token) {
+  const path = `Diagnostico/stats/q${questionNum}.json`;
+  try {
+    const { blobs } = await list({ prefix: path, token, limit: 1 });
+    const match = blobs.find((b) => b.pathname === path);
+    if (!match) return { categories: {}, total: 0 };
+    const res = await fetch(match.url);
+    if (!res.ok) return { categories: {}, total: 0 };
+    return await res.json();
+  } catch {
+    return { categories: {}, total: 0 };
+  }
+}
+
+async function writeStatsFile(questionNum, data, token) {
+  const path = `Diagnostico/stats/q${questionNum}.json`;
+  await put(path, JSON.stringify(data), {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+    token,
+  });
+}
+
+// Registra la clasificación de cada respuesta en los contadores globales por pregunta
+// y devuelve, para cada pregunta, el desglose de categorías actualizado con esta respuesta incluida.
+async function updateAndGetStats(classifications, blobToken) {
+  const stats = [];
+  for (let i = 0; i < QUESTIONS.length; i++) {
+    const qNum  = i + 1;
+    const found = classifications.find((c) => c.question === qNum);
+    const category = CATEGORIES.includes(found?.category) ? found.category : 'Otro';
+
+    const data = await readStatsFile(qNum, blobToken);
+    data.categories = data.categories || {};
+    data.categories[category] = (data.categories[category] || 0) + 1;
+    data.total = (data.total || 0) + 1;
+    await writeStatsFile(qNum, data, blobToken);
+
+    const breakdown = Object.entries(data.categories)
+      .map(([cat, count]) => ({ category: cat, percentage: Math.round((count / data.total) * 100) }))
+      .sort((a, b) => b.percentage - a.percentage);
+
+    stats.push({
+      question: qNum,
+      category,
+      percentage: Math.round((data.categories[category] / data.total) * 100),
+      totalResponses: data.total,
+      breakdown,
+    });
+  }
+  return stats;
+}
 
 async function transcribeAudio(url, index, apiKey) {
   if (!url) return `[Sin respuesta para pregunta ${index + 1}]`;
@@ -181,7 +254,20 @@ async function handler(req, res) {
     return res.status(500).json({ error: 'Error procesando análisis', detail: e.message });
   }
 
-  return res.status(200).json({ analysis, transcriptions });
+  // Clasificar respuestas en categorías fijas y actualizar la estadística global comparativa.
+  // Si falta el token de Blob, se omite sin bloquear el resto del análisis.
+  const BLOB_TOKEN = process.env.BLOB_READ_WRITE_TOKEN;
+  let stats = [];
+  if (BLOB_TOKEN) {
+    try {
+      const classifications = Array.isArray(analysis.classifications) ? analysis.classifications : [];
+      stats = await updateAndGetStats(classifications, BLOB_TOKEN);
+    } catch (e) {
+      console.error('Stats update error:', e);
+    }
+  }
+
+  return res.status(200).json({ analysis, transcriptions, stats });
 }
 
 module.exports = handler;

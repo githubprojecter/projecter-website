@@ -4,6 +4,9 @@
    Returns:  { ok: true }
    ============================================================ */
 
+const { put } = require('@vercel/blob');
+const { getDateFolder } = require('./_lib/blobPath');
+
 async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -148,17 +151,14 @@ async function handler(req, res) {
         timestamp: new Date().toISOString(),
         analysis: analysis || null,
       };
-      await fetch(
-        `https://blob.vercel-storage.com/diagnostico/${sessionId}/lead.json?access=public`,
-        {
-          method: 'PUT',
-          headers: {
-            Authorization: `Bearer ${BLOB_TOKEN}`,
-            'content-type': 'application/json',
-          },
-          body: JSON.stringify(leadData, null, 2),
-        }
-      );
+      const path = `Diagnostico/${getDateFolder()}/${sessionId}/lead.json`;
+      await put(path, JSON.stringify(leadData, null, 2), {
+        access: 'public',
+        addRandomSuffix: false,
+        allowOverwrite: true,
+        contentType: 'application/json',
+        token: BLOB_TOKEN,
+      });
     } catch {
       // Silent — don't block the response
     }

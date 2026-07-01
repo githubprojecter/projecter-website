@@ -227,6 +227,29 @@ html, body {
   color: #b3b3b1;
 }
 
+.btn-cancel-diagnostico {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .1em;
+  color: #b3b3b1;
+  padding: 8px;
+  transition: color .2s ease;
+}
+
+.btn-cancel-diagnostico:hover {
+  color: #111;
+}
+
 /* ===== INTRO SCREEN ===== */
 #screen-intro {
   min-height: 100vh;
@@ -2361,6 +2384,86 @@ html, body {
   font-size: 9.5px;
   color: rgba(17,17,17,.4);
   line-height: 1.6;
+}
+
+/* ── Comparativa con otros negocios ───────────────────────────── */
+.results-compare {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.results-compare-item {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px 24px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(17,17,17,.07);
+}
+
+.compare-question {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.compare-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.compare-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.compare-bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(17,17,17,.55);
+  width: clamp(90px, 22%, 160px);
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.compare-bar-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: #f0f0ee;
+  overflow: hidden;
+}
+
+.compare-bar-fill {
+  height: 100%;
+  background: #111;
+  border-radius: 3px;
+}
+
+.compare-bar-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: rgba(17,17,17,.4);
+  width: 34px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.compare-highlight {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  color: rgba(17,17,17,.7);
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* ── Formulario lead ────────────────────────────────────────── */

@@ -58,6 +58,9 @@
 
   <!-- ============ VOICE (preguntas + transición) ============ -->
   <div id="screen-voice" class="screen hidden">
+    <button id="btn-cancel-diagnostico" class="btn-cancel-diagnostico" type="button">
+      <span aria-hidden="true">✕</span> Cancelar diagnóstico
+    </button>
     <div class="voice-inner">
 
       <!-- Canvas blob -->
@@ -150,6 +153,15 @@
       <!-- Lista de errores -->
       <div class="results-errors" id="results-errors" role="list"></div>
 
+      <!-- Separador comparativa -->
+      <div class="section-divider anim-fadein" id="results-compare-divider" style="animation-delay:.35s">
+        <span class="section-label">CÓMO RESPONDEN OTROS NEGOCIOS</span>
+        <span class="divider-line"></span>
+      </div>
+
+      <!-- Comparativa por categoría -->
+      <div class="results-compare" id="results-compare" role="list"></div>
+
       <!-- Separador formulario -->
       <div class="section-divider anim-fadein" style="animation-delay:.4s">
         <span class="section-label">RECIBE TU ANÁLISIS EN PDF</span>
@@ -183,7 +195,7 @@
   <div id="screen-final" class="screen hidden">
     <div class="final-inner">
       <div class="final-header">
-        <div class="overline anim-fadein">DIAGNÓSTICO COMPLETO · 10 / 10</div>
+        <div class="overline anim-fadein" id="final-overline">DIAGNÓSTICO COMPLETO</div>
         <h2 class="pj-h1 final-h2">
           <span class="ln" style="animation-delay:.15s">Tu negocio no es el problema,</span>
           <span class="ln bold" style="animation-delay:.34s">tus procesos sí.</span>
@@ -226,7 +238,7 @@
 
     <section class="services-section" id="section-que">
       <div class="section-divider">
-        <span class="section-label">QUÉ HACEMOS</span>
+        <span class="section-label">01 · QUÉ HACEMOS</span>
         <span class="divider-line"></span>
       </div>
       <div id="landing-que"></div>
@@ -234,7 +246,7 @@
 
     <section class="services-section" id="section-porque">
       <div class="section-divider">
-        <span class="section-label">POR QUÉ LO HACEMOS</span>
+        <span class="section-label">02 · POR QUÉ LO HACEMOS</span>
         <span class="divider-line"></span>
       </div>
       <div class="pj-grid grid-2" id="landing-porque"></div>
@@ -242,7 +254,7 @@
 
     <section class="services-section" id="section-como">
       <div class="section-divider">
-        <span class="section-label">CÓMO LO HACEMOS</span>
+        <span class="section-label">03 · CÓMO LO HACEMOS</span>
         <span class="divider-line"></span>
       </div>
       <div class="pj-grid grid-2" id="landing-como"></div>
@@ -250,7 +262,7 @@
 
     <section class="projects-section" id="pj-proyectos">
       <div class="section-divider">
-        <span class="section-label">SISTEMAS QUE HEMOS CONSTRUIDO</span>
+        <span class="section-label">04 · ALGUNOS SISTEMAS QUE HEMOS CONSTRUIDO</span>
         <span class="divider-line"></span>
         <span class="section-count" id="landing-project-count"></span>
       </div>

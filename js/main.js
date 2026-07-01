@@ -6,16 +6,12 @@
 /* ===== DATOS ===== */
 
 const QUESTIONS = [
-  '¿Qué parte de tu negocio sientes que todavía depende demasiado de estar "persiguiendo" a la gente?',
   'Si hoy tuvieras un asistente, ¿qué tarea repetitiva le delegarías?',
   '¿Has pensado que algunos colaboradores hacen cosas que no debieran hacer y que serían más útiles haciendo otra cosa? Platica un ejemplo.',
   '¿Cuál es la actividad que cada vez que la haces, te dices "esto no lo tendría que hacer yo"?',
   'Si pudieras escuchar a tu negocio, ¿qué proceso le duele en este momento?',
   '¿Tienes identificado dónde se rompe el proceso? Has intentado mil acciones, pero no mejora — menciona en qué tarea o proceso pensaste.',
   'Si hoy tuvieras un asistente que monitorea todos los flujos de tu negocio y lo consultaras para tomar decisiones, ¿cuánto pagarías por él?',
-  'Si mañana duplicaras tus clientes, ¿qué parte de tu operación se rompería primero?',
-  '¿Qué proceso te da más miedo delegar porque "si no lo haces tú, sale mal"?',
-  '¿Dónde sientes que se te pueden estar escapando oportunidades sin darte cuenta?',
 ];
 
 const PROJECTS = [
@@ -57,10 +53,6 @@ const SERVICES = [
   { n: '03', title: 'CRM y seguimiento',            desc: 'Deja de perseguir clientes: tu flujo de ventas ordenado y automático.' },
   { n: '04', title: 'Dashboards y reportes',        desc: 'Mira cómo va tu negocio en tiempo real, sin armar Excel a mano.' },
 ];
-
-/* ===== VERCEL BLOB ===== */
-
-const BLOB_TOKEN = 'vercel_blob_rw_CD2NLvi9AEhzHB71_lvQgxsz4EQPeVJPf6RTXX7vCrMYqNU';
 
 /* ===== ESTADO ===== */
 
@@ -143,14 +135,10 @@ function blobExt(mimeType) {
 async function uploadResponse(qIdx, audioBlob) {
   if (!audioBlob || audioBlob.size === 0 || !sessionId) return null;
   try {
-    const ext  = blobExt(audioBlob.type || 'audio/webm');
-    const path = `diagnostico/${sessionId}/q${pad(qIdx + 1)}.${ext}`;
-    const res  = await fetch(`https://blob.vercel-storage.com/${path}?access=public`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${BLOB_TOKEN}`,
-        'content-type': audioBlob.type || 'audio/webm',
-      },
+    const qs  = new URLSearchParams({ sessionId, question: String(qIdx + 1) });
+    const res = await fetch(`/api/upload-audio?${qs}`, {
+      method: 'POST',
+      headers: { 'content-type': audioBlob.type || 'audio/webm' },
       body: audioBlob,
     });
     if (!res.ok) return null;
@@ -169,14 +157,10 @@ async function saveSessionMetadata() {
       timestamp: new Date().toISOString(),
       responses: savedUrls.map((url, i) => ({ question: i + 1, url: url || null })),
     };
-    const path = `diagnostico/${sessionId}/metadata.json`;
-    await fetch(`https://blob.vercel-storage.com/${path}?access=public`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${BLOB_TOKEN}`,
-        'content-type': 'application/json',
-      },
-      body: JSON.stringify(meta, null, 2),
+    await fetch('/api/save-metadata', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ sessionId, meta }),
     });
   } catch {
     // silent — no bloquear la UX
@@ -297,7 +281,8 @@ function start() {
   render();
 }
 
-function gotoIntro() {
+function cancelDiagnostico() {
+  if (!confirm('¿Seguro que quieres salir? Perderás tus respuestas.')) return;
   if (mediaRecorder && mediaRecorder.state !== 'inactive') {
     mediaRecorder.stop();
   }
@@ -305,7 +290,7 @@ function gotoIntro() {
   audioChunks   = [];
   stopMic();
   if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
-  state.phase     = 'intro';
+  state.phase     = 'landing';
   state.recording = false;
   render();
 }
@@ -613,7 +598,7 @@ function startAnalysis() {
       if (!res.ok) throw new Error('API error ' + res.status);
 
       const data = await res.json();
-      analysisData = data.analysis;
+      analysisData = { ...data.analysis, stats: data.stats || [] };
 
       clearInterval(processingInterval);
       state.phase = 'results';
@@ -663,6 +648,38 @@ function renderResults(analysis) {
     `;
     errorsEl.appendChild(item);
   });
+
+  // Comparativa: en qué porcentaje entra el usuario respecto a otros negocios, por pregunta
+  const compareEl    = $('results-compare');
+  const compareDivEl = $('results-compare-divider');
+  compareEl.innerHTML = '';
+  const stats = analysis.stats || [];
+  if (stats.length === 0) {
+    compareEl.classList.add('hidden');
+    compareDivEl.classList.add('hidden');
+  } else {
+    compareEl.classList.remove('hidden');
+    compareDivEl.classList.remove('hidden');
+    stats.forEach((s, i) => {
+      const item = document.createElement('div');
+      item.className = 'results-compare-item anim-fadeup';
+      item.style.animationDelay = (0.1 + i * 0.1) + 's';
+      item.setAttribute('role', 'listitem');
+      const bars = (s.breakdown || []).map(b => `
+        <div class="compare-bar-row">
+          <span class="compare-bar-label">${b.category}</span>
+          <div class="compare-bar-track"><div class="compare-bar-fill" style="width:${b.percentage}%"></div></div>
+          <span class="compare-bar-pct">${b.percentage}%</span>
+        </div>
+      `).join('');
+      item.innerHTML = `
+        <p class="compare-question">${QUESTIONS[s.question - 1] || ''}</p>
+        <div class="compare-bars">${bars}</div>
+        <p class="compare-highlight">Estás en el <strong>${s.percentage}%</strong> que respondería <strong>${s.category}</strong> a esta pregunta.</p>
+      `;
+      compareEl.appendChild(item);
+    });
+  }
 
   // Conectar formulario
   const form = $('results-form');
@@ -847,6 +864,8 @@ async function submitLead() {
 function renderFinal() {
   const container = $('final-projects');
   container.innerHTML = '';
+  const total = QUESTIONS.length;
+  $('final-overline').textContent = `DIAGNÓSTICO COMPLETO · ${pad(total)} / ${pad(total)}`;
   $('final-project-count').textContent = `[ ${PROJECTS.length} ]`;
   PROJECTS.forEach(p => container.appendChild(createProjectCard(p, '16/9')));
 
@@ -3443,6 +3462,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Voz
   $('btn-record').addEventListener('click', startRecording);
   $('btn-stop').addEventListener('click', stopAndAdvance);
+  $('btn-cancel-diagnostico').addEventListener('click', cancelDiagnostico);
 
   // Modal: cerrar con X, backdrop y ESC
   $('pj-modal-x').addEventListener('click', closeProjectModal);
