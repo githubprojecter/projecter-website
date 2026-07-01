@@ -881,7 +881,6 @@ function renderLanding() {
   const queBlock = document.createElement('div');
   queBlock.className = 'prose-block';
   queBlock.innerHTML = `
-    <span class="prose-n">01</span>
     <h3 class="prose-title">Automatización de procesos</h3>
     <p class="prose-text">
       Toda tarea realizada dentro de un negocio se considera parte de un proceso. El problema empieza cuando se realizan tareas fuera del proceso: lo que hoy parece una tarea inofensiva, mañana se convertirá en sobrecosto, errores y pérdida de control empresarial.

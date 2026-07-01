@@ -1266,14 +1266,6 @@ html, body {
   animation: pjFadeUp .8s cubic-bezier(.2,.75,.2,1) .08s forwards;
 }
 
-.prose-n {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  letter-spacing: .3em;
-  color: #b3b3b1;
-  font-weight: 500;
-}
-
 .prose-title {
   margin: 0;
   font-weight: 600;
