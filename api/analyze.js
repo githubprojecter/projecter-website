@@ -7,12 +7,11 @@
 const { put, list } = require('@vercel/blob');
 
 const QUESTIONS = [
-  'Si hoy tuvieras un asistente, ¿qué tarea repetitiva le delegarías?',
-  '¿Has pensado que algunos colaboradores hacen cosas que no debieran hacer y que serían más útiles haciendo otra cosa? Platica un ejemplo.',
-  '¿Cuál es la actividad que cada vez que la haces, te dices "esto no lo tendría que hacer yo"?',
-  'Si pudieras escuchar a tu negocio, ¿qué proceso le duele en este momento?',
-  '¿Tienes identificado dónde se rompe el proceso? Has intentado mil acciones, pero no mejora — menciona en qué tarea o proceso pensaste.',
-  'Si hoy tuvieras un asistente que monitorea todos los flujos de tu negocio y lo consultaras para tomar decisiones, ¿cuánto pagarías por él?',
+  'Si pudieras escuchar a tu negocio, menciona el proceso que le duele más en este momento.',
+  'Menciona el número exacto de procesos que integran tu negocio.',
+  'Menciona el proceso repetitivo que les urge eliminar a tus colaboradores.',
+  'Menciona un proceso que, cada vez que lo haces, te dices: "esto no lo debería estar haciendo yo".',
+  'Si hoy tuvieras un asistente que monitorea toda la trazabilidad de tu negocio y te proporciona información para tomar decisiones, ¿cuánto pagarías por él?',
 ];
 
 const CATEGORIES = [

@@ -132,60 +132,124 @@
 
   <!-- ============ RESULTS (estadísticas + formulario) ============ -->
   <div id="screen-results" class="screen hidden">
-    <div class="results-inner">
+    <div class="results-inner results-inner--split">
+      <div class="results-grid">
 
-      <!-- Cabecera: estadística principal -->
-      <div class="results-header">
-        <div class="overline anim-fadein">DIAGNÓSTICO COMPLETADO</div>
-        <div class="results-stat-hero anim-fadeup" style="animation-delay:.15s">
-          <span class="results-big-number" id="results-pct">78%</span>
-          <p class="results-stat-desc" id="results-stat-desc">de empresas mexicanas que tienen este perfil</p>
-        </div>
-        <p class="results-stat-source anim-fadein" id="results-stat-source" style="animation-delay:.25s"></p>
-      </div>
+        <!-- Columna izquierda: diagnóstico -->
+        <div class="results-col results-col-left">
 
-      <!-- Separador -->
-      <div class="section-divider anim-fadein" style="animation-delay:.3s">
-        <span class="section-label">PUNTOS CRÍTICOS DETECTADOS</span>
-        <span class="divider-line"></span>
-      </div>
-
-      <!-- Lista de errores -->
-      <div class="results-errors" id="results-errors" role="list"></div>
-
-      <!-- Separador comparativa -->
-      <div class="section-divider anim-fadein" id="results-compare-divider" style="animation-delay:.35s">
-        <span class="section-label">CÓMO RESPONDEN OTROS NEGOCIOS</span>
-        <span class="divider-line"></span>
-      </div>
-
-      <!-- Comparativa por categoría -->
-      <div class="results-compare" id="results-compare" role="list"></div>
-
-      <!-- Separador formulario -->
-      <div class="section-divider anim-fadein" style="animation-delay:.4s">
-        <span class="section-label">RECIBE TU ANÁLISIS EN PDF</span>
-        <span class="divider-line"></span>
-      </div>
-
-      <!-- Formulario lead -->
-      <form class="results-form anim-fadeup" id="results-form" style="animation-delay:.5s" novalidate>
-        <p class="results-form-subtitle">Te enviamos el análisis completo a tu WhatsApp.</p>
-        <div class="form-row">
-          <div class="form-field">
-            <label class="form-label" for="field-name">NOMBRE</label>
-            <input type="text" id="field-name" class="form-input" placeholder="Tu nombre" autocomplete="given-name" required>
+          <!-- Cabecera: estadística principal -->
+          <div class="results-header">
+            <div class="overline anim-fadein">DIAGNÓSTICO COMPLETADO</div>
+            <div class="results-stat-hero anim-fadeup" style="animation-delay:.15s">
+              <span class="results-big-number" id="results-pct">78%</span>
+              <p class="results-stat-desc" id="results-stat-desc">de empresas mexicanas que tienen este perfil</p>
+            </div>
+            <p class="results-stat-source anim-fadein" id="results-stat-source" style="animation-delay:.25s"></p>
           </div>
-          <div class="form-field">
-            <label class="form-label" for="field-wa">WHATSAPP</label>
-            <input type="tel" id="field-wa" class="form-input" placeholder="+52 55 0000 0000" autocomplete="tel" required>
+
+          <!-- Separador -->
+          <div class="section-divider anim-fadein" style="animation-delay:.3s">
+            <h2 class="section-label">PUNTOS CRÍTICOS DETECTADOS</h2>
+            <span class="divider-line"></span>
           </div>
+
+          <!-- Lista de errores -->
+          <div class="results-errors" id="results-errors" role="list"></div>
+
+          <!-- Separador comparativa -->
+          <div class="section-divider anim-fadein" id="results-compare-divider" style="animation-delay:.35s">
+            <h2 class="section-label">CÓMO RESPONDEN OTROS NEGOCIOS</h2>
+            <span class="divider-line"></span>
+          </div>
+
+          <!-- Comparativa por categoría -->
+          <div class="results-compare" id="results-compare" role="list"></div>
+
         </div>
-        <button type="submit" class="btn-primary btn-send-results" id="btn-send">
-          <span id="btn-send-text">ENVIAR MI ANÁLISIS</span>
-        </button>
-        <p class="form-legal">Solo usamos tu WhatsApp para enviarte el análisis. Sin spam.</p>
-      </form>
+
+        <!-- Columna derecha: proceso de seguimiento -->
+        <div class="results-col results-col-right">
+
+          <!-- Formulario lead (bloque 2) — primero en mobile vía order, ver CSS -->
+          <div class="results-form-block">
+            <div class="section-divider anim-fadein" style="animation-delay:.3s">
+              <h2 class="section-label">RECIBE TU ANÁLISIS EN PDF</h2>
+              <span class="divider-line"></span>
+            </div>
+
+            <form class="results-form anim-fadeup" id="results-form" style="animation-delay:.35s" novalidate>
+              <p class="results-form-subtitle">Ahora te pediremos algunos datos para continuar con tu proceso. Están protegidos y no se usarán para otro fin que dar seguimiento a tu proceso.</p>
+              <div class="form-row">
+                <div class="form-field">
+                  <label class="form-label" for="field-name">NOMBRE</label>
+                  <input type="text" id="field-name" class="form-input" placeholder="Tu nombre" autocomplete="given-name" required>
+                </div>
+                <div class="form-field">
+                  <label class="form-label" for="field-wa">WHATSAPP</label>
+                  <input type="tel" id="field-wa" class="form-input" placeholder="+52 55 0000 0000" autocomplete="tel" required>
+                </div>
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="field-contact-pref">¿CÓMO Y CUÁNDO PREFIERES QUE TE CONTACTEMOS?</label>
+                <input type="text" id="field-contact-pref" class="form-input" placeholder="Ej. WhatsApp, miércoles 10am" autocomplete="off" required>
+              </div>
+              <button type="submit" class="btn-primary btn-send-results" id="btn-send">
+                <span id="btn-send-text">ENVIAR MI ANÁLISIS</span>
+              </button>
+              <p class="form-legal">Solo usamos tus datos para dar seguimiento a tu proceso. Sin spam.</p>
+            </form>
+          </div>
+
+          <!-- Proceso (bloque 1) — segundo en mobile vía order, ver CSS -->
+          <div class="results-steps-block">
+            <div class="section-divider anim-fadein" style="animation-delay:.4s">
+              <h2 class="section-label">SIGUIENTES PASOS</h2>
+              <span class="divider-line"></span>
+            </div>
+
+            <div class="results-steps" role="list">
+              <div class="results-step-item anim-fadeup" role="listitem" style="animation-delay:.42s">
+                <span class="results-step-num" aria-hidden="true">01</span>
+                <div class="results-step-body">
+                  <h3 class="results-step-title">Análisis a profundidad</h3>
+                  <p class="results-step-desc">3 sesiones remotas de 1 hora cada una, durante 3 días continuos, para entender tu proceso a detalle.</p>
+                </div>
+              </div>
+              <div class="results-step-item anim-fadeup" role="listitem" style="animation-delay:.46s">
+                <span class="results-step-num" aria-hidden="true">02</span>
+                <div class="results-step-body">
+                  <h3 class="results-step-title">Maqueta de acuerdo</h3>
+                  <p class="results-step-desc">2 días después presentamos una maqueta para validar juntos lo entendido.</p>
+                </div>
+              </div>
+              <div class="results-step-item anim-fadeup" role="listitem" style="animation-delay:.5s">
+                <span class="results-step-num" aria-hidden="true">03</span>
+                <div class="results-step-body">
+                  <h3 class="results-step-title">Contrato y anexos técnicos</h3>
+                  <p class="results-step-desc">Si estamos de acuerdo, preparamos el contrato con los anexos técnicos necesarios.</p>
+                </div>
+              </div>
+              <div class="results-step-item anim-fadeup" role="listitem" style="animation-delay:.54s">
+                <span class="results-step-num" aria-hidden="true">04</span>
+                <div class="results-step-body">
+                  <h3 class="results-step-title">Entrega del flujo automatizado</h3>
+                  <p class="results-step-desc">30 días naturales después de la firma, tu flujo de negocio queda automatizado.</p>
+                </div>
+              </div>
+              <div class="results-step-item anim-fadeup" role="listitem" style="animation-delay:.58s">
+                <span class="results-step-num" aria-hidden="true">05</span>
+                <div class="results-step-body">
+                  <h3 class="results-step-title">Soporte continuo</h3>
+                  <p class="results-step-desc">Soporte y actualizaciones continuas durante la vigencia del contrato.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
 
       <div class="footer" style="padding-top:32px">© 2026 P R O J E C T E R&reg;. Marca 100% Mexicana.</div>
     </div>

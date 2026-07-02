@@ -6,12 +6,11 @@
 /* ===== DATOS ===== */
 
 const QUESTIONS = [
-  'Si hoy tuvieras un asistente, ¿qué tarea repetitiva le delegarías?',
-  '¿Has pensado que algunos colaboradores hacen cosas que no debieran hacer y que serían más útiles haciendo otra cosa? Platica un ejemplo.',
-  '¿Cuál es la actividad que cada vez que la haces, te dices "esto no lo tendría que hacer yo"?',
-  'Si pudieras escuchar a tu negocio, ¿qué proceso le duele en este momento?',
-  '¿Tienes identificado dónde se rompe el proceso? Has intentado mil acciones, pero no mejora — menciona en qué tarea o proceso pensaste.',
-  'Si hoy tuvieras un asistente que monitorea todos los flujos de tu negocio y lo consultaras para tomar decisiones, ¿cuánto pagarías por él?',
+  'Si pudieras escuchar a tu negocio, menciona el proceso que le duele más en este momento.',
+  'Menciona el número exacto de procesos que integran tu negocio.',
+  'Menciona el proceso repetitivo que les urge eliminar a tus colaboradores.',
+  'Menciona un proceso que, cada vez que lo haces, te dices: "esto no lo debería estar haciendo yo".',
+  'Si hoy tuvieras un asistente que monitorea toda la trazabilidad de tu negocio y te proporciona información para tomar decisiones, ¿cuánto pagarías por él?',
 ];
 
 const PROJECTS = [
@@ -685,6 +684,7 @@ function renderResults(analysis) {
   const form = $('results-form');
   if (form && !form.dataset.bound) {
     form.dataset.bound = '1';
+    form.setAttribute('aria-live', 'polite');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       await submitLead();
@@ -812,10 +812,11 @@ function generatePDF(analysis, name) {
 }
 
 async function submitLead() {
-  const name     = ($('field-name').value || '').trim();
-  const whatsapp = ($('field-wa').value  || '').trim();
+  const name           = ($('field-name').value || '').trim();
+  const whatsapp       = ($('field-wa').value  || '').trim();
+  const contactPreference = ($('field-contact-pref').value || '').trim();
 
-  if (!name || !whatsapp) return;
+  if (!name || !whatsapp || !contactPreference) return;
 
   const btn     = $('btn-send');
   const btnText = $('btn-send-text');
@@ -831,6 +832,7 @@ async function submitLead() {
       body: JSON.stringify({
         name,
         whatsapp,
+        contactPreference,
         sessionId,
         analysis: analysisData,
         pdfBase64,
@@ -841,11 +843,13 @@ async function submitLead() {
       const form = $('results-form');
       if (form) {
         form.innerHTML = `
-          <div class="lead-success">
-            <span class="lead-success-icon">✓</span>
-            <p>¡Listo, ${name}! Te enviamos el análisis a tu WhatsApp en breve.</p>
+          <div class="lead-success" tabindex="-1">
+            <span class="lead-success-icon anim-scalein" aria-hidden="true">✓</span>
+            <p class="anim-fadeup" style="animation-delay:.15s">Gracias por indicarnos la forma de contacto. A través del número 55 6611 5522 te contactará un representante de PROJECTER en el medio, día y hora indicado.</p>
           </div>
         `;
+        // Mover el foco a la confirmación para usuarios de teclado/screen reader
+        form.querySelector('.lead-success')?.focus();
       }
       // Guardar metadata actualizada con el lead
       setTimeout(saveSessionMetadata, 500);

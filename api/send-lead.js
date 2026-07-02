@@ -1,6 +1,6 @@
 /* ============================================================
    /api/send-lead — Save lead and email PDF to david@projecter.mx
-   Receives: { name, whatsapp, sessionId, analysis, pdfBase64 }
+   Receives: { name, whatsapp, contactPreference, sessionId, analysis, pdfBase64 }
    Returns:  { ok: true }
    ============================================================ */
 
@@ -15,10 +15,10 @@ async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { name, whatsapp, sessionId, analysis, pdfBase64 } = req.body || {};
+  const { name, whatsapp, contactPreference, sessionId, analysis, pdfBase64 } = req.body || {};
 
-  if (!name || !whatsapp) {
-    return res.status(400).json({ error: 'name y whatsapp son requeridos' });
+  if (!name || !whatsapp || !contactPreference) {
+    return res.status(400).json({ error: 'name, whatsapp y contactPreference son requeridos' });
   }
 
   const RESEND_KEY = process.env.RESEND_API_KEY;
@@ -68,6 +68,10 @@ async function handler(req, res) {
         <tr>
           <td style="padding:6px 0;font-size:11px;color:#888;font-family:monospace">WHATSAPP</td>
           <td style="padding:6px 0;font-size:14px;color:#111;font-weight:600">${whatsapp}</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 0;font-size:11px;color:#888;font-family:monospace">CONTACTO</td>
+          <td style="padding:6px 0;font-size:14px;color:#111;font-weight:600">${contactPreference}</td>
         </tr>
         ${sessionId ? `<tr><td style="padding:6px 0;font-size:11px;color:#888;font-family:monospace">SESIÓN</td><td style="padding:6px 0;font-size:11px;color:#888;font-family:monospace">${sessionId}</td></tr>` : ''}
         <tr>
@@ -147,6 +151,7 @@ async function handler(req, res) {
       const leadData = {
         name,
         whatsapp,
+        contactPreference,
         sessionId,
         timestamp: new Date().toISOString(),
         analysis: analysis || null,
